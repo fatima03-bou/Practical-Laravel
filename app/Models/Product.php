@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Item;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -18,6 +19,8 @@ class Product extends Model
      * $this->attributes['updated_at'] - timestamp - contains the product update date
      * $this->items - Item[] - contains the associated items
      */
+    use HasFactory;
+    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id'];
 
     public static function validate($request)
     {
@@ -26,6 +29,7 @@ class Product extends Model
             "description" => "required",
             "price" => "required|numeric|gt:0",
             'image' => 'image',
+            "categorie_id"=>"reduired|exists:categories,id"
         ]);
     }
 
@@ -122,5 +126,16 @@ class Product extends Model
     public function setItems($items)
     {
         $this->items = $items;
+    }
+
+    public function getCategoryieId(){
+        return $this->attributes["categorie_id"];
+    }
+    public function SetCategorieId($categorieId){
+        return $this->attributes["categorie_id"]=$categorieId;
+    }
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class, 'categorie_id');
     }
 }
