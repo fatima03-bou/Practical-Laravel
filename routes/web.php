@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategorieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,3 +38,6 @@ Route::middleware('admin')->group(function () {
 });
 
 Auth::routes();
+
+Route::resource('category', CategorieController::class);
+
