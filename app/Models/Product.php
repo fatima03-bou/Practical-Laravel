@@ -31,7 +31,8 @@ class Product extends Model
             'image' => 'nullable|image',
             "quantity_store" => "required|numeric|gt:1",  
             "categorie_id" => "required|exists:categories,id", 
-            "fournisseur_id" => "required|exists:fournisseurs,id"
+            "fournisseur_id" => "required|exists:fournisseurs,id",
+            "fournisseur_id"=>"required|exists:fournisseurs,id",
         ]);
     }
 
@@ -151,7 +152,6 @@ class Product extends Model
     {
         $this->attributes['quantity_store'] = $quantity_store;
     }
-
     public function fournisseur()
     {
         return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
@@ -164,6 +164,11 @@ class Product extends Model
     public function getDiscountedPrice()
     {
     return $this->discount_price ?? $this->price;
+    }
+
+    public function fournisseurs()
+    {
+        return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
     }
 
 }
