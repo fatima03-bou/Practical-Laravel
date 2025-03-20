@@ -15,6 +15,8 @@
           {{ $viewData['product']->name }} (${{ $viewData['product']->price }})
         </h5>
         <p class="card-text">{{ $viewData['product']->description }}</p>
+        <p class="card-text">Quantity in stock : {{ $viewData['product']->getQuantityStore() }}</p>
+
 
         <form method="GET" action="{{ route('product.index') }}">
           <select name="category_id" class="form-select" onchange="this.form.submit()">
@@ -26,6 +28,7 @@
               </option>
             @endforeach
           </select>
+
         </form>        
       </div>
     </div>

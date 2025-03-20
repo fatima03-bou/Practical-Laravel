@@ -14,6 +14,7 @@
           {{ $category->name }}
         </option>
       @endforeach
+      
     </select>
   </form>
 </div>
@@ -27,6 +28,9 @@
           <a href="{{ route('product.show', ['id'=> $product->getId()]) }}" class="btn bg-primary text-white">
             {{ $product->getName() }}
           </a>
+          <p>
+            <span>Quantity in stock : {{ $product->getQuantityStore() }} </span>
+          </p>
         </div>
       </div>
     </div>
