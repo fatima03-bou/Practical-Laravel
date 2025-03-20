@@ -75,19 +75,18 @@ class CartController extends Controller
                 $quantity = $productsInSession[$product->getId()];
 
 
-             ////UPDATE QUANTITY IN STOCK AFTER VALIDATION ACHAT
+             //UPDATE QUANTITY IN STOCK AFTER VALIDATION ACHAT
                 //verify if quantity in stock est suffisante
                 if ($product->getQuantityStore() < $quantity) {
                     $order->delete();
-                    return redirect()->route("cart.index")
-                                     ->with("error", "Quantity requested for product".$product->getName()."not available in stock ");
+                    return redirect()->route("cart.index")->with("error", "Quantity requested for product".$product->getName()."not available in stock ");
 
                 }
                 //update quantity in stock for product
                 $product->setQuantityStore($product->getQuantityStore() - $quantity);
                 $product->save();
 
-             ////
+             //end
                 $item = new Item();
                 $item->setQuantity($quantity);
                 $item->setPrice($product->getPrice());
