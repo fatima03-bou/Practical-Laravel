@@ -1,18 +1,18 @@
 @extends('layouts.admin')
-@section('title', $viewData["title"])
+@section('title', $viewData['title'])
 @section('content')
-<div class="card mb-4">
-  <div class="card-header">
-    Create Products
-  </div>
-  <div class="card-body">
-    @if($errors->any())
-    <ul class="alert alert-danger list-unstyled">
-      @foreach($errors->all() as $error)
-      <li>- {{ $error }}</li>
-      @endforeach
-    </ul>
-    @endif
+    <div class="card mb-4">
+        <div class="card-header">
+            Create Products
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <ul class="alert alert-danger list-unstyled">
+                    @foreach ($errors->all() as $error)
+                        <li>- {{ $error }}</li>
+                    @endforeach
+                </ul>
+            @endif
 
     <form method="POST" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
       @csrf
