@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Item;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +38,7 @@ class CartController extends Controller
         }
         // récuperer quantity requested
         $quantityRequested =$request->input('quantity');
-        //verify if quantity requested exists in stock 
+        //verify if quantity requested exists in stock
         if ($quantityRequested > $product->getQuantityStore()) {
             return redirect()->route('product.show',['id'=>$id])->with('error','Quantity requested is superior than the quantity in stock');
          }
@@ -58,8 +59,11 @@ class CartController extends Controller
     public function purchase(Request $request)
     {
         $productsInSession = $request->session()->get("products");
+        // verify if cart is not empty
         if ($productsInSession) {
-            $userId = Auth::user()->getId();
+            $userId = Auth::user()->getAuthIdentifier();
+
+            //create new order
             $order = new Order();
             $order->setUserId($userId);
             $order->setTotal(0);
@@ -69,6 +73,21 @@ class CartController extends Controller
             $productsInCart = Product::findMany(array_keys($productsInSession));
             foreach ($productsInCart as $product) {
                 $quantity = $productsInSession[$product->getId()];
+
+
+             ////UPDATE QUANTITY IN STOCK AFTER VALIDATION ACHAT
+                //verify if quantity in stock est suffisante
+                if ($product->getQuantityStore() < $quantity) {
+                    $order->delete();
+                    return redirect()->route("cart.index")
+                                     ->with("error", "Quantity requested for product".$product->getName()."not available in stock ");
+
+                }
+                //update quantity in stock for product
+                $product->setQuantityStore($product->getQuantityStore() - $quantity);
+                $product->save();
+
+             ////
                 $item = new Item();
                 $item->setQuantity($quantity);
                 $item->setPrice($product->getPrice());
@@ -77,6 +96,7 @@ class CartController extends Controller
                 $item->save();
                 $total = $total + ($product->getPrice()*$quantity);
             }
+            //mise à jour le total de la commande
             $order->setTotal($total);
             $order->save();
 
