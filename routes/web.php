@@ -37,7 +37,8 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
 });
 
-Auth::routes();
 
 Route::resource('category', CategorieController::class);
+
+Route::resource('discounts', App\Http\Controllers\Admin\DiscountController::class);
 
