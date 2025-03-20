@@ -152,7 +152,7 @@ class Product extends Model
         $this->attributes['quantity_store'] = $quantity_store;
     }
 
-    public function fournisseurs()
+    public function fournisseur()
     {
         return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
     }
