@@ -82,8 +82,6 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
-        $viewData["fournisseurs"]=Fournisseur::all();
-        $viewData["categories"] = Categorie::all(); 
         $viewData["product"] = Product::findOrFail($id);
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -101,12 +99,9 @@ class AdminProductController extends Controller
         ]);
         $categorieId = $request->input('categorie_id', 1); 
         $product = Product::findOrFail($id);
-        $product->name = $request->input('name');
-        $product->description = $request->input('description');
-        $product->price = $request->input('price');
-        $product->quantity_store = $request->input('quantity_store');
-        $product->categorie_id = $categorieId; 
-        $product->fournisseur_id = $request->input('fournisseur_id');
+        $product->setName($request->input('name'));
+        $product->setDescription($request->input('description'));
+        $product->setPrice($request->input('price'));
 
         if ($request->hasFile('image')) {
             if ($product->image && Storage::disk('public')->exists($product->image)) {
@@ -121,8 +116,7 @@ class AdminProductController extends Controller
             $product->image = $imageName;
         }
         $product->save();
-
-        return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
+        return redirect()->route('admin.product.index');
     }
 
 
