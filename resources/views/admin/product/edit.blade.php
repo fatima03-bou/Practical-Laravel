@@ -14,7 +14,7 @@
     </ul>
     @endif
 
-    <form method="POST" action="{{ route('admin.product.update', ['id'=> $viewData['product']->id]) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.product.update', ['id' => $viewData['product']->id]) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
       <div class="row">
@@ -73,23 +73,21 @@
         </div>
       </div>
 
-    <div class="mb-3 row">
-      <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Fournisseur:</label>
-      <div class="col-lg-10 col-md-6 col-sm-12">
-        <select name="fournisseur_id" class="form-control">
-          <option value="">Select Fournisseur</option>
-          @foreach ($viewData['fournisseurs'] as $fournisseur)
-            <option value="{{ $fournisseur->id }}" 
-              {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
-              {{ $fournisseur->raison }}
-            </option>
-          @endforeach
-        </select>
+      <div class="mb-3 row">
+        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Fournisseur:</label>
+        <div class="col-lg-10 col-md-6 col-sm-12">
+          <select name="fournisseur_id" class="form-control">
+            <option value="">Select Fournisseur</option>
+            @foreach ($viewData['fournisseurs'] as $fournisseur)
+              <option value="{{ $fournisseur->id }}" 
+                {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
+                {{ $fournisseur->raison_social }}
+              </option>
+            @endforeach
+          </select>
+        </div>
       </div>
-    </div>
 
-
-      <!-- Category Selection -->
       <div class="mb-3 row">
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
