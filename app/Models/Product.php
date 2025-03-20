@@ -20,7 +20,7 @@ class Product extends Model
      * $this->items - Item[] - contains the associated items
      */
     use HasFactory;
-    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store'];
+    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store',"fournisseur_id"];
 
     public static function validate($request)
     {
@@ -30,7 +30,8 @@ class Product extends Model
             "price" => "required|numeric|gt:0",
             'image' => 'image',
             "quantity_store"=>"required|numeric|gt:0",
-            "categorie_id"=>"reduired|exists:categories,id"
+            "categorie_id"=>"reduired|exists:categories,id",
+            "fournisseur_id"=>"required|exists:fournisseurs,id"
         ]);
     }
 
@@ -149,5 +150,10 @@ class Product extends Model
     public function setQuantityStore($quantity_store)
     {
         $this->attributes['quantity_store'] = $quantity_store;
+    }
+
+    public function fournisseurs()
+    {
+        return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
     }
 }
