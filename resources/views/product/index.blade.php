@@ -6,16 +6,35 @@
 @section('content')
 <div class="mb-3">
   <form method="GET" action="{{ route('product.index') }}">
-    <select name="category_id" class="form-select" onchange="this.form.submit()">
-      <option value="">Select Category</option>
-      @foreach ($viewData['categories'] as $category)
-        <option value="{{ $category->id }}"
-          @if(request('category_id') == $category->id) selected @endif>
-          {{ $category->name }}
-        </option>
-      @endforeach
+    <div class="row">
+      <!-- Filter by Category -->
+      <div class="col-md-6">
+        <label for="category_id" class="form-label">Filter by Category:</label>
+        <select name="category_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+          @foreach ($viewData['categories'] as $category)
+            <option value="{{ $category->id }}" 
+              @if(request('category_id') == $category->id) selected @endif>
+              {{ $category->name }}
+            </option>
+          @endforeach
+        </select>
+      </div>
 
-    </select>
+      <!-- Filter by Supplier -->
+      <div class="col-md-6">
+        <label for="fournisseur_id" class="form-label">Filter by Supplier:</label>
+        <select name="fournisseur_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Suppliers</option>
+          @foreach ($viewData['fournisseurs'] as $fournisseur)
+            <option value="{{ $fournisseur->id }}" 
+              @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
+              {{ $fournisseur->raison_social }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -29,10 +48,10 @@
             {{ $product->getName() }}
           </a>
           <p>
-            <span>Quantity in stock : {{ $product->getQuantityStore() }} </span>
+            <span>Quantity in stock: {{ $product->getQuantityStore() }}</span>
           </p>
-          @if ($product -> getQuantityStore() == 0)
-            <p class="badge bg-danger">En repture de stock</p>
+          @if ($product->getQuantityStore() == 0)
+            <p class="badge bg-danger">Out of stock</p>
           @endif
         </div>
       </div>
