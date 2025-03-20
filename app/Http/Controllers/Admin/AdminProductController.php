@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Product;
 use App\Http\Controllers\Controller;
+use App\Models\Fournisseur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,6 +44,10 @@ class AdminProductController extends Controller
 
     public function delete($id)
     {
+        $product=Product::findOrFail($id);
+        if($product->image && Storage::disk("public")->exists($product->image)){
+            Storage::disk("public")->delete($product->image);
+        }
         Product::destroy($id);
         return back();
     }
@@ -51,6 +56,7 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
+        $viewData["fournisseurs"]=Fournisseur::all();
         $viewData["product"] = Product::findOrFail($id);
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -63,7 +69,7 @@ class AdminProductController extends Controller
         $product->setName($request->input('name'));
         $product->setDescription($request->input('description'));
         $product->setPrice($request->input('price'));
-
+        $product->fournisseur_id = $request->input('fournisseur_id');  
         if ($request->hasFile('image')) {
             $imageName = $product->getId().".".$request->file('image')->extension();
             Storage::disk('public')->put(
@@ -74,6 +80,6 @@ class AdminProductController extends Controller
         }
 
         $product->save();
-        return redirect()->route('admin.product.index');
+        return redirect()->route('admin.product.index')->with('success', 'Product updated successfully!');
     }
 }
