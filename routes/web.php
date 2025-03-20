@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\FournisseurController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +41,4 @@ Route::middleware('admin')->group(function () {
 Auth::routes();
 
 Route::resource('category', CategorieController::class);
-
+Route::resource('fournisseurs', FournisseurController::class);
