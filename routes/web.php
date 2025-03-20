@@ -2,6 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\MyAccountController;
+use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\DiscountController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +49,12 @@ Auth::routes();
 
 Route::resource('category', CategorieController::class);
 
-Route::resource('discounts', App\Http\Controllers\Admin\DiscountController::class);
+Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
+Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscount'])->name('discounts.storeGlobal');
+
+Route::get('/products/{product}/discount', [AdminProductController::class, 'manageDiscount'])->name('products.manageDiscount');
+Route::post('/products/{product}/discount', [AdminProductController::class, 'storeDiscount'])->name('products.storeDiscount');
+
+Route::get('/categories/{category}/discount', [AdminProductController::class, 'manageCategoryDiscount'])->name('categories.manageDiscount');
+Route::post('/categories/{category}/discount', [AdminProductController::class, 'storeCategoryDiscount'])->name('categories.storeDiscount');
 
