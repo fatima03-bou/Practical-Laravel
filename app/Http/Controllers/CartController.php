@@ -2,86 +2,128 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Item;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
 
 class CartController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $total = 0;
-        $productsInCart = [];
+        $productsInSession = session()->get("products", []);
 
-        $productsInSession = $request->session()->get("products");
-        if ($productsInSession) {
-            $productsInCart = Product::findMany(array_keys($productsInSession));
-            $total = Product::sumPricesByQuantities($productsInCart, $productsInSession);
-        }
+        $productsInCart = !empty($productsInSession) ? Product::findMany(array_keys($productsInSession)) : [];
+        $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $productsInSession) : 0;
 
-        $viewData = [];
-        $viewData["title"] = "Cart - Online Store";
-        $viewData["subtitle"] =  "Shopping Cart";
-        $viewData["total"] = $total;
-        $viewData["products"] = $productsInCart;
+        $viewData = [
+            "title" => "Cart - Online Store",
+            "subtitle" => "Shopping Cart",
+            "total" => $total,
+            "products" => $productsInCart
+        ];
+
         return view('cart.index')->with("viewData", $viewData);
     }
 
-    public function add(Request $request, $id)
+    public function add(Product $product, Request $request)
     {
-        $products = $request->session()->get("products");
-        $products[$id] = $request->input('quantity');
-        $request->session()->put('products', $products);
+        $quantity = $request->input('quantity', 1);
 
-        return redirect()->route('cart.index');
+        // Vérifier la disponibilité du stock
+        if ($product->quantity_store < $quantity) {
+            return back()->with('error', 'Quantité insuffisante en stock.');
+        }
+
+        // Obtenir le prix avec remise si applicable
+        $price = $product->hasDiscount() ? $product->getDiscountedPrice() : $product->price;
+
+        // Ajouter au panier (session)
+        $cart = session()->get("products", []);
+        $cart[$product->id] = isset($cart[$product->id]) ? $cart[$product->id] + $quantity : $quantity;
+        session()->put("products", $cart);
+
+        return back()->with('success', 'Produit ajouté au panier.');
     }
 
     public function delete(Request $request)
     {
         $request->session()->forget('products');
-        return back();
+        return back()->with('success', 'Panier vidé avec succès.');
     }
 
     public function purchase(Request $request)
-    {
-        $productsInSession = $request->session()->get("products");
-        if ($productsInSession) {
-            $userId = Auth::user()->getId();
-            $order = new Order();
-            $order->setUserId($userId);
-            $order->setTotal(0);
-            $order->save();
+{
+    $productsInSession = session()->get("products", []);
 
-            $total = 0;
-            $productsInCart = Product::findMany(array_keys($productsInSession));
-            foreach ($productsInCart as $product) {
-                $quantity = $productsInSession[$product->getId()];
-                $item = new Item();
-                $item->setQuantity($quantity);
-                $item->setPrice($product->getPrice());
-                $item->setProductId($product->getId());
-                $item->setOrderId($order->getId());
-                $item->save();
-                $total = $total + ($product->getPrice()*$quantity);
-            }
-            $order->setTotal($total);
-            $order->save();
+    if (!empty($productsInSession)) {
+        // Récupérer l'utilisateur authentifié
+        $user = Auth::user();
 
-            $newBalance = Auth::user()->getBalance() - $total;
-            Auth::user()->setBalance($newBalance);
-            Auth::user()->save();
-
-            $request->session()->forget('products');
-
-            $viewData = [];
-            $viewData["title"] = "Purchase - Online Store";
-            $viewData["subtitle"] =  "Purchase Status";
-            $viewData["order"] =  $order;
-            return view('cart.purchase')->with("viewData", $viewData);
-        } else {
-            return redirect()->route('cart.index');
+        // Vérifier si l'utilisateur est bien une instance de User
+        if (!$user instanceof User) {
+            return back()->with('error', 'Utilisateur introuvable.');
         }
+
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->total = 0;
+        $order->save();
+
+        $total = 0;
+        $productsInCart = Product::findMany(array_keys($productsInSession));
+
+        foreach ($productsInCart as $product) {
+            $quantity = $productsInSession[$product->id];
+
+            // Vérifier le stock avant de valider l'achat
+            if ($product->quantity_store < $quantity) {
+                return back()->with('error', "Stock insuffisant pour {$product->name}.");
+            }
+
+            // Déduire la quantité du stock
+            $product->quantity_store -= $quantity;
+            $product->save();
+
+            // Créer un élément de commande
+            $item = new Item();
+            $item->quantity = $quantity;
+            $item->price = $product->hasDiscount() ? $product->getDiscountedPrice() : $product->price;
+            $item->product_id = $product->id;
+            $item->order_id = $order->id;
+            $item->save();
+
+            $total += $item->price * $quantity;
+        }
+
+        // Vérifier si l'utilisateur a assez d'argent
+        if ($user->balance < $total) {
+            return back()->with('error', 'Fonds insuffisants pour effectuer l\'achat.');
+        }
+
+        // Déduire le solde de l'utilisateur
+        $user->balance -= $total;
+        $user->save(); // L'erreur "Undefined method save()" venait peut-être d'un utilisateur non trouvé
+
+        // Mettre à jour le total de la commande
+        $order->total = $total;
+        $order->save();
+
+        // Vider le panier
+        session()->forget('products');
+
+        return view('cart.purchase', [
+            "title" => "Purchase - Online Store",
+            "subtitle" => "Purchase Status",
+            "order" => $order
+        ])->with('success', 'Achat effectué avec succès.');
     }
+
+    return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
 }
+
+    }
