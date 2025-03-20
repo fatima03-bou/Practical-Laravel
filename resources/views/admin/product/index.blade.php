@@ -66,6 +66,7 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Name</th>
+          <th scope="col">Price</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
         </tr>
@@ -76,12 +77,20 @@
           <td>{{ $product->getId() }}</td>
           <td>{{ $product->getName() }}</td>
           <td>
-            <a class="btn btn-primary" href="{{route('admin.product.edit', ['id'=> $product->getId()])}}">
+            @if($product->hasDiscount())
+              <span class="original-price text-decoration-line-through">{{ $product->price }} €</span>
+              <span class="discounted-price fw-bold text-danger">{{ number_format($product->getDiscountedPrice(), 2) }} €</span>
+            @else
+              <span class="price">{{ $product->price }} €</span>
+            @endif
+          </td>
+          <td>
+            <a class="btn btn-primary" href="{{ route('admin.product.edit', ['id' => $product->getId()]) }}">
               <i class="bi-pencil"></i>
             </a>
           </td>
           <td>
-            <form action="{{ route('admin.product.delete', $product->getId())}}" method="POST">
+            <form action="{{ route('admin.product.delete', $product->getId()) }}" method="POST">
               @csrf
               @method('DELETE')
               <button class="btn btn-danger">
