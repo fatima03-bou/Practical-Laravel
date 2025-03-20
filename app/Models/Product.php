@@ -28,10 +28,10 @@ class Product extends Model
             "name" => "required|max:255",
             "description" => "required",
             "price" => "required|numeric|gt:0",
-            'image' => 'image',
-            "quantity_store"=>"required|numeric|gt:0",
-            "categorie_id"=>"reduired|exists:categories,id",
-            "fournisseur_id"=>"required|exists:fournisseurs,id"
+            'image' => 'nullable|image',
+            "quantity_store" => "required|numeric|gt:1",  
+            "categorie_id" => "required|exists:categories,id", 
+            "fournisseur_id" => "required|exists:fournisseurs,id"
         ]);
     }
 
