@@ -9,12 +9,12 @@
     <select name="category_id" class="form-select" onchange="this.form.submit()">
       <option value="">Select Category</option>
       @foreach ($viewData['categories'] as $category)
-        <option value="{{ $category->id }}" 
+        <option value="{{ $category->id }}"
           @if(request('category_id') == $category->id) selected @endif>
           {{ $category->name }}
         </option>
       @endforeach
-      
+
     </select>
   </form>
 </div>
@@ -31,6 +31,9 @@
           <p>
             <span>Quantity in stock : {{ $product->getQuantityStore() }} </span>
           </p>
+          @if ($product -> getQuantityStore() == 0)
+            <p class="badge bg-danger">En repture de stock</p>
+          @endif
         </div>
       </div>
     </div>
