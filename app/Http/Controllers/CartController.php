@@ -11,12 +11,14 @@ use App\Models\User;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productsInSession = session()->get("products", []);
+        // Get cart from cookie (default to empty array if not set)
+        $cart = json_decode($request->cookie('cart'), true) ?? [];
 
-        $productsInCart = !empty($productsInSession) ? Product::findMany(array_keys($productsInSession)) : [];
-        $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $productsInSession) : 0;
+        // Fetch products from the cart by their IDs
+        $productsInCart = !empty($cart) ? Product::findMany(array_keys($cart)) : [];
+        $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $cart) : 0;
 
         $viewData = [
             "title" => "Cart - Online Store",
@@ -30,32 +32,25 @@ class CartController extends Controller
 
     public function add(Product $product, Request $request)
     {
-        $quantityRequested = $request->input('quantity');
+        $cart = json_decode($request->cookie('cart'), true) ?? [];
 
-        // Verify if quantity requested exists in stock
-        if ($quantityRequested > $product->getQuantityStore()) {
-            return redirect()->route('product.show', ['id' => $product->id])->with('error', 'Quantity requested is superior than the quantity in stock');
-        }
-
-        // Add to cart (session)
-        $cart = session()->get("products", []);
-        $cart[$product->id] = isset($cart[$product->id]) ? $cart[$product->id] + $quantityRequested : $quantityRequested;
-        session()->put("products", $cart);
-
-        return back()->with('success', 'Product added to cart.');
+        $cart[$product->id] = $request->input('quantity');
+        
+        return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30));
     }
 
     public function delete(Request $request)
     {
-        $request->session()->forget('products');
-        return back()->with('success', 'Cart cleared successfully.');
+        return back()->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
+            ->with('success', 'Cart cleared successfully.');
     }
 
     public function purchase(Request $request)
     {
-        $productsInSession = session()->get("products", []);
+        // Obtenir le panier de cookie
+        $cart = json_decode($request->cookie('cart'), true) ?? [];
 
-        if (empty($productsInSession)) {
+        if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
@@ -71,12 +66,12 @@ class CartController extends Controller
         $order->save();
 
         $total = 0;
-        $productsInCart = Product::findMany(array_keys($productsInSession));
+        $productsInCart = Product::findMany(array_keys($cart));
 
         foreach ($productsInCart as $product) {
-            $quantity = $productsInSession[$product->id];
+            $quantity = $cart[$product->id];
 
-            // Verify stock before purchase
+            // Verifier le stock avant l’achat
             if ($product->quantity_store < $quantity) {
                 $order->delete();
                 return redirect()->route("cart.index")->with("error", "Quantity requested for product " . $product->name . " not available in stock.");
@@ -111,13 +106,8 @@ class CartController extends Controller
         $order->total = $total;
         $order->save();
 
-        // Clear cart
-        session()->forget('products');
-
-        return view('cart.purchase', [
-            "title" => "Purchase - Online Store",
-            "subtitle" => "Purchase Status",
-            "order" => $order
-        ])->with('success', 'Purchase completed successfully.');
+        // Clear cart by emptying the cookie
+        return redirect()->route('cart.index')->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
+            ->with('success', 'Purchase completed successfully.');
     }
 }
