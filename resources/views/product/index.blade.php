@@ -29,7 +29,7 @@
           @foreach ($viewData['fournisseurs'] as $fournisseur)
             <option value="{{ $fournisseur->id }}" 
               @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
-              {{ $fournisseur->raison_social }}
+              {{ $fournisseur->raison}}
             </option>
           @endforeach
         </select>
@@ -58,4 +58,7 @@
     </div>
   @endforeach
 </div>
+<div class="d-flex justify-content-center mt-4">
+        {{ $viewData["products"]->links() }}
+    </div>
 @endsection

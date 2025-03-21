@@ -15,7 +15,6 @@ class ProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
         $viewData["subtitle"] = "List of products";
-
         $query = Product::query();
        
         //filtrage:
@@ -50,7 +49,7 @@ class ProductController extends Controller
             });
         }
 
-        $viewData["products"] = $query->paginate(12);
+        $viewData["products"] = $query->paginate(8);
         $viewData["categories"] = Categorie::all();
         $viewData["fournisseurs"] = Fournisseur::all(); 
 

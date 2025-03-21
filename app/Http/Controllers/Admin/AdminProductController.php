@@ -38,10 +38,10 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'quantity_store' => 'required|integer|min:1', 
-            'image' => 'nullable|image|max:2048',
+            'image' => 'required|image|max:2048',
             'description' => 'nullable|string|max:1000',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'categorie_id' => 'nullable|exists:categories,id|min:1', 
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'categorie_id' => 'required|exists:categories,id|min:1', 
         ]);
         $categorieId = $request->input('categorie_id', 1); 
         $newProduct = new Product();
