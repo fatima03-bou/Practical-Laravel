@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categorie;
 use App\Models\Product;
 use App\Models\Discount;
+use App\Models\Fournisseur; 
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -14,23 +15,18 @@ class ProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
         $viewData["subtitle"] = "List of products";
-<<<<<<< HEAD
+
         $query = Product::query();
+       
+        //filtrage:
         if ($request->has('category_id') && $request->category_id != '') {
             $query->where('categorie_id', $request->category_id);
         }
-        $viewData["products"] = $query->get();
-        $viewData["categories"] = Categorie::all();
-=======
 
-        $query = Product::query();
-
-        // Filtrage par catégorie
-        if ($request->has('category_id') && $request->category_id != '') {
-            $query->where('category_id', $request->category_id);
+        if ($request->has('fournisseur_id') && $request->fournisseur_id != '') {
+            $query->where('fournisseur_id', $request->fournisseur_id);
         }
 
-        // Filtrage des produits soldes
         if ($request->has('on_sale') && $request->on_sale) {
             $now = now();
             $query->where(function ($q) use ($now) {
@@ -43,7 +39,6 @@ class ProductController extends Controller
                         ->where('end_date', '>=', $now);
                 });
 
-                // Verifier s'il y a une remise globale active
                 $globalDiscounts = Discount::where('type', 'global')
                     ->where('start_date', '<=', $now)
                     ->where('end_date', '>=', $now)
@@ -57,8 +52,8 @@ class ProductController extends Controller
 
         $viewData["products"] = $query->paginate(12);
         $viewData["categories"] = Categorie::all();
+        $viewData["fournisseurs"] = Fournisseur::all(); 
 
->>>>>>> feature_gestion_soldes
         return view('product.index')->with("viewData", $viewData);
     }
 
@@ -66,8 +61,8 @@ class ProductController extends Controller
     {
         $viewData = [];
         $product = Product::findOrFail($id);
-        $viewData["title"] = $product->getName()." - Online Store";
-        $viewData["subtitle"] =  $product->getName()." - Product information";
+        $viewData["title"] = $product->getName() . " - Online Store";
+        $viewData["subtitle"] = $product->getName() . " - Product information";
         $viewData["product"] = $product;
 
         return view('product.show')->with("viewData", $viewData);
@@ -75,7 +70,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // Validation
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -84,7 +78,6 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Creation du produit
         $product = new Product();
         $product->name = $request->input('name');
         $product->price = $request->input('price');
@@ -103,7 +96,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validation
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
