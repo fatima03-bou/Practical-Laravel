@@ -141,7 +141,6 @@ class Product extends Model
     {
         return $this->belongsTo(Categorie::class, 'categorie_id');
     }
-<<<<<<< HEAD
 
     public function getQuantityStore()
     {
@@ -157,7 +156,6 @@ class Product extends Model
     {
         return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
     }
-=======
     public function hasDiscount()
     {
     return $this->discount_price && $this->discount_price < $this->price;
@@ -168,5 +166,4 @@ class Product extends Model
     return $this->discount_price ?? $this->price;
     }
 
->>>>>>> feature_gestion_soldes
 }
