@@ -60,4 +60,6 @@ Route::post('/products/{product}/discount', [AdminProductController::class, 'sto
 Route::get('/categories/{category}/discount', [AdminProductController::class, 'manageCategoryDiscount'])->name('categories.manageDiscount');
 Route::post('/categories/{category}/discount', [AdminProductController::class, 'storeCategoryDiscount'])->name('categories.storeDiscount');
 
-Route::get('/admin/products/export', [AdminProductController::class, 'exportCSV'])->name('admin.products.export');
+Route::get('/admin/products', [AdminProductController::class, 'index'])->name('admin.product.index');
+Route::get('/admin/products/export', [AdminProductController::class, 'exportCSV'])->name('admin.product.export');
+Route::post('/admin/products/import', [AdminProductController::class, 'importCSV'])->name('admin.product.import');

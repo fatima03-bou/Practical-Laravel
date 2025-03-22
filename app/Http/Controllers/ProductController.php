@@ -18,7 +18,6 @@ class ProductController extends Controller
 
         $query = Product::query();
        
-        //filtrage:
         if ($request->has('category_id') && $request->category_id != '') {
             $query->where('categorie_id', $request->category_id);
         }
@@ -45,7 +44,7 @@ class ProductController extends Controller
                     ->exists();
 
                 if ($globalDiscounts) {
-                    $q->orWhereNotNull('id'); // Inclure tous les produits si une remise globale existe
+                    $q->orWhereNotNull('id');
                 }
             });
         }
@@ -104,7 +103,6 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Recuperation et mise a jour du produit
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->price = $request->input('price');

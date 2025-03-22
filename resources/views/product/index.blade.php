@@ -7,7 +7,6 @@
 <div class="mb-3">
   <form method="GET" action="{{ route('product.index') }}">
     <div class="row">
-      <!-- Filter by Category -->
       <div class="col-md-6">
         <label for="category_id" class="form-label">Filter by Category:</label>
         <select name="category_id" class="form-select" onchange="this.form.submit()">
@@ -21,7 +20,6 @@
         </select>
       </div>
 
-      <!-- Filter by Supplier -->
       <div class="col-md-6">
         <label for="fournisseur_id" class="form-label">Filter by Supplier:</label>
         <select name="fournisseur_id" class="form-select" onchange="this.form.submit()">

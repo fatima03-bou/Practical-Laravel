@@ -81,7 +81,7 @@
             @foreach ($viewData['fournisseurs'] as $fournisseur)
               <option value="{{ $fournisseur->id }}" 
                 {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
-                {{ $fournisseur->raison_social }}
+                {{ $fournisseur->raison}}
               </option>
             @endforeach
           </select>
