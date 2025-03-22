@@ -58,7 +58,7 @@ class CategorieController extends Controller
     {
         $request->validate([
             "name"=>"required|string|max:255",
-            "descpription"=>"string",
+            "description"=>"string",
         ]);
         $categorie=Categorie::findOrFail($id);
         $categorie->update($request->all());
