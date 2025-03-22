@@ -1,21 +1,3 @@
-@extends('layouts.admin')
-<<<<<<< HEAD
-@section('title', $viewData['title'])
-@section('content')
-    <div class="card mb-4">
-        <div class="card-header">
-            Create Products
-        </div>
-        <div class="card-body">
-            @if ($errors->any())
-                <ul class="alert alert-danger list-unstyled">
-                    @foreach ($errors->all() as $error)
-                        <li>- {{ $error }}</li>
-                    @endforeach
-                </ul>
-            @endif
-=======
-
 @section('title', $viewData["title"])
 
 @section('content')
@@ -32,7 +14,7 @@
         @endforeach
       </ul>
     @endif
->>>>>>> feature_gestion_soldes
+
 
     <form method="POST" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
       @csrf
@@ -88,12 +70,12 @@
 <div class="filter-section card mb-4">
   <div class="card-header">Filtres</div>
   <div class="card-body">
-    <form action="{{ route('products.index') }}" method="GET">
+    <form action="{{ route('product.index') }}" method="GET">
       <div class="form-group mb-3">
         <label for="category_id">Catégorie</label>
         <select name="category_id" id="category_id" class="form-control">
           <option value="">Toutes les catégories</option>
-          @foreach($categories as $category)
+          @foreach($viewData["categories"] as $category)
             <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
               {{ $category->name }}
             </option>

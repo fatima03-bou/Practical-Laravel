@@ -126,5 +126,72 @@ class AdminProductController extends Controller
         return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
     }
 
+    public function exportCSV()
+    {
+        $products = Product::all();
+        $filename = "produits_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+        ];
+
+        $callback = function () use ($products) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID', 'Nom', 'Description', 'Prix', 'Stock', 'Catégorie', 'Fournisseur']);
+
+            foreach ($products as $product) {
+                fputcsv($file, [
+                    $product->id,
+                    $product->name,
+                    $product->description,
+                    $product->price,
+                    $product->quantity_store,
+                    optional($product->categorie)->name,
+                    optional($product->fournisseur)->name,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importCSV(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+
+        if (!$file) {
+            return back()->with('error', 'Aucun fichier sélectionné.');
+        }
+
+        $handle = fopen($file, 'r');
+
+        fgetcsv($handle);
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
+            Product::updateOrCreate(
+                ['id' => $row[0]], 
+                [
+                    'name' => $row[1],
+                    'description' => $row[2],
+                    'price' => $row[3],
+                    'quantity_store' => $row[4],
+                    'categorie_id' => Categorie::where('name', $row[5])->value('id') ?? 1,
+                    'fournisseur_id' => Fournisseur::where('name', $row[6])->value('id'),
+                ]
+            );
+        }
+
+        fclose($handle);
+
+        return back()->with('success', 'Importation réussie !');
+    }
+
 
 }
