@@ -10,6 +10,7 @@ use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Admin\StatisticsController;
 
 
 /*
@@ -46,9 +47,13 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
 });
 
+Route::prefix('admin')->group(function () {
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+});
+
 Auth::routes();
 
-Route::resource('category', CategorieController::class);
+Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
 Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
@@ -57,6 +62,10 @@ Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscou
 Route::get('/products/{product}/discount', [AdminProductController::class, 'manageDiscount'])->name('products.manageDiscount');
 Route::post('/products/{product}/discount', [AdminProductController::class, 'storeDiscount'])->name('products.storeDiscount');
 
-Route::get('/categories/{category}/discount', [AdminProductController::class, 'manageCategoryDiscount'])->name('categories.manageDiscount');
-Route::post('/categories/{category}/discount', [AdminProductController::class, 'storeCategoryDiscount'])->name('categories.storeDiscount');
+Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
+Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
+
+Route::get('/admin/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
+Route::get('/admin/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
+
 
