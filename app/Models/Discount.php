@@ -24,7 +24,7 @@ class Discount extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Categorie::class);
+        return $this->belongsTo(Categorie::class, 'categorie_id');
     }
 
     public function product(): BelongsTo
