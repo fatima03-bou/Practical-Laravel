@@ -13,7 +13,7 @@ class Discount extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'type', 'rate', 'start_date', 'end_date', 'category_id', 'product_id'
+        'name', 'type', 'rate', 'start_date', 'end_date', 'categorie_id', 'product_id'
     ];
 
     protected $casts = [
@@ -22,7 +22,7 @@ class Discount extends Model
         'rate' => 'float'
     ];
 
-    public function category(): BelongsTo
+    public function categorie(): BelongsTo
     {
         return $this->belongsTo(Categorie::class, 'categorie_id');
     }

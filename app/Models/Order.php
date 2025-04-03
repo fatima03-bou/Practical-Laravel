@@ -24,6 +24,7 @@ class Order extends Model
         $request->validate([
             "total" => "required|numeric",
             "user_id" => "required|exists:users,id",
+            "profit" => "required|numeric",
         ]);
     }
     

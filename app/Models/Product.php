@@ -131,10 +131,10 @@ class Product extends Model
         $this->items = $items;
     }
 
-    public function getCategoryieId(){
+    public function getCategorieId(){
         return $this->attributes["categorie_id"];
     }
-    public function setCategorieId($categorieId){
+    public function SetCategorieId($categorieId){
         return $this->attributes["categorie_id"]=$categorieId;
     }
     public function categorie()

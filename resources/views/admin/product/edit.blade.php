@@ -41,7 +41,7 @@
           <div class="mb-3 row">
             <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Discount Price:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
-              <input name="discount_price" value="{{ $viewData['product']->getDiscountPrice() }}" type="number" class="form-control">
+              <input name="discount_price" value="{{ $viewData['product']->getDiscountedPrice() }}" type="number" class="form-control">
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Fournisseur:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="fournisseur_id" class="form-control">
-            <option value="">Select Fournisseur</option>
+            <option value="">Select Supplier</option>
             @foreach ($viewData['fournisseurs'] as $fournisseur)
               <option value="{{ $fournisseur->id }}" 
                 {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
@@ -92,10 +92,10 @@
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="categorie_id" class="form-control">
-            @foreach ($viewData['categories'] as $category)
-              <option value="{{ $category->id }}" 
-                {{ $viewData['product']->categorie_id == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
+            @foreach ($viewData['categories'] as $categorie)
+              <option value="{{ $categorie->id }}" 
+                {{ $viewData['product']->categorie_id == $categorie->id ? 'selected' : '' }}>
+                {{ $categorie->name }}
               </option>
             @endforeach
           </select>

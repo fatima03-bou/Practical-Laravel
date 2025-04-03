@@ -65,7 +65,9 @@
     @endforeach
 </table>
 
-<!-- Bouton pour télécharger en PDF -->
-<a href="{{ route('admin.statistics.pdf', request()->query()) }}" class="btn btn-primary">Télécharger en PDF</a>
+<a href="{{ route('admin.statistics.pdf') }}" class="btn btn-primary">
+    <i class="bi bi-file-earmark-pdf"></i> Télécharger en PDF
+</a>
+
 
 @endsection

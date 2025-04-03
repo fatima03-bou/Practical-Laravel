@@ -7,21 +7,19 @@
 <div class="mb-3">
   <form method="GET" action="{{ route('product.index') }}">
     <div class="row">
-      <!-- Filter by Category -->
       <div class="col-md-6">
-        <label for="category_id" class="form-label">Filter by Category:</label>
-        <select name="category_id" class="form-select" onchange="this.form.submit()">
+        <label for="categorie_id" class="form-label">Filter by category:</label>
+        <select name="categorie_id" class="form-select" onchange="this.form.submit()">
           <option value="">All Categories</option>
-          @foreach ($viewData['categories'] as $category)
-            <option value="{{ $category->id }}" 
-              @if(request('category_id') == $category->id) selected @endif>
-              {{ $category->name }}
+          @foreach ($viewData['categories'] as $categorie)
+            <option value="{{ $categorie->id }}" 
+              @if(request('categorie_id') == $categorie->id) selected @endif>
+              {{ $categorie->name }}
             </option>
           @endforeach
         </select>
       </div>
 
-      <!-- Filter by Supplier -->
       <div class="col-md-6">
         <label for="fournisseur_id" class="form-label">Filter by Supplier:</label>
         <select name="fournisseur_id" class="form-select" onchange="this.form.submit()">
