@@ -1,4 +1,4 @@
-a<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -27,8 +27,8 @@ a<!doctype html>
           </a>
       </li>
       <li>
-          <a href="{{ route('product.index') }}" 
-             class="nav-link text-white {{ request()->routeIs('products.index') ? 'active bg-primary' : '' }}">
+          <a href="{{ route('admin.products.index') }}" 
+             class="nav-link text-white {{ request()->routeIs('admin.products.index') ? 'active bg-primary' : '' }}">
               - Admin - Products
           </a>
       </li>
