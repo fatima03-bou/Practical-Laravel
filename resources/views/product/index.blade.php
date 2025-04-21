@@ -27,7 +27,7 @@
           @foreach ($viewData['fournisseurs'] as $fournisseur)
             <option value="{{ $fournisseur->id }}" 
               @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
-              {{ $fournisseur->raison_social }}
+              {{ $fournisseur->raison}}
             </option>
           @endforeach
         </select>

@@ -1,16 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MyAccountController;
-use App\Http\Controllers\Admin\AdminHomeController;
-use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\AdminProductController;
 
 
 /*
@@ -52,6 +53,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
     Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
     Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('admin.statistics.exportPdf');
+    Route::get('/product', [AdminProductController::class, 'index'])->name('products.index');
 });
 
 
@@ -73,4 +75,6 @@ Route::get('/admin/statistics', [StatisticsController::class, 'index'])->name('a
 Route::get('/admin/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
 Route::get('admin/statistics/export-pdf', [App\Http\Controllers\Admin\StatisticsController::class, 'exportPdf'])->name('admin.statistics.exportPdf');
 
+
+Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
 

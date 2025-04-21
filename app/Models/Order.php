@@ -107,4 +107,19 @@ class Order extends Model
     {
         $this->items = $items;
     }
+    public function getStatus()
+    {
+        return $this->attributes['status'];
+    }
+
+    public function setStatus($status)
+    {
+        $this->attributes['status'] = $status;
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
 }
