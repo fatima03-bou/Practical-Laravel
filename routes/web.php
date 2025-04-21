@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
 
 
 /*
@@ -38,6 +39,7 @@ Route::post('/cart/add/{id}', 'App\Http\Controllers\CartController@add')->name("
 Route::middleware('auth')->group(function () {
     Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
 });
 
 Route::middleware('admin')->group(function () {
