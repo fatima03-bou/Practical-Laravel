@@ -17,13 +17,27 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["categories"] = Categorie::all();
         $viewData["title"] = "Page Admin - Produits - Boutique en ligne";
-        $fournisseurId = $request->input('fournisseur_id');
+        $viewData["fournisseurs"] = Fournisseur::all(); 
+
         $productsQuery = Product::query();
-        if ($fournisseurId) {
-            $productsQuery->where('fournisseur_id', $fournisseurId);
+
+        // Filtrage par fournisseur
+        if ($request->filled('fournisseur_id')) {
+            $productsQuery->where('fournisseur_id', $request->input('fournisseur_id'));
         }
-        $viewData["products"] = $productsQuery->paginate(10);
-        $viewData["fournisseurs"] = Fournisseur::all();
+
+        // Filtrage par catégorie
+        if ($request->filled('category_id')) {
+            $productsQuery->where('categorie_id', $request->input('category_id'));
+        }
+
+        // Filtrage par produits en solde
+        if ($request->has('on_sale')) {
+            $productsQuery->whereNotNull('discount_price')
+                        ->whereColumn('discount_price', '<', 'price');
+        }
+
+        $viewData["products"] = $productsQuery->get();
 
         return view('admin.product.index')->with("viewData", $viewData);
     }
@@ -35,12 +49,12 @@ class AdminProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:1',
             'quantity_store' => 'required|integer|min:1', 
-            'image' => 'nullable|image|max:2048',
-            'description' => 'nullable|string|max:1000',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'categorie_id' => 'nullable|exists:categories,id|min:1', 
+            'image' => 'required|image|max:2048',
+            'description' => 'required|string|max:1000',
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'categorie_id' => 'required|exists:categories,id|min:1', 
         ]);
 
         $quantityStore = $request->input('quantity_store');
@@ -193,10 +207,10 @@ class AdminProductController extends Controller
                     'description' => $row[2],
                     'price' => $row[3],
                     'quantity_store' => $quantityStore,
-                    'categorie_id' => isset($row[5]) ? Categorie::where('name', $row[5])->value('id') : 1,
-                    'fournisseur_id' => isset($row[6]) ? Fournisseur::where('name', $row[6])->value('id') : null,
+                    'categorie_id' => Categorie::firstOrCreate(['name' => $row[5]])->id,
+                    'fournisseur_id' => Fournisseur::firstOrCreate(['name' => $row[6]])->id,
                 ]
-            );
+            );            
         }
 
         fclose($handle);

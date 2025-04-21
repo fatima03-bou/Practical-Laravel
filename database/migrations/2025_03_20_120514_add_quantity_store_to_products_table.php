@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up()
+{
+    if (!Schema::hasColumn('products', 'quantity_store')) { // Check if column exists
         Schema::table('products', function (Blueprint $table) {
-            $table->integer('quantity_store')->default(1);
+            $table->integer('quantity_store')->default(1)->after('price');
         });
     }
+}
+
 
     /**
      * Reverse the migrations.

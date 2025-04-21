@@ -26,9 +26,26 @@
       </a>
       <hr />
       <ul class="nav flex-column">
-        <li><a href="{{ route('admin.home.index') }}" class="nav-link text-white">- Admin - Home</a></li>
-        <li><a href="{{ route('admin.product.index') }}" class="nav-link text-white">- Admin - Products</a></li>
         <li>
+          <a href="{{ route('admin.home.index') }}" 
+             class="nav-link text-white {{ request()->routeIs('admin.home.index') ? 'active bg-primary' : '' }}">
+              - Admin - Home
+          </a>
+      </li>
+      <li>
+        <a href="{{ route('admin.products.index') }}"
+            class="nav-link text-white {{ request()->routeIs('admin.products.index') ? 'active bg-primary' : '' }}">
+            - Admin - Products
+        </a>
+        
+      </li>
+      <li>
+          <a href="{{ route('admin.statistics.index') }}" 
+             class="nav-link text-white {{ request()->routeIs('admin.statistics.index') ? 'active bg-primary' : '' }}">
+              - Admin - Statistics
+          </a>
+      </li>
+      
           <a href="{{ route('home.index') }}" class="mt-2 btn bg-primary text-white">Go back to the home page</a>
         </li>
       </ul>

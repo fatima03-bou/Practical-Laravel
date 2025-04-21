@@ -29,7 +29,7 @@
                                 <td>
                                     @if($discount->type == 'global')
                                         Tous les produits
-                                    @elseif($discount->type == 'category')
+                                    @elseif($discount->type == 'categorie')
                                         Catégorie
                                     @else
                                         Produit
@@ -43,8 +43,8 @@
                                 <td>
                                     @if($discount->type == 'global')
                                         Tous les produits
-                                    @elseif($discount->type == 'category')
-                                        {{ $discount->category->name ?? 'N/A' }}
+                                    @elseif($discount->type == 'categorie')
+                                        {{ $discount->categorie->name ?? 'N/A' }}
                                     @else
                                         {{ $discount->product->name ?? 'N/A' }}
                                     @endif

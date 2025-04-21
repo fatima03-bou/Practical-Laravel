@@ -72,7 +72,7 @@
           <td>{{ $product->id }}</td>
           <td>{{ $product->name }}</td>
           <td>{{ $product->price }} $</td>
-          <td>{{ optional($product->categorie)->name ?: 'No category' }}</td>
+          <td>{{ optional($product->categorie)->name ?: 'No categorie' }}</td>
           <td>{{ $product->quantity_store }}</td>
           <td>{{ optional($product->fournisseur)->raison ?: 'No supplier' }}</td>
           <td>

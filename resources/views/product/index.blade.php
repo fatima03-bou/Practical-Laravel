@@ -8,13 +8,13 @@
   <form method="GET" action="{{ route('product.index') }}">
     <div class="row">
       <div class="col-md-6">
-        <label for="category_id" class="form-label">Filter by Category:</label>
-        <select name="category_id" class="form-select" onchange="this.form.submit()">
+        <label for="categorie_id" class="form-label">Filter by category:</label>
+        <select name="categorie_id" class="form-select" onchange="this.form.submit()">
           <option value="">All Categories</option>
-          @foreach ($viewData['categories'] as $category)
-            <option value="{{ $category->id }}" 
-              @if(request('category_id') == $category->id) selected @endif>
-              {{ $category->name }}
+          @foreach ($viewData['categories'] as $categorie)
+            <option value="{{ $categorie->id }}" 
+              @if(request('categorie_id') == $categorie->id) selected @endif>
+              {{ $categorie->name }}
             </option>
           @endforeach
         </select>
@@ -27,7 +27,7 @@
           @foreach ($viewData['fournisseurs'] as $fournisseur)
             <option value="{{ $fournisseur->id }}" 
               @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
-              {{ $fournisseur->raison_social }}
+              {{ $fournisseur->raison}}
             </option>
           @endforeach
         </select>
