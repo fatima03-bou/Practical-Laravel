@@ -6,15 +6,33 @@
 @section('content')
 <div class="mb-3">
   <form method="GET" action="{{ route('product.index') }}">
-    <select name="category_id" class="form-select" onchange="this.form.submit()">
-      <option value="">Select Category</option>
-      @foreach ($viewData['categories'] as $category)
-        <option value="{{ $category->id }}" 
-          @if(request('category_id') == $category->id) selected @endif>
-          {{ $category->name }}
-        </option>
-      @endforeach
-    </select>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="categorie_id" class="form-label">Filter by category:</label>
+        <select name="categorie_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+          @foreach ($viewData['categories'] as $categorie)
+            <option value="{{ $categorie->id }}" 
+              @if(request('categorie_id') == $categorie->id) selected @endif>
+              {{ $categorie->name }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="fournisseur_id" class="form-label">Filter by Supplier:</label>
+        <select name="fournisseur_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Suppliers</option>
+          @foreach ($viewData['fournisseurs'] as $fournisseur)
+            <option value="{{ $fournisseur->id }}" 
+              @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
+              {{ $fournisseur->raison_social }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -27,6 +45,12 @@
           <a href="{{ route('product.show', ['id'=> $product->getId()]) }}" class="btn bg-primary text-white">
             {{ $product->getName() }}
           </a>
+          <p>
+            <span>Quantity in stock: {{ $product->getQuantityStore() }}</span>
+          </p>
+          @if ($product->getQuantityStore() == 0)
+            <p class="badge bg-danger">Out of stock</p>
+          @endif
         </div>
       </div>
     </div>

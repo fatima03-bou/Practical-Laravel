@@ -20,17 +20,17 @@
                             <label for="type">Type de remise</label>
                             <select class="form-control" id="type" name="type" required>
                                 <option value="global">Tous les produits</option>
-                                <option value="category">Par catégorie</option>
+                                <option value="categorie">Par catégorie</option>
                                 <option value="product">Par produit</option>
                             </select>
                         </div>
                         
-                        <div class="form-group mb-3" id="category-select" style="display: none;">
-                            <label for="category_id">Catégorie</label>
-                            <select class="form-control" id="category_id" name="category_id">
+                        <div class="form-group mb-3" id="categorie-select" style="display: none;">
+                            <label for="categorie_id">Catégorie</label>
+                            <select class="form-control" id="categorie_id" name="categorie_id">
                                 <option value="">Sélectionner une catégorie</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @foreach($categories as $categorie)
+                                    <option value="{{ $categorie->id }}">{{ $categorie->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -72,18 +72,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.getElementById('type');
-    const categorySelect = document.getElementById('category-select');
+    const categorieSelect = document.getElementById('categorie-select');
     const productSelect = document.getElementById('product-select');
     
     typeSelect.addEventListener('change', function() {
-        if (this.value === 'category') {
-            categorySelect.style.display = 'block';
+        if (this.value === 'categorie') {
+            categorieSelect.style.display = 'block';
             productSelect.style.display = 'none';
         } else if (this.value === 'product') {
-            categorySelect.style.display = 'none';
+            categorieSelect.style.display = 'none';
             productSelect.style.display = 'block';
         } else {
-            categorySelect.style.display = 'none';
+            categorieSelect.style.display = 'none';
             productSelect.style.display = 'none';
         }
     });

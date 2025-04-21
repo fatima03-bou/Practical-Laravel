@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categorie;
 use App\Models\Product;
 use App\Models\Discount;
+use App\Models\Fournisseur;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -18,8 +19,8 @@ class ProductController extends Controller
         $query = Product::query();
 
         // Filtrage par catégorie
-        if ($request->has('category_id') && $request->category_id != '') {
-            $query->where('category_id', $request->category_id);
+        if ($request->has('categorie') && $request->categorie != '') {
+            $query->where('categorie', $request->categorie);
         }
 
         // Filtrage des produits soldes
@@ -29,8 +30,8 @@ class ProductController extends Controller
                 $q->whereHas('discounts', function ($q) use ($now) {
                     $q->where('start_date', '<=', $now)
                         ->where('end_date', '>=', $now);
-                })->orWhereHas('category.discounts', function ($q) use ($now) {
-                    $q->where('type', 'category')
+                })->orWhereHas('categorie.discounts', function ($q) use ($now) {
+                    $q->where('type', 'categorie')
                         ->where('start_date', '<=', $now)
                         ->where('end_date', '>=', $now);
                 });
@@ -49,6 +50,7 @@ class ProductController extends Controller
 
         $viewData["products"] = $query->paginate(12);
         $viewData["categories"] = Categorie::all();
+        $viewData['fournisseurs'] = Fournisseur::all();
 
         return view('product.index')->with("viewData", $viewData);
     }
