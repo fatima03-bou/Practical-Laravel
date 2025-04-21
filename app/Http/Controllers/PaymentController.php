@@ -20,15 +20,14 @@ class PaymentController extends Controller
     public function checkout(Request $request)
     {
         // Get cart items from cookies using CartService
-        $cartItems = $this->cartService->getCart($request); // Assumed to return a collection or array
+        $cartItems = $this->cartService->getCart($request); // Must return a collection or array
 
-        // Set your Stripe API key
+        // Set Stripe API key
         Stripe::setApiKey(config('services.stripe.secret'));
 
         $lineItems = [];
 
         foreach ($cartItems as $item) {
-            // Retrieve full product details
             $product = Product::findOrFail($item->id);
 
             $lineItems[] = [
@@ -37,13 +36,12 @@ class PaymentController extends Controller
                     'product_data' => [
                         'name' => $product->name,
                     ],
-                    'unit_amount' => ($product->getDiscountedPrice() ?? $product->price) * 100, // Convert to cents
+                    'unit_amount' => intval(($product->getDiscountedPrice() ?? $product->price) * 100), // in cents
                 ],
                 'quantity' => $item->quantity,
             ];
         }
 
-        // Create Stripe checkout session
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
@@ -52,7 +50,6 @@ class PaymentController extends Controller
             'cancel_url' => route('payment.cancel'),
         ]);
 
-        // Redirect user to Stripe's checkout page
         return redirect($session->url);
     }
 
@@ -60,11 +57,7 @@ class PaymentController extends Controller
     {
         $sessionId = $request->get('session_id');
 
-        // TODO: Create the order in your database
-        // TODO: Fetch session data from Stripe to get payment details
-        // TODO: Update stock quantities
-        // TODO: Deduct user balance if necessary
-
+        // TODO: retrieve session from Stripe, store order in DB, update stock
         return view('payment.success');
     }
 
