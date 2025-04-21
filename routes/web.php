@@ -47,7 +47,7 @@ Route::middleware('admin')->group(function () {
 
 Auth::routes();
 
-Route::resource('category', CategorieController::class);
+Route::resource('categorie', CategorieController::class);
 
 Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
 Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscount'])->name('discounts.storeGlobal');
@@ -55,6 +55,6 @@ Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscou
 Route::get('/products/{product}/discount', [AdminProductController::class, 'manageDiscount'])->name('products.manageDiscount');
 Route::post('/products/{product}/discount', [AdminProductController::class, 'storeDiscount'])->name('products.storeDiscount');
 
-Route::get('/categories/{category}/discount', [AdminProductController::class, 'manageCategoryDiscount'])->name('categories.manageDiscount');
-Route::post('/categories/{category}/discount', [AdminProductController::class, 'storeCategoryDiscount'])->name('categories.storeDiscount');
+Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'managecategorieDiscount'])->name('categories.manageDiscount');
+Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storecategorieDiscount'])->name('categories.storeDiscount');
 

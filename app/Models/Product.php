@@ -3,25 +3,20 @@
 namespace App\Models;
 
 use App\Models\Item;
+use App\Models\Categorie;
+use App\Models\Discount;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
-    /**
-     * PRODUCT ATTRIBUTES
-     * $this->attributes['id'] - int - contains the product primary key (id)
-     * $this->attributes['name'] - string - contains the product name
-     * $this->attributes['description'] - string - contains the product description
-     * $this->attributes['image'] - string - contains the product image
-     * $this->attributes['price'] - int - contains the product price
-     * $this->attributes['created_at'] - timestamp - contains the product creation date
-     * $this->attributes['updated_at'] - timestamp - contains the product update date
-     * $this->items - Item[] - contains the associated items
-     */
     use HasFactory;
+
     protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id'];
 
+    // ✅ Validation statique
     public static function validate($request)
     {
         $request->validate([
@@ -29,123 +24,100 @@ class Product extends Model
             "description" => "required",
             "price" => "required|numeric|gt:0",
             'image' => 'image',
-            "categorie_id"=>"reduired|exists:categories,id"
+            "categorie_id" => "required|exists:categories,id"
         ]);
     }
 
+    // ✅ Calcul du total avec les quantités
     public static function sumPricesByQuantities($products, $productsInSession)
     {
         $total = 0;
         foreach ($products as $product) {
-            $total = $total + ($product->getPrice()*$productsInSession[$product->getId()]);
+            $total += $product->getDiscountedPrice() * $productsInSession[$product->getId()];
         }
-
         return $total;
     }
 
-    public function getId()
+    // ✅ Getters/Setters
+    public function getId() { return $this->attributes['id']; }
+    public function setId($id) { $this->attributes['id'] = $id; }
+
+    public function getName() { return $this->attributes['name']; }
+    public function setName($name) { $this->attributes['name'] = $name; }
+
+    public function getDescription() { return $this->attributes['description']; }
+    public function setDescription($description) { $this->attributes['description'] = $description; }
+
+    public function getImage() { return $this->attributes['image']; }
+    public function setImage($image) { $this->attributes['image'] = $image; }
+
+    public function getPrice() { return $this->attributes['price']; }
+    public function setPrice($price) { $this->attributes['price'] = $price; }
+
+    public function getCreatedAt() { return $this->attributes['created_at']; }
+    public function setCreatedAt($createdAt) { $this->attributes['created_at'] = $createdAt; }
+
+    public function getUpdatedAt() { return $this->attributes['updated_at']; }
+    public function setUpdatedAt($updatedAt) { $this->attributes['updated_at'] = $updatedAt; }
+
+    public function getCategorieId() { return $this->attributes["categorie_id"]; }
+    public function setCategorieId($categorieId) { $this->attributes["categorie_id"] = $categorieId; }
+
+    // ✅ Relations
+    public function items(): HasMany { return $this->hasMany(Item::class); }
+    public function getItems() { return $this->items; }
+    public function setItems($items) { $this->items = $items; }
+
+    public function categorie(): BelongsTo { return $this->belongsTo(Categorie::class, 'categorie_id'); }
+
+    public function discounts(): HasMany { return $this->hasMany(Discount::class); }
+
+    // ✅ Discounts logic
+    public function getActiveDiscount()
     {
-        return $this->attributes['id'];
+        $now = now();
+
+        // Produit spécifique
+        $productDiscount = Discount::where('product_id', $this->id)
+            ->where('type', 'product')
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderByDesc('rate')
+            ->first();
+
+        if ($productDiscount) return $productDiscount;
+
+        // Catégorie
+        $categoryDiscount = Discount::where('category_id', $this->categorie_id)
+            ->where('type', 'category')
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderByDesc('rate')
+            ->first();
+
+        if ($categoryDiscount) return $categoryDiscount;
+
+        // Globale
+        return Discount::whereNull('product_id')
+            ->whereNull('category_id')
+            ->where('type', 'global')
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderByDesc('rate')
+            ->first();
     }
 
-    public function setId($id)
+    public function hasDiscount(): bool
     {
-        $this->attributes['id'] = $id;
-    }
-
-    public function getName()
-    {
-        return $this->attributes['name'];
-    }
-
-    public function setName($name)
-    {
-        $this->attributes['name'] = $name;
-    }
-
-    public function getDescription()
-    {
-        return $this->attributes['description'];
-    }
-
-    public function setDescription($description)
-    {
-        $this->attributes['description'] = $description;
-    }
-
-    public function getImage()
-    {
-        return $this->attributes['image'];
-    }
-
-    public function setImage($image)
-    {
-        $this->attributes['image'] = $image;
-    }
-
-    public function getPrice()
-    {
-        return $this->attributes['price'];
-    }
-
-    public function setPrice($price)
-    {
-        $this->attributes['price'] = $price;
-    }
-
-    public function getCreatedAt()
-    {
-        return $this->attributes['created_at'];
-    }
-
-    public function setCreatedAt($createdAt)
-    {
-        $this->attributes['created_at'] = $createdAt;
-    }
-
-    public function getUpdatedAt()
-    {
-        return $this->attributes['updated_at'];
-    }
-
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->attributes['updated_at'] = $updatedAt;
-    }
-
-    public function items()
-    {
-        return $this->hasMany(Item::class);
-    }
-    
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    public function setItems($items)
-    {
-        $this->items = $items;
-    }
-
-    public function getCategoryieId(){
-        return $this->attributes["categorie_id"];
-    }
-    public function SetCategorieId($categorieId){
-        return $this->attributes["categorie_id"]=$categorieId;
-    }
-    public function categorie()
-    {
-        return $this->belongsTo(Categorie::class, 'categorie_id');
-    }
-    public function hasDiscount()
-    {
-    return $this->discount_price && $this->discount_price < $this->price;
+        return $this->getActiveDiscount() !== null;
     }
 
     public function getDiscountedPrice()
     {
-    return $this->discount_price ?? $this->price;
-    }
+        $discount = $this->getActiveDiscount();
 
+        if (!$discount) return $this->price;
+
+        return $this->price * (1 - ($discount->rate / 100));
+    }
 }
