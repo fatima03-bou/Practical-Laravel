@@ -17,30 +17,6 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["categories"] = Categorie::all();
         $viewData["title"] = "Page Admin - Produits - Boutique en ligne";
-<<<<<<< HEAD
-        $viewData["fournisseurs"] = Fournisseur::all(); 
-
-        $productsQuery = Product::query();
-
-        // Filtrage par fournisseur
-        if ($request->filled('fournisseur_id')) {
-            $productsQuery->where('fournisseur_id', $request->input('fournisseur_id'));
-        }
-
-        // Filtrage par catégorie
-        if ($request->filled('category_id')) {
-            $productsQuery->where('categorie_id', $request->input('category_id'));
-        }
-
-        // Filtrage par produits en solde
-        if ($request->has('on_sale')) {
-            $productsQuery->whereNotNull('discount_price')
-                        ->whereColumn('discount_price', '<', 'price');
-        }
-
-        $viewData["products"] = $productsQuery->get();
-
-=======
 
         $fournisseurId = $request->input('fournisseur_id');
 
@@ -51,7 +27,6 @@ class AdminProductController extends Controller
         }
 
         $viewData["fournisseurs"] = Fournisseur::all();
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         return view('admin.product.index')->with("viewData", $viewData);
     }
 
@@ -64,11 +39,11 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
 <<<<<<< HEAD
             'price' => 'required|numeric|min:1',
-            'quantity_store' => 'required|integer|min:1', 
+            'quantity_store' => 'required|integer|min:1',
             'image' => 'required|image|max:2048',
             'description' => 'required|string|max:1000',
             'fournisseur_id' => 'required|exists:fournisseurs,id',
-            'categorie_id' => 'required|exists:categories,id|min:1', 
+            'categorie_id' => 'required|exists:categories,id|min:1',
         ]);
 
         $quantityStore = $request->input('quantity_store');
@@ -76,7 +51,7 @@ class AdminProductController extends Controller
             return back()->with('error', 'La quantité en stock doit être supérieure ou égale à 1.');
         }
 
-        $categorieId = $request->input('categorie_id', 1); 
+        $categorieId = $request->input('categorie_id', 1);
 =======
             'price' => 'required|numeric',
             'quantity_store' => 'required|integer|min:1',
@@ -86,18 +61,16 @@ class AdminProductController extends Controller
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
         $categorieId = $request->input('categorie_id', 1);
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         $newProduct = new Product();
         $newProduct->name = $request->input('name');
         $newProduct->description = $request->input('description');
         $newProduct->price = $request->input('price');
 <<<<<<< HEAD
         $newProduct->quantity_store = $quantityStore;
-        $newProduct->categorie_id = $categorieId; 
+        $newProduct->categorie_id = $categorieId;
 =======
         $newProduct->quantity_store = $request->input('quantity_store');
         $newProduct->categorie_id = $categorieId;
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
         $newProduct->image = "game.png";
         $newProduct->save();
@@ -131,11 +104,10 @@ class AdminProductController extends Controller
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
 <<<<<<< HEAD
         $viewData["fournisseurs"] = Fournisseur::all();
-        $viewData["categories"] = Categorie::all(); 
+        $viewData["categories"] = Categorie::all();
 =======
         $viewData["fournisseurs"]=Fournisseur::all();
         $viewData["categories"] = Categorie::all();
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         $viewData["product"] = Product::findOrFail($id);
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -151,28 +123,17 @@ class AdminProductController extends Controller
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
-<<<<<<< HEAD
-
-        $quantityStore = $request->input('quantity_store');
-        if ($quantityStore < 1) {
-            return back()->with('error', 'La quantité en stock doit être supérieure ou égale à 1.');
-        }
-
-        $categorieId = $request->input('categorie_id', 1); 
-=======
         $categorieId = $request->input('categorie_id', 1);
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
 <<<<<<< HEAD
         $product->quantity_store = $quantityStore;
-        $product->categorie_id = $categorieId; 
+        $product->categorie_id = $categorieId;
 =======
         $product->quantity_store = $request->input('quantity_store');
         $product->categorie_id = $categorieId;
->>>>>>> 2ae6c37 (Super admin can create new admin users)
         $product->fournisseur_id = $request->input('fournisseur_id');
 
         if ($request->hasFile('image')) {
@@ -226,7 +187,7 @@ class AdminProductController extends Controller
         ]);
 
         $file = $request->file('csv_file');
-        
+
         if (!$file) {
             return back()->with('error', 'Aucun fichier sélectionné.');
         }
@@ -240,11 +201,11 @@ class AdminProductController extends Controller
         fgetcsv($handle);
         while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
             if (count($row) < 7) {
-                continue; 
+                continue;
             }
             $quantityStore = isset($row[4]) && $row[4] >= 1 ? $row[4] : 1;
             Product::updateOrCreate(
-                ['id' => $row[0]], 
+                ['id' => $row[0]],
                 [
                     'name' => $row[1],
                     'description' => $row[2],
@@ -253,7 +214,7 @@ class AdminProductController extends Controller
                     'categorie_id' => Categorie::firstOrCreate(['name' => $row[5]])->id,
                     'fournisseur_id' => Fournisseur::firstOrCreate(['name' => $row[6]])->id,
                 ]
-            );            
+            );
         }
 
         fclose($handle);

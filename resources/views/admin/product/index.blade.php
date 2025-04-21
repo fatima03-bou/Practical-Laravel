@@ -74,7 +74,7 @@
           </div>
         </div>
       </div>
-      
+
 
       <div class="mb-3 row">
         <label class="col-lg-2 col-form-label">Fournisseur:</label>
@@ -176,7 +176,7 @@
           @endforeach
         </select>
       </div>
-      
+
       <div class="form-check mb-3">
         <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale" value="1" {{ request('on_sale') ? 'checked' : '' }}>
         <label class="form-check-label" for="on_sale">Produits en solde uniquement</label>
