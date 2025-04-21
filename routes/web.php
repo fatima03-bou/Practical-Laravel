@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\PaymentController;
 
 
 /*
@@ -78,3 +79,6 @@ Route::get('admin/statistics/export-pdf', [App\Http\Controllers\Admin\Statistics
 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
 
+Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
