@@ -1,4 +1,21 @@
 @extends('layouts.admin')
+<<<<<<< HEAD
+=======
+@section('title', $viewData['title'])
+@section('content')
+    <div class="card mb-4">
+        <div class="card-header">
+            Create Products
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <ul class="alert alert-danger list-unstyled">
+                    @foreach ($errors->all() as $error)
+                        <li>- {{ $error }}</li>
+                    @endforeach
+                </ul>
+            @endif
+>>>>>>> 2ae6c37 (Super admin can create new admin users)
 
 @section('title', $viewData['title'])
 
@@ -130,12 +147,18 @@
   <div class="card-body">
     <form action="{{ route('admin.products.index') }}" method="GET">
       <div class="form-group mb-3">
-        <label for="category_id">Catégorie</label>
-        <select name="category_id" id="category_id" class="form-control">
+        <label for="categorie_id">Catégorie</label>
+        <select name="categorie_id" id="categorie_id" class="form-control">
           <option value="">Toutes les catégories</option>
+<<<<<<< HEAD
           @foreach($viewData["categories"] as $category)
             <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
               {{ $category->name }}
+=======
+          @foreach($viewData['categories'] as $categorie)
+          <option value="{{ $categorie->id }}" {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
+              {{ $categorie->name }}
+>>>>>>> 2ae6c37 (Super admin can create new admin users)
             </option>
           @endforeach
         </select>
