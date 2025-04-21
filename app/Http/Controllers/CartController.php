@@ -8,9 +8,17 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Item;
 use App\Models\User;
+use App\Services\CartService;
 
 class CartController extends Controller
 {
+    private $cartService;
+
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     public function index(Request $request)
     {
         // Get cart from cookie (default to empty array if not set)
@@ -35,26 +43,18 @@ class CartController extends Controller
         $quantity = $request->quantity ?? 1;
 
         // Vérifier la disponibilité du stock
+        if ($product->quantity_store <= 0) {
+            return back()->with('error', 'Produit en rupture de stock.');
+        }
+
         if ($product->quantity_store < $quantity) {
             return back()->with('error', 'Quantité insuffisante en stock.');
         }
 
-        // Obtenir le prix avec remise si applicable
-        $price = $product->getDiscountedPrice();
+        // Using CartService to handle the addition of the item
+        $cookie = $this->cartService->add($request, $product->id, $quantity);
 
-        // Ajouter au panier (cookie ou session selon votre implémentation)
-        $cart = json_decode($request->cookie('cart'), true) ?? [];  // Retrieve the cart from the cookie
-        
-        // Si le produit existe déjà dans le panier, on met à jour la quantité
-        if (isset($cart[$product->id])) {
-            $cart[$product->id] += $quantity;  // Add to the existing quantity
-        } else {
-            $cart[$product->id] = $quantity;  // Otherwise, add the product to the cart
-        }
-
-        // Save the updated cart back to the cookie
-        return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30))  // Save the cart in a cookie for 30 days
-            ->with('success', 'Produit ajouté au panier.');
+        return back()->with('success', 'Produit ajouté au panier.')->cookie($cookie);
     }
 
     public function delete(Request $request)
