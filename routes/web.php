@@ -12,55 +12,51 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\StatisticsController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-Route::get('/', 'App\Http\Controllers\HomeController@index')->name("home.index");
-Route::get('/about', 'App\Http\Controllers\HomeController@about')->name("home.about");
-Route::get('/products', 'App\Http\Controllers\ProductController@index')->name("product.index");
-Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->name("product.show");
+Route::get('/', [HomeController::class, 'index'])->name("home.index");
+Route::get('/about', [HomeController::class, 'about'])->name("home.about");
+Route::get('/products', [ProductController::class, 'index'])->name("product.index");
+Route::get('/products/{id}', [ProductController::class, 'show'])->name("product.show");
 
-Route::get('/cart', 'App\Http\Controllers\CartController@index')->name("cart.index");
-Route::get('/cart/delete', 'App\Http\Controllers\CartController@delete')->name("cart.delete");
-Route::post('/cart/add/{id}', 'App\Http\Controllers\CartController@add')->name("cart.add");
+Route::get('/cart', [CartController::class, 'index'])->name("cart.index");
+Route::get('/cart/delete', [CartController::class, 'delete'])->name("cart.delete");
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name("cart.add");
 
 Route::middleware('auth')->group(function () {
-    Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
-    Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
+    Route::get('/cart/purchase', [CartController::class, 'purchase'])->name("cart.purchase");
+    Route::get('/my-account/orders', [MyAccountController::class, 'orders'])->name("myaccount.orders");
 });
 
-Route::middleware('admin')->group(function () {
-    Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
-    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.product.index");
-    Route::post('/admin/products/store', 'App\Http\Controllers\Admin\AdminProductController@store')->name("admin.product.store");
-    Route::delete('/admin/products/{id}/delete', 'App\Http\Controllers\Admin\AdminProductController@delete')->name("admin.product.delete");
-    Route::get('/admin/products/{id}/edit', 'App\Http\Controllers\Admin\AdminProductController@edit')->name("admin.product.edit");
-    Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
-});
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [AdminHomeController::class, 'index'])->name("home.index");
 
-Route::prefix('admin')->group(function () {
-    Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products.index');
-    Route::get('/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
-    Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
-    Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('admin.statistics.exportPdf');
-    Route::get('/product', [AdminProductController::class, 'index'])->name('products.index');
-});
+    // Products
+    Route::get('/products', [AdminProductController::class, 'index'])->name('product.index');
+    Route::post('/products/store', [AdminProductController::class, 'store'])->name("product.store");
+    Route::delete('/products/{id}/delete', [AdminProductController::class, 'delete'])->name("product.delete");
+    Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name("product.edit");
+    Route::put('/products/{id}/update', [AdminProductController::class, 'update'])->name("product.update");
 
+    // Statistics
+    Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+    Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('statistics.pdf');
+    Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('statistics.exportPdf');
+
+    // Discounts
+    Route::resource('discounts', DiscountController::class);
+});
 
 Auth::routes();
 
 Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
+// Gestion des remises (hors admin prefix)
 Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
 Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscount'])->name('discounts.storeGlobal');
 
@@ -69,9 +65,3 @@ Route::post('/products/{product}/discount', [AdminProductController::class, 'sto
 
 Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
 Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
-
-Route::get('/admin/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
-Route::get('/admin/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
-Route::get('admin/statistics/export-pdf', [App\Http\Controllers\Admin\StatisticsController::class, 'exportPdf'])->name('admin.statistics.exportPdf');
-
-

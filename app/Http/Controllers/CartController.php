@@ -32,15 +32,34 @@ class CartController extends Controller
 
     public function add(Product $product, Request $request)
     {
-        $cart = json_decode($request->cookie('cart'), true) ?? [];
+        $quantity = $request->quantity ?? 1;
 
-        $cart[$product->id] = $request->input('quantity');
+        // Vérifier la disponibilité du stock
+        if ($product->quantity_store < $quantity) {
+            return back()->with('error', 'Quantité insuffisante en stock.');
+        }
+
+        // Obtenir le prix avec remise si applicable
+        $price = $product->getDiscountedPrice();
+
+        // Ajouter au panier (cookie ou session selon votre implémentation)
+        $cart = json_decode($request->cookie('cart'), true) ?? [];  // Retrieve the cart from the cookie
         
-        return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30));
+        // Si le produit existe déjà dans le panier, on met à jour la quantité
+        if (isset($cart[$product->id])) {
+            $cart[$product->id] += $quantity;  // Add to the existing quantity
+        } else {
+            $cart[$product->id] = $quantity;  // Otherwise, add the product to the cart
+        }
+
+        // Save the updated cart back to the cookie
+        return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30))  // Save the cart in a cookie for 30 days
+            ->with('success', 'Produit ajouté au panier.');
     }
 
     public function delete(Request $request)
     {
+        // Clear the cart by emptying the cookie
         return back()->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
             ->with('success', 'Cart cleared successfully.');
     }
@@ -60,6 +79,7 @@ class CartController extends Controller
             return back()->with('error', 'User not found.');
         }
 
+        // Create a new order
         $order = new Order();
         $order->user_id = $user->id;
         $order->total = 0;
@@ -109,5 +129,16 @@ class CartController extends Controller
         // Clear cart by emptying the cookie
         return redirect()->route('cart.index')->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
             ->with('success', 'Purchase completed successfully.');
+    }
+
+    // Helper Methods for Cart
+    private function getCart()
+    {
+        return json_decode(request()->cookie('cart'), true) ?? [];
+    }
+
+    private function saveCart($cart)
+    {
+        return response()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30));  // Save cart for 30 days
     }
 }
