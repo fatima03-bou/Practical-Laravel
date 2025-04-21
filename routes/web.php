@@ -48,7 +48,7 @@ Route::middleware('admin')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/product', [AdminProductController::class, 'index'])->name('products.index');
 });
 
 Auth::routes();
