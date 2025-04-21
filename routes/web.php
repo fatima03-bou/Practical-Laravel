@@ -48,14 +48,11 @@ Route::middleware('admin')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-<<<<<<< HEAD
     Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products.index');
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
     Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('admin.statistics.pdf');
     Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('admin.statistics.exportPdf');
-=======
     Route::get('/product', [AdminProductController::class, 'index'])->name('products.index');
->>>>>>> dev
 });
 
 
