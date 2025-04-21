@@ -1,13 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use App\Http\Controllers\CartController;
-=======
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\FournisseurController;
->>>>>>> 2ae6c37 (Super admin can create new admin users)
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategorieController;
@@ -17,7 +12,6 @@ use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
-=======
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminUserController;
 
@@ -53,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
 });
 
-<<<<<<< HEAD
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
     Route::get('/products/export', [AdminProductController::class, 'exportCSV'])->name('product.export');
@@ -70,7 +64,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
-=======
 Route::middleware('admin')->group(function () {
     Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
     Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
@@ -97,7 +90,6 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
 });
 
 
->>>>>>> 2ae6c37 (Super admin can create new admin users)
 Auth::routes();
 
 Route::resource('categorie', CategorieController::class);
@@ -112,9 +104,8 @@ Route::post('/products/{product}/discount', [AdminProductController::class, 'sto
 
 Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
 Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
-<<<<<<< HEAD
+
 
 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
-=======
->>>>>>> 2ae6c37 (Super admin can create new admin users)
+
