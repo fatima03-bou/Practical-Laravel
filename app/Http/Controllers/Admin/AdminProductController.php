@@ -17,7 +17,7 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["categories"] = Categorie::all();
         $viewData["title"] = "Page Admin - Produits - Boutique en ligne";
-        
+
         $fournisseurId = $request->input('fournisseur_id');
 
         if ($fournisseurId) {
@@ -25,8 +25,8 @@ class AdminProductController extends Controller
         } else {
             $viewData["products"] = Product::all();
         }
-        
-        $viewData["fournisseurs"] = Fournisseur::all(); 
+
+        $viewData["fournisseurs"] = Fournisseur::all();
         return view('admin.product.index')->with("viewData", $viewData);
     }
 
@@ -37,21 +37,21 @@ class AdminProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'quantity_store' => 'required|integer|min:1', 
+            'quantity_store' => 'required|integer|min:1',
             'image' => 'nullable|image|max:2048',
             'description' => 'nullable|string|max:1000',
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'categorie_id' => 'nullable|exists:categories,id|min:1', 
+            'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
-        $categorieId = $request->input('categorie_id', 1); 
+        $categorieId = $request->input('categorie_id', 1);
         $newProduct = new Product();
         $newProduct->name = $request->input('name');
         $newProduct->description = $request->input('description');
         $newProduct->price = $request->input('price');
         $newProduct->quantity_store = $request->input('quantity_store');
-        $newProduct->categorie_id = $categorieId; 
+        $newProduct->categorie_id = $categorieId;
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
-        $newProduct->image = "game.png"; 
+        $newProduct->image = "game.png";
         $newProduct->save();
 
         if ($request->hasFile('image')) {
@@ -84,7 +84,7 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
         $viewData["fournisseurs"]=Fournisseur::all();
-        $viewData["categories"] = Categorie::all(); 
+        $viewData["categories"] = Categorie::all();
         $viewData["product"] = Product::findOrFail($id);
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -94,19 +94,19 @@ class AdminProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'quantity_store' => 'required|integer|min:1', 
+            'quantity_store' => 'required|integer|min:1',
             'image' => 'nullable|image|max:2048',
             'description' => 'nullable|string|max:1000',
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
-        $categorieId = $request->input('categorie_id', 1); 
+        $categorieId = $request->input('categorie_id', 1);
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->quantity_store = $request->input('quantity_store');
-        $product->categorie_id = $categorieId; 
+        $product->categorie_id = $categorieId;
         $product->fournisseur_id = $request->input('fournisseur_id');
 
         if ($request->hasFile('image')) {

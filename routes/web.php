@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HomeController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 
 /*
@@ -23,10 +26,13 @@ use App\Http\Controllers\Admin\DiscountController;
 |
 */
 
+
 Route::get('/', 'App\Http\Controllers\HomeController@index')->name("home.index");
 Route::get('/about', 'App\Http\Controllers\HomeController@about')->name("home.about");
 Route::get('/products', 'App\Http\Controllers\ProductController@index')->name("product.index");
 Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->name("product.show");
+
+
 
 Route::get('/cart', 'App\Http\Controllers\CartController@index')->name("cart.index");
 Route::get('/cart/delete', 'App\Http\Controllers\CartController@delete')->name("cart.delete");
@@ -39,16 +45,32 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('admin')->group(function () {
     Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
-    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.product.index");
+    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
     Route::post('/admin/products/store', 'App\Http\Controllers\Admin\AdminProductController@store')->name("admin.product.store");
     Route::delete('/admin/products/{id}/delete', 'App\Http\Controllers\Admin\AdminProductController@delete')->name("admin.product.delete");
     Route::get('/admin/products/{id}/edit', 'App\Http\Controllers\Admin\AdminProductController@edit')->name("admin.product.edit");
     Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
 });
 
+
+Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('users', AdminUserController::class);
+});
+
+Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::get('admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
+    Route::post('admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::get('admin/users{id}', [AdminUserController::class, 'show'])->name('admin.users.show');
+    Route::get('admin/users/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('admin/users/{id}', [AdminUserController::class, 'destory'])->name('admin.users.destroy');
+});
+
+
 Auth::routes();
 
-Route::resource('category', CategorieController::class);
+Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
 Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
@@ -57,6 +79,5 @@ Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscou
 Route::get('/products/{product}/discount', [AdminProductController::class, 'manageDiscount'])->name('products.manageDiscount');
 Route::post('/products/{product}/discount', [AdminProductController::class, 'storeDiscount'])->name('products.storeDiscount');
 
-Route::get('/categories/{category}/discount', [AdminProductController::class, 'manageCategoryDiscount'])->name('categories.manageDiscount');
-Route::post('/categories/{category}/discount', [AdminProductController::class, 'storeCategoryDiscount'])->name('categories.storeDiscount');
-
+Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
+Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');

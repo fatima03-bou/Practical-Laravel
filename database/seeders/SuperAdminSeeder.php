@@ -19,9 +19,11 @@ class SuperAdminSeeder extends Seeder
         User::create([
             'name'=> "Super Admin",
             'email'=> "superadmin@gmail.com",
-            'password'=>Hash::make('12345'),
+            'password'=> bcrypt('superadmin123'),
             'role'=>'super_admin',
             'balance'=>0
         ]);
+
+
     }
 }
