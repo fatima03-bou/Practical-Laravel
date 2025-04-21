@@ -79,46 +79,51 @@ class Product extends Model
         $now = now();
 
         // Produit spécifique
-        $productDiscount = Discount::where('product_id', $this->id)
-            ->where('type', 'product')
-            ->where('start_date', '<=', $now)
-            ->where('end_date', '>=', $now)
-            ->orderByDesc('rate')
-            ->first();
+        $productDiscount = $this->discounts()
+        ->where('type', 'product')
+        ->where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->orderByDesc('rate')
+        ->first();
 
         if ($productDiscount) return $productDiscount;
 
         // Catégorie
         $categoryDiscount = Discount::where('category_id', $this->categorie_id)
-            ->where('type', 'category')
-            ->where('start_date', '<=', $now)
-            ->where('end_date', '>=', $now)
-            ->orderByDesc('rate')
-            ->first();
+        ->where('type', 'category')
+        ->where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->orderByDesc('rate')
+        ->first();
 
         if ($categoryDiscount) return $categoryDiscount;
 
         // Globale
         return Discount::whereNull('product_id')
-            ->whereNull('category_id')
-            ->where('type', 'global')
-            ->where('start_date', '<=', $now)
-            ->where('end_date', '>=', $now)
-            ->orderByDesc('rate')
-            ->first();
+        ->whereNull('category_id')
+        ->where('type', 'global')
+        ->where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->orderByDesc('rate')
+        ->first();
     }
 
     public function hasDiscount(): bool
     {
-        return $this->getActiveDiscount() !== null;
+        return $this->getActiveDiscount() !== null;   //check if there's a discount
     }
 
     public function getDiscountedPrice()
     {
-        $discount = $this->getActiveDiscount();
+        $discount = $this->getActiveDiscount();  //calcule de prix apres la remise
 
         if (!$discount) return $this->price;
 
         return $this->price * (1 - ($discount->rate / 100));
     }
+
+    public function getQuantityStore()
+   {
+    return $this->attributes['quantity_store'];
+   }
 }
