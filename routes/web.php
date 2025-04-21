@@ -13,8 +13,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\FournisseurController;
-use App\Http\Controllers\Admin\DiscountController;
-<<<<<<< HEAD
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
@@ -22,7 +20,6 @@ use App\Http\Controllers\Admin\AdminProductController;
 =======
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminUserController;
->>>>>>> 2ae6c37 (Super admin can create new admin users)
 
 
 /*
@@ -64,8 +61,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home.index');
     Route::post('/products', [AdminProductController::class, 'store'])->name('product.store');
     Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('product.edit');
-    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update'); 
-    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete'); 
+    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update');
+    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete');
 
 });
 
