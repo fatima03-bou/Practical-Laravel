@@ -36,6 +36,12 @@ class DiscountController extends Controller
         ]);
 
         Discount::create($validated);
+        if ($validated['type'] === 'product' && isset($validated['product_id'])) {
+            $product = Product::find($validated['product_id']);
+            $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
+            $product->update(['discounted_price' => $discountedPrice]);
+        }
+        
 
         return redirect()->route('admin.discounts.index')
             ->with('success', 'Remise créée avec succès');
@@ -61,6 +67,12 @@ class DiscountController extends Controller
         ]);
 
         $discount->update($validated);
+        if ($validated['type'] === 'product' && isset($validated['product_id'])) {
+            $product = Product::find($validated['product_id']);
+            $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
+            $product->update(['discounted_price' => $discountedPrice]);
+        }
+        
 
         return redirect()->route('admin.discounts.index')
             ->with('success', 'Remise mise à jour avec succès');
