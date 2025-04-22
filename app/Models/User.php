@@ -38,6 +38,7 @@ class User extends Authenticatable
         'email',
         'password',
         'balance',
+        'role'
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * The attributes that should be cast.
      *
@@ -58,6 +60,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    const ROLE_CLIENT = 'client';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_SUPER_ADMIN = 'super_admin';
+
+    public function isSuperAdmin()
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
 
     public function getId()
     {
@@ -143,7 +153,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-    
+
     public function getOrders()
     {
         return $this->orders;
