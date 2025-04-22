@@ -98,8 +98,15 @@
           <tr>
             <td>{{ $product->id }}</td>
             <td>{{ $product->name }}</td>
-            <td>{{ number_format($product->price, 2) }} €</td>
-            <td>{{ $product->quantity_store }}</td>
+            <td>
+              @if($product->discounted_price)
+                <span class="text-danger fw-bold">{{ number_format($product->discounted_price, 2) }} €</span><br>
+                <small class="text-muted text-decoration-line-through">{{ number_format($product->price, 2) }} €</small>
+              @else
+                {{ number_format($product->price, 2) }} €
+              @endif
+            </td>
+                        <td>{{ $product->quantity_store }}</td>
             <td>{{ optional($product->categorie)->name }}</td>
             <td>{{ optional($product->fournisseur)->name }}</td>
             <td>
