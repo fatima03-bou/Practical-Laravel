@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ProductExport;
 use App\Models\Product;
-use App\Http\Controllers\Controller;
 use App\Models\Categorie;
-
 use App\Models\Fournisseur;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminProductController extends Controller
 {
@@ -17,30 +19,19 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["categories"] = Categorie::all();
         $viewData["title"] = "Page Admin - Produits - Boutique en ligne";
-        $viewData["fournisseurs"] = Fournisseur::all(); 
 
-        $productsQuery = Product::query();
+        $fournisseurId = $request->input('fournisseur_id');
 
-        // Filtrage par fournisseur
-        if ($request->filled('fournisseur_id')) {
-            $productsQuery->where('fournisseur_id', $request->input('fournisseur_id'));
+        if ($fournisseurId) {
+            $viewData["products"] = Product::where('fournisseur_id', $fournisseurId)->get();
+        } else {
+            $viewData["products"] = Product::all();
         }
 
-        // Filtrage par catégorie
-        if ($request->filled('category_id')) {
-            $productsQuery->where('categorie_id', $request->input('category_id'));
-        }
-
-        // Filtrage par produits en solde
-        if ($request->has('on_sale')) {
-            $productsQuery->whereNotNull('discount_price')
-                        ->whereColumn('discount_price', '<', 'price');
-        }
-
-        $viewData["products"] = $productsQuery->get();
-
+        $viewData["fournisseurs"] = Fournisseur::all();
         return view('admin.product.index')->with("viewData", $viewData);
     }
+
 
 
 
@@ -49,25 +40,25 @@ class AdminProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:1',
-            'quantity_store' => 'required|integer|min:1', 
+            'quantity_store' => 'required|integer|min:1',
             'image' => 'required|image|max:2048',
             'description' => 'required|string|max:1000',
             'fournisseur_id' => 'required|exists:fournisseurs,id',
-            'categorie_id' => 'required|exists:categories,id|min:1', 
+            'categorie_id' => 'required|exists:categories,id|min:1',
         ]);
-        $categorieId = $request->input('categorie_id', 1); 
+
         $newProduct = new Product();
         $newProduct->name = $request->input('name');
         $newProduct->description = $request->input('description');
         $newProduct->price = $request->input('price');
         $newProduct->quantity_store = $request->input('quantity_store');
-        $newProduct->categorie_id = $categorieId; 
+        $newProduct->categorie_id = $request->input('categorie_id');
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
-        $newProduct->image = "game.png"; 
         $newProduct->save();
 
+        // Sauvegarde de l'image réelle
         if ($request->hasFile('image')) {
-            $imageName = $newProduct->id . "." . $request->file('image')->extension();
+            $imageName = $newProduct->id . '.' . $request->file('image')->extension();
             Storage::disk('public')->put(
                 $imageName,
                 file_get_contents($request->file('image')->getRealPath())
@@ -81,10 +72,10 @@ class AdminProductController extends Controller
 
 
 
-    public function delete($id)
+    public function destroy($id)
     {
-        $product=Product::findOrFail($id);
-        if($product->image && Storage::disk("public")->exists($product->image)){
+        $product = Product::findOrFail($id);
+        if ($product->image && Storage::disk("public")->exists($product->image)) {
             Storage::disk("public")->delete($product->image);
         }
         Product::destroy($id);
@@ -95,8 +86,10 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
+        $viewData["fournisseurs"] = Fournisseur::all();
+        $viewData["categories"] = Categorie::all();
         $viewData["fournisseurs"]=Fournisseur::all();
-        $viewData["categories"] = Categorie::all(); 
+        $viewData["categories"] = Categorie::all();
         $viewData["product"] = Product::findOrFail($id);
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -106,19 +99,22 @@ class AdminProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'quantity_store' => 'required|integer|min:1', 
+            'quantity_store' => 'required|integer|min:1',
             'image' => 'nullable|image|max:2048',
             'description' => 'nullable|string|max:1000',
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
-        $categorieId = $request->input('categorie_id', 1); 
+        $categorieId = $request->input('categorie_id', 1);
+        $quantityStore = $request->input('quantity_store', 1);
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
+        $product->quantity_store = $quantityStore;
+        $product->categorie_id = $categorieId;
         $product->quantity_store = $request->input('quantity_store');
-        $product->categorie_id = $categorieId; 
+        $product->categorie_id = $categorieId;
         $product->fournisseur_id = $request->input('fournisseur_id');
 
         if ($request->hasFile('image')) {
@@ -137,6 +133,8 @@ class AdminProductController extends Controller
 
         return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
     }
-
-
+    public function exportCSV()
+    {
+        return Excel::download(new ProductExport, 'products.csv');
+    }
 }

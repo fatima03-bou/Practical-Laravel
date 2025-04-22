@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -10,7 +11,13 @@ class HomeController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Home Page - Online Store";
-        return view('home.index')->with("viewData", $viewData);
+        $showImages = false; // Set this based on your condition
+        
+        // Fetch products from the database
+        $products = Product::all(); // or use any query you need, e.g., Product::paginate(10);
+
+        // Pass products to the view
+        return view('home.index', compact('viewData', 'showImages', 'products'));
     }
 
     public function about()

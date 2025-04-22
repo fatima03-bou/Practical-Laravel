@@ -8,12 +8,12 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Item;
 use App\Models\User;
-use App\Services\CartService; 
+use App\Services\CartService;
 
 class CartController extends Controller
 {
-    private $cartService; 
-    
+    private $cartService;
+
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
@@ -39,17 +39,19 @@ class CartController extends Controller
     {
         $quantity = $request->quantity ?? 1;
 
+        // Vérifier la disponibilité du stock
         if ($product->quantity_store <= 0) {
-            return back()->with('error', 'Produit en rupture de stock');
+            return back()->with('error', 'Produit en rupture de stock.');
         }
 
         if ($product->quantity_store < $quantity) {
             return back()->with('error', 'Quantité insuffisante en stock.');
         }
 
+        // Using CartService to handle the addition of the item
         $cookie = $this->cartService->add($request, $product->id, $quantity);
 
-        return back()->with('success', 'Produit ajouté au panier')->cookie($cookie);
+        return back()->with('success', 'Produit ajouté au panier.')->cookie($cookie);
     }
 
     public function delete(Request $request)

@@ -79,7 +79,7 @@
           <select name="fournisseur_id" class="form-control">
             <option value="">Select Supplier</option>
             @foreach ($viewData['fournisseurs'] as $fournisseur)
-              <option value="{{ $fournisseur->id }}" 
+              <option value="{{ $fournisseur->id }}"
                 {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
                 {{ $fournisseur->raison}}
               </option>
@@ -92,10 +92,10 @@
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="categorie_id" class="form-control">
-            @foreach ($viewData['categories'] as $categorie)
-              <option value="{{ $categorie->id }}" 
-                {{ $viewData['product']->categorie_id == $categorie->id ? 'selected' : '' }}>
-                {{ $categorie->name }}
+            @foreach ($viewData['categories'] as $category)
+              <option value="{{ $category->id }}"
+                {{ $viewData['product']->categorie_id == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
               </option>
             @endforeach
           </select>
