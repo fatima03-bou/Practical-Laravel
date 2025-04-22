@@ -1,16 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\Admin\AdminHomeController;
-use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\AdminUserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +22,16 @@ use App\Http\Controllers\Admin\StatisticsController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [HomeController::class, 'index'])->name("home.index");
-Route::get('/about', [HomeController::class, 'about'])->name("home.about");
-Route::get('/products', [ProductController::class, 'index'])->name("product.index");
-Route::get('/products/{id}', [ProductController::class, 'show'])->name("product.show");
+
+
+Route::get('/', 'App\Http\Controllers\HomeController@index')->name("home.index");
+Route::get('/about', 'App\Http\Controllers\HomeController@about')->name("home.about");
+Route::get('/products', 'App\Http\Controllers\ProductController@index')->name("product.index");
+Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->name("product.show");
+
+
+
+
 
 Route::get('/cart', [CartController::class, 'index'])->name("cart.index");
 Route::get('/cart/delete', [CartController::class, 'delete'])->name("cart.delete");
@@ -32,27 +42,51 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-account/orders', [MyAccountController::class, 'orders'])->name("myaccount.orders");
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [AdminHomeController::class, 'index'])->name("home.index");
-
-    // Products
-    Route::get('/products', [AdminProductController::class, 'index'])->name('product.index');
-    Route::post('/products/store', [AdminProductController::class, 'store'])->name("product.store");
-    Route::delete('/products/{id}/delete', [AdminProductController::class, 'delete'])->name("product.delete");
-    Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name("product.edit");
-    Route::put('/products/{id}/update', [AdminProductController::class, 'update'])->name("product.update");
-
-    // Statistics
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/products/export', [AdminProductController::class, 'exportCSV'])->name('product.export');
+    Route::post('/products/import', [AdminProductController::class, 'importCSV'])->name('product.import');
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('statistics.pdf');
     Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('statistics.exportPdf');
+    Route::get('/home', [AdminHomeController::class, 'index'])->name('home.index');
+    Route::post('/products', [AdminProductController::class, 'store'])->name('product.store');
+    Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('product.edit');
+    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update');
+    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete');
 
-    // Discounts
-    Route::resource('discounts', DiscountController::class);
 });
+
+
+Route::middleware('admin')->group(function () {
+    Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
+    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
+    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
+    Route::post('/admin/products/store', 'App\Http\Controllers\Admin\AdminProductController@store')->name("admin.product.store");
+    Route::delete('/admin/products/{id}/delete', 'App\Http\Controllers\Admin\AdminProductController@delete')->name("admin.product.delete");
+    Route::get('/admin/products/{id}/edit', 'App\Http\Controllers\Admin\AdminProductController@edit')->name("admin.product.edit");
+    Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
+});
+
+
+Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('users', AdminUserController::class);
+});
+
+Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::get('admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
+    Route::post('admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::get('admin/users{id}', [AdminUserController::class, 'show'])->name('admin.users.show');
+    Route::get('admin/users/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('admin/users/{id}', [AdminUserController::class, 'destory'])->name('admin.users.destroy');
+});
+
 
 Auth::routes();
 
+Route::resource('categorie', CategorieController::class);
 Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
@@ -65,3 +99,6 @@ Route::post('/products/{product}/discount', [AdminProductController::class, 'sto
 
 Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
 Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
+
+
+Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');

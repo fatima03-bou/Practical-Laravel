@@ -1,4 +1,4 @@
-a<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -6,8 +6,14 @@ a<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     crossorigin="anonymous" />
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <link href="{{ asset('/css/admin.css') }}" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <title>@yield('title', 'Admin - Online Store')</title>
 </head>
 
@@ -21,24 +27,25 @@ a<!doctype html>
       <hr />
       <ul class="nav flex-column">
         <li>
-          <a href="{{ route('admin.home.index') }}" 
+          <a href="{{ route('admin.home.index') }}"
              class="nav-link text-white {{ request()->routeIs('admin.home.index') ? 'active bg-primary' : '' }}">
               - Admin - Home
           </a>
       </li>
       <li>
-          <a href="{{ route('product.index') }}" 
-             class="nav-link text-white {{ request()->routeIs('products.index') ? 'active bg-primary' : '' }}">
-              - Admin - Products
-          </a>
+        <a href="{{ route('admin.products.index') }}"
+            class="nav-link text-white {{ request()->routeIs('admin.products.index') ? 'active bg-primary' : '' }}">
+            - Admin - Products
+        </a>
+
       </li>
       <li>
-          <a href="{{ route('admin.statistics.index') }}" 
+          <a href="{{ route('admin.statistics.index') }}"
              class="nav-link text-white {{ request()->routeIs('admin.statistics.index') ? 'active bg-primary' : '' }}">
               - Admin - Statistics
           </a>
       </li>
-      
+
           <a href="{{ route('home.index') }}" class="mt-2 btn bg-primary text-white">Go back to the home page</a>
         </li>
       </ul>
