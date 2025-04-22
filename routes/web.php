@@ -12,7 +12,8 @@ use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminUserController;
 
 
@@ -38,25 +39,10 @@ Route::get('/cart/delete', [CartController::class, 'delete'])->name("cart.delete
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name("cart.add");
 
 Route::middleware('auth')->group(function () {
-    Route::get('/cart/purchase', [CartController::class, 'purchase'])->name("cart.purchase");
-    Route::get('/my-account/orders', [MyAccountController::class, 'orders'])->name("myaccount.orders");
+    Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
+    Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
 });
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
-    Route::get('/products/export', [AdminProductController::class, 'exportCSV'])->name('product.export');
-    Route::post('/products/import', [AdminProductController::class, 'importCSV'])->name('product.import');
-    Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
-    Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('statistics.pdf');
-    Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('statistics.exportPdf');
-    Route::get('/home', [AdminHomeController::class, 'index'])->name('home.index');
-    Route::post('/products', [AdminProductController::class, 'store'])->name('product.store');
-    Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('product.edit');
-    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update');
-    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete');
-
-});
-
 
 Route::middleware('admin')->group(function () {
     Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
@@ -102,3 +88,7 @@ Route::post('/categories/{categorie}/discount', [AdminProductController::class, 
 
 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
+
+Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
