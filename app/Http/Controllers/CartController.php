@@ -8,9 +8,18 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Item;
 use App\Models\User;
+use App\Services\CartService; 
 
 class CartController extends Controller
 {
+    private $cartService; 
+    
+    // Modified constructor to inject the CartService
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     public function index(Request $request)
     {
         // Get cart from cookie (default to empty array if not set)
@@ -30,8 +39,10 @@ class CartController extends Controller
         return view('cart.index')->with("viewData", $viewData);
     }
 
+    // Modified add method to use CartService
     public function add(Product $product, Request $request)
     {
+<<<<<<< HEAD
         $quantity = $request->quantity ?? 1;
 
         // Vérifier la disponibilité du stock
@@ -55,6 +66,16 @@ class CartController extends Controller
         // Save the updated cart back to the cookie
         return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30))  // Save the cart in a cookie for 30 days
             ->with('success', 'Produit ajouté au panier.');
+=======
+        if ($product->quantity_store <= 0) {
+            return redirect()->back()->with('error', 'Produit en rupture de stock');
+        }
+
+        // Using CartService to handle the addition of the item
+        $cookie = $this->cartService->add($request, $product->id);
+
+        return back()->with('success', 'Produit ajouté au panier')->cookie($cookie);
+>>>>>>> feature_payement
     }
 
     public function delete(Request $request)
