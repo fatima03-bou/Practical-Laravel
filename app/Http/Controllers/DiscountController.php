@@ -12,7 +12,7 @@ class DiscountController extends Controller
 {
     public function index()
     {
-        $discounts = Discount::with(['product', 'categorie'])->get();
+        $discounts = Discount::with(['product', 'Categorie'])->get();
         return view('admin.discounts.index', compact('discounts'));
     }
 
@@ -27,15 +27,21 @@ class DiscountController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:global,categorie,product',
+            'type' => 'required|in:global,Categorie,product',
             'rate' => 'required|numeric|min:0|max:100',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'categorie_id' => 'nullable|required_if:type,categorie|exists:categories,id',
+            'Categorie_id' => 'nullable|required_if:type,Categorie|exists:categories,id',
             'product_id' => 'nullable|required_if:type,product|exists:products,id',
         ]);
 
         Discount::create($validated);
+        if ($validated['type'] === 'product' && isset($validated['product_id'])) {
+            $product = Product::find($validated['product_id']);
+            $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
+            $product->update(['discounted_price' => $discountedPrice]);
+        }
+        
 
         return redirect()->route('admin.discounts.index')
             ->with('success', 'Remise créée avec succès');
@@ -43,7 +49,7 @@ class DiscountController extends Controller
 
     public function edit(Discount $discount)
     {
-        $categories = categorie::all();
+        $categories = Categorie::all();
         $products = Product::all();
         return view('admin.discounts.edit', compact('discount', 'categories', 'products'));
     }
@@ -52,15 +58,21 @@ class DiscountController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:global,categorie,product',
+            'type' => 'required|in:global,Categorie,product',
             'rate' => 'required|numeric|min:0|max:100',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'categorie_id' => 'nullable|required_if:type,categorie|exists:categories,id',
+            'Categorie_id' => 'nullable|required_if:type,Categorie|exists:categories,id',
             'product_id' => 'nullable|required_if:type,product|exists:products,id',
         ]);
 
         $discount->update($validated);
+        if ($validated['type'] === 'product' && isset($validated['product_id'])) {
+            $product = Product::find($validated['product_id']);
+            $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
+            $product->update(['discounted_price' => $discountedPrice]);
+        }
+        
 
         return redirect()->route('admin.discounts.index')
             ->with('success', 'Remise mise à jour avec succès');

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', $viewData['title'])
+@section('title', $viewData["title"])
 
 @section('content')
 

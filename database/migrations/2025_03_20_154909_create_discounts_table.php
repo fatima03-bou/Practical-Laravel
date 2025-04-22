@@ -16,6 +16,7 @@ return new class extends Migration
             $table->float('rate', 5, 2);
             $table->date('start_date');
             $table->date('end_date');
+            $table->enum('type', ['product', 'category', 'global']);
             $table->foreignId('product_id')->nullable()->constrained()->OnDelete('cascade');
             $table->foreignId('categorie_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();

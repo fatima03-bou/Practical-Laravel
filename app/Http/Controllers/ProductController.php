@@ -15,45 +15,49 @@ class ProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
         $viewData["subtitle"] = "List of products";
-
+    
         $query = Product::query();
-
+    
         // Filtrage par catégorie
         if ($request->has('categorie') && $request->categorie != '') {
             $query->where('categorie', $request->categorie);
         }
-
-        // Filtrage des produits soldes
+    
+        // Filtrage des produits soldés
         if ($request->has('on_sale') && $request->on_sale) {
             $now = now();
             $query->where(function ($q) use ($now) {
+                // Produits avec remise spécifique
                 $q->whereHas('discounts', function ($q) use ($now) {
                     $q->where('start_date', '<=', $now)
-                        ->where('end_date', '>=', $now);
-                })->orWhereHas('categorie.discounts', function ($q) use ($now) {
+                      ->where('end_date', '>=', $now);
+                })
+                // Produits avec remise par catégorie
+                ->orWhereHas('categorie.discounts', function ($q) use ($now) {
                     $q->where('type', 'categorie')
-                        ->where('start_date', '<=', $now)
-                        ->where('end_date', '>=', $now);
+                      ->where('start_date', '<=', $now)
+                      ->where('end_date', '>=', $now);
                 });
-
-                // Verifier s'il y a une remise globale active
+    
+                // Vérifier s'il y a une remise globale active
                 $globalDiscounts = Discount::where('type', 'global')
                     ->where('start_date', '<=', $now)
                     ->where('end_date', '>=', $now)
                     ->exists();
-
+    
                 if ($globalDiscounts) {
                     $q->orWhereNotNull('id');
                 }
             });
         }
-
+    
         $viewData["products"] = $query->paginate(12);
         $viewData["categories"] = Categorie::all();
         $viewData['fournisseurs'] = Fournisseur::all();
-
+    
         return view('product.index')->with("viewData", $viewData);
     }
+    
 
     public function show($id)
     {

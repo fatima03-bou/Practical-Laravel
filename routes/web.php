@@ -4,17 +4,19 @@ use App\Exports\ProductExport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\FournisseurController;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MyAccountController;
-use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\CategorieController;
 use App\Imports\ProductImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -22,11 +24,6 @@ use Maatwebsite\Excel\Facades\Excel;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
 
@@ -40,13 +37,14 @@ Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->nam
 
 
 
-Route::get('/cart', 'App\Http\Controllers\CartController@index')->name("cart.index");
-Route::get('/cart/delete', 'App\Http\Controllers\CartController@delete')->name("cart.delete");
-Route::post('/cart/add/{id}', 'App\Http\Controllers\CartController@add')->name("cart.add");
+Route::get('/cart', [CartController::class, 'index'])->name("cart.index");
+Route::get('/cart/delete', [CartController::class, 'delete'])->name("cart.delete");
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name("cart.add");
 
 Route::middleware('auth')->group(function () {
     Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -90,6 +88,7 @@ Auth::routes();
 Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
+// Gestion des remises (hors admin prefix)
 Route::get('/discounts/global', [AdminHomeController::class, 'manageGlobalDiscount'])->name('discounts.manageGlobal');
 Route::post('/discounts/global', [AdminHomeController::class, 'storeGlobalDiscount'])->name('discounts.storeGlobal');
 
@@ -100,3 +99,7 @@ Route::get('/categories/{categorie}/discount', [AdminProductController::class, '
 Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
+
+Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
