@@ -10,13 +10,26 @@ use Illuminate\Http\Request;
 
 class AdminHomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $viewData = [];
-        $viewData["title"] = "Admin Page - Admin - Online Store";
-        $viewData["products"] = Product::all();
-        $viewData["categories"] = Categorie::all();
-        $viewData["fournisseur"] = Fournisseur::all();
-        return view('admin.home.index')->with("viewData", $viewData);
+        $query = Product::query();
+    
+        if ($request->filled('categorie_id')) {
+            $query->where('categorie_id', $request->categorie_id);
+        }
+    
+        if ($request->filled('fournisseur_id')) {
+            $query->where('fournisseur_id', $request->fournisseur_id);
+        }
+    
+        $viewData = [
+            'title' => 'Admin - Produits',
+            'products' => $query->get(),
+            'categories' => Categorie::all(),
+            'fournisseurs' => Fournisseur::all(),
+        ];
+        
+        return view('admin.home.index', compact('viewData'));
     }
+    
 }

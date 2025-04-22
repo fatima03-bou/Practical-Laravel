@@ -92,17 +92,10 @@
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="categorie_id" class="form-control">
-<<<<<<< HEAD
-            @foreach ($viewData['categories'] as $categorie)
-              <option value="{{ $categorie->id }}" 
-                {{ $viewData['product']->categorie_id == $categorie->id ? 'selected' : '' }}>
-                {{ $categorie->name }}
-=======
             @foreach ($viewData['categories'] as $category)
               <option value="{{ $category->id }}"
                 {{ $viewData['product']->categorie_id == $category->id ? 'selected' : '' }}>
                 {{ $category->name }}
->>>>>>> 2ae6c37 (Super admin can create new admin users)
               </option>
             @endforeach
           </select>

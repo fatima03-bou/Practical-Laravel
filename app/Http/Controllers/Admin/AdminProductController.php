@@ -72,7 +72,7 @@ class AdminProductController extends Controller
 
 
 
-    public function delete($id)
+    public function destroy($id)
     {
         $product = Product::findOrFail($id);
         if ($product->image && Storage::disk("public")->exists($product->image)) {
@@ -106,6 +106,7 @@ class AdminProductController extends Controller
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
         $categorieId = $request->input('categorie_id', 1);
+        $quantityStore = $request->input('quantity_store', 1);
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->description = $request->input('description');
@@ -131,5 +132,9 @@ class AdminProductController extends Controller
         $product->save();
 
         return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
+    }
+    public function exportCSV()
+    {
+        return Excel::download(new ProductExport, 'products.csv');
     }
 }

@@ -1,26 +1,22 @@
 <?php
 
+use App\Exports\ProductExport;
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use App\Http\Controllers\CartController;
-=======
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\FournisseurController;
->>>>>>> 2ae6c37 (Super admin can create new admin users)
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Api\OrderStatusController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
-=======
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminUserController;
-
+use App\Http\Controllers\CategorieController;
+use App\Imports\ProductImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,11 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
 });
 
-<<<<<<< HEAD
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
-    Route::get('/products/export', [AdminProductController::class, 'exportCSV'])->name('product.export');
-    Route::post('/products/import', [AdminProductController::class, 'importCSV'])->name('product.import');
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::get('/statistics/pdf', [StatisticsController::class, 'downloadPDF'])->name('statistics.pdf');
     Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf'])->name('statistics.exportPdf');
@@ -66,19 +59,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('product.edit');
     Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update');
     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete');
-
-});
-
-
-=======
-Route::middleware('admin')->group(function () {
-    Route::get('/admin', 'App\Http\Controllers\Admin\AdminHomeController@index')->name("admin.home.index");
-    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
-    Route::get('/admin/products', 'App\Http\Controllers\Admin\AdminProductController@index')->name("admin.products.index");
-    Route::post('/admin/products/store', 'App\Http\Controllers\Admin\AdminProductController@store')->name("admin.product.store");
-    Route::delete('/admin/products/{id}/delete', 'App\Http\Controllers\Admin\AdminProductController@delete')->name("admin.product.delete");
-    Route::get('/admin/products/{id}/edit', 'App\Http\Controllers\Admin\AdminProductController@edit')->name("admin.product.edit");
-    Route::put('/admin/products/{id}/update', 'App\Http\Controllers\Admin\AdminProductController@update')->name("admin.product.update");
+    Route::get('/products/export', function () {
+        return Excel::download(new ProductExport, 'products.csv'); 
+    })->name('product.export');
+    
+    Route::post('/products/import', function () {
+        Excel::import(new ProductImport, request()->file('file')); 
+        return back()->with('success', "the products have been imported seccessfully");
+    })->name('product.import');
 });
 
 
@@ -93,14 +81,12 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('admin/users{id}', [AdminUserController::class, 'show'])->name('admin.users.show');
     Route::get('admin/users/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
     Route::put('admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
-    Route::delete('admin/users/{id}', [AdminUserController::class, 'destory'])->name('admin.users.destroy');
+    Route::delete('admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 
->>>>>>> 2ae6c37 (Super admin can create new admin users)
 Auth::routes();
 
-Route::resource('categorie', CategorieController::class);
 Route::resource('categorie', CategorieController::class);
 Route::resource('fournisseurs', FournisseurController::class);
 
@@ -112,9 +98,5 @@ Route::post('/products/{product}/discount', [AdminProductController::class, 'sto
 
 Route::get('/categories/{categorie}/discount', [AdminProductController::class, 'manageCategorieDiscount'])->name('categories.manageDiscount');
 Route::post('/categories/{categorie}/discount', [AdminProductController::class, 'storeCategorieDiscount'])->name('categories.storeDiscount');
-<<<<<<< HEAD
-
 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
-=======
->>>>>>> 2ae6c37 (Super admin can create new admin users)
