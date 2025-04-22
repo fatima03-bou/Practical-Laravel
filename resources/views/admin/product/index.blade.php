@@ -116,7 +116,7 @@
 <div class="filter-section card mb-4">
   <div class="card-header">Filtres</div>
   <div class="card-body">
-    <form action="{{ route('admin.product.index') }}" method="GET">
+    <form action="{{ route('admin.products.index') }}" method="GET">
       <div class="form-group mb-3">
         <label for="categorie_id">Catégorie</label>
         <select name="categorie_id" id="categorie_id" class="form-control">
