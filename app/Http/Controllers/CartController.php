@@ -14,7 +14,6 @@ class CartController extends Controller
 {
     private $cartService; 
     
-    // Modified constructor to inject the CartService
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
@@ -22,10 +21,7 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        // Get cart from cookie (default to empty array if not set)
-        $cart = json_decode($request->cookie('cart'), true) ?? [];
-
-        // Fetch products from the cart by their IDs
+        $cart = $this->getCart();
         $productsInCart = !empty($cart) ? Product::findMany(array_keys($cart)) : [];
         $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $cart) : 0;
 
@@ -39,56 +35,32 @@ class CartController extends Controller
         return view('cart.index')->with("viewData", $viewData);
     }
 
-    // Modified add method to use CartService
     public function add(Product $product, Request $request)
     {
-<<<<<<< HEAD
         $quantity = $request->quantity ?? 1;
 
-        // Vérifier la disponibilité du stock
+        if ($product->quantity_store <= 0) {
+            return back()->with('error', 'Produit en rupture de stock');
+        }
+
         if ($product->quantity_store < $quantity) {
             return back()->with('error', 'Quantité insuffisante en stock.');
         }
 
-        // Obtenir le prix avec remise si applicable
-        $price = $product->getDiscountedPrice();
-
-        // Ajouter au panier (cookie ou session selon votre implémentation)
-        $cart = json_decode($request->cookie('cart'), true) ?? [];  // Retrieve the cart from the cookie
-        
-        // Si le produit existe déjà dans le panier, on met à jour la quantité
-        if (isset($cart[$product->id])) {
-            $cart[$product->id] += $quantity;  // Add to the existing quantity
-        } else {
-            $cart[$product->id] = $quantity;  // Otherwise, add the product to the cart
-        }
-
-        // Save the updated cart back to the cookie
-        return back()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30))  // Save the cart in a cookie for 30 days
-            ->with('success', 'Produit ajouté au panier.');
-=======
-        if ($product->quantity_store <= 0) {
-            return redirect()->back()->with('error', 'Produit en rupture de stock');
-        }
-
-        // Using CartService to handle the addition of the item
-        $cookie = $this->cartService->add($request, $product->id);
+        $cookie = $this->cartService->add($request, $product->id, $quantity);
 
         return back()->with('success', 'Produit ajouté au panier')->cookie($cookie);
->>>>>>> feature_payement
     }
 
     public function delete(Request $request)
     {
-        // Clear the cart by emptying the cookie
         return back()->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
             ->with('success', 'Cart cleared successfully.');
     }
 
     public function purchase(Request $request)
     {
-        // Obtenir le panier de cookie
-        $cart = json_decode($request->cookie('cart'), true) ?? [];
+        $cart = $this->getCart();
 
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
@@ -100,7 +72,6 @@ class CartController extends Controller
             return back()->with('error', 'User not found.');
         }
 
-        // Create a new order
         $order = new Order();
         $order->user_id = $user->id;
         $order->total = 0;
@@ -112,17 +83,15 @@ class CartController extends Controller
         foreach ($productsInCart as $product) {
             $quantity = $cart[$product->id];
 
-            // Verifier le stock avant l’achat
             if ($product->quantity_store < $quantity) {
                 $order->delete();
-                return redirect()->route("cart.index")->with("error", "Quantity requested for product " . $product->name . " not available in stock.");
+                return redirect()->route("cart.index")
+                    ->with("error", "Quantity requested for product " . $product->name . " not available in stock.");
             }
 
-            // Update quantity in stock
             $product->quantity_store -= $quantity;
             $product->save();
 
-            // Create order item
             $item = new Item();
             $item->quantity = $quantity;
             $item->price = $product->hasDiscount() ? $product->getDiscountedPrice() : $product->price;
@@ -133,33 +102,23 @@ class CartController extends Controller
             $total += $item->price * $quantity;
         }
 
-        // Verify if user has enough balance
         if ($user->balance < $total) {
             $order->delete();
             return back()->with('error', 'Insufficient funds to complete the purchase.');
         }
 
-        // Deduct balance from user
         $user->balance -= $total;
         $user->save();
 
-        // Update order total
         $order->total = $total;
         $order->save();
 
-        // Clear cart by emptying the cookie
         return redirect()->route('cart.index')->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
             ->with('success', 'Purchase completed successfully.');
     }
 
-    // Helper Methods for Cart
     private function getCart()
     {
         return json_decode(request()->cookie('cart'), true) ?? [];
-    }
-
-    private function saveCart($cart)
-    {
-        return response()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30));  // Save cart for 30 days
     }
 }
