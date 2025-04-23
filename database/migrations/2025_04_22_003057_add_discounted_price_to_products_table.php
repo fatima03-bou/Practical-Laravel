@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->float('discounted_price')->nullable()->after('price');
-        });
-        
+        if (!Schema::hasColumn('products', 'discounted_price')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->float('discounted_price')->nullable()->after('price');
+            });
+        }
     }
 
     /**
@@ -22,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('products', 'discounted_price')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('discounted_price');
+            });
+        }
     }
 };

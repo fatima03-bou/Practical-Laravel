@@ -36,7 +36,7 @@ return [
     'profile' => 'Profile',
     'orders' => 'My Orders',
     'address' => 'Address',
-    'welcome' => 'Welcome to our store',
+    'welcome' => 'Welcome to your Online Store! Explore and shop the best products.',
 
 
     'admin_panel' => 'Admin Panel',
@@ -103,6 +103,8 @@ return [
     'admin_panel_home_page'=>'Admin Panel - Home Page',
     'export_pro'=>'Export Products (CSV)',
     'import_prod'=>' Import Products (CSV)',
+    'import_csv'=>'Import CSV',
+    'export_csv'=>'Export CSV',
     'choose_file'=>'Choose CSV file',
     'fourni'=>'Supplier',
     'select_fourni'=>'Select a supplier',
@@ -171,6 +173,7 @@ return [
     'logged_in'=>"You are logged in!",
 
      'confirm_urpass'=>'Please confirm your password before continuing.',
+     'pas_image'=>'Images not available',
 
 
 

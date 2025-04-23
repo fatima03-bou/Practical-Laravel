@@ -14,15 +14,15 @@ class ProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
-        $viewData["subtitle"] = "List of products";
-    
+        $viewData["subtitle"] = " Products List" ;
+
         $query = Product::query();
-    
+
         // Filtrage par catégorie
         if ($request->has('categorie') && $request->categorie != '') {
             $query->where('categorie', $request->categorie);
         }
-    
+
         // Filtrage des produits soldés
         if ($request->has('on_sale') && $request->on_sale) {
             $now = now();
@@ -38,26 +38,26 @@ class ProductController extends Controller
                       ->where('start_date', '<=', $now)
                       ->where('end_date', '>=', $now);
                 });
-    
+
                 // Vérifier s'il y a une remise globale active
                 $globalDiscounts = Discount::where('type', 'global')
                     ->where('start_date', '<=', $now)
                     ->where('end_date', '>=', $now)
                     ->exists();
-    
+
                 if ($globalDiscounts) {
                     $q->orWhereNotNull('id');
                 }
             });
         }
-    
+
         $viewData["products"] = $query->paginate(12);
         $viewData["categories"] = Categorie::all();
         $viewData['fournisseurs'] = Fournisseur::all();
-    
+
         return view('product.index')->with("viewData", $viewData);
     }
-    
+
 
     public function show($id)
     {
@@ -66,6 +66,7 @@ class ProductController extends Controller
         $viewData["title"] = $product->getName()." - Online Store";
         $viewData["subtitle"] =  $product->getName()." - Product information";
         $viewData["product"] = $product;
+        $viewData["categories"]= Categorie::all();
 
         return view('product.show')->with("viewData", $viewData);
     }

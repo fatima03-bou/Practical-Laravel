@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet" />
     <title>@yield('title', 'Online Store')</title>
 
@@ -31,7 +32,9 @@
             line-height: 1.6;
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-weight: 500;
         }
 
@@ -169,36 +172,47 @@
     <!-- Header -->
     <header>
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home.index') }}" class="navbar-brand">Online Store</a>
+            <a href="{{ route('home.index') }}" class="navbar-brand">{{ __('message.online_store') }}</a>
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <div class="navbar-nav">
                     @if (Auth::check() && Auth::user()->role == 'super_admin')
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-warning">SuperAdmin Panel</a>
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-warning">{{ __('message.superadmin_panel') }}</a>
                     @endif
-                    <a class="nav-link active" href="{{ route('home.index') }}">Home</a>
-                    <a class="nav-link active" href="{{ route('product.index') }}">Products</a>
-                    <a class="nav-link active" href="{{ route('cart.index') }}">Cart</a>
-                    <a class="nav-link active" href="{{ route('home.about') }}">About</a>
+                    <a class="nav-link active" href="{{ route('home.index') }}">{{ __('message.home') }}</a>
+                    <a class="nav-link active" href="{{ route('product.index') }}">{{ __('message.products') }}</a>
+                    <a class="nav-link active" href="{{ route('cart.index') }}">{{ __('message.cart') }}</a>
+                    <a class="nav-link active" href="{{ route('home.about') }}">{{ __('message.about') }}</a>
                     @guest
-                        <a class="nav-link active" href="{{ route('login') }}">{{__('message.login')}}</a>
-                        <a class="nav-link active" href="{{ route('register') }}">{{__('message.register')}}</a>
+                        <a class="nav-link active" href="{{ route('login') }}">{{ __('message.login') }}</a>
+                        <a class="nav-link active" href="{{ route('register') }}">{{ __('message.register') }}</a>
                     @else
-                        <a class="nav-link active" href="{{ route('myaccount.orders') }}">My Orders</a>
+                        <a class="nav-link active" href="{{ route('myaccount.orders') }}">{{ __('message.my_orders') }}</a>
                         <form id="logout" action="{{ route('logout') }}" method="POST" class="d-inline">
                             <a role="button" class="nav-link active"
-                                onclick="document.getElementById('logout').submit();">{{__('message.logout')}}</a>
+                                onclick="document.getElementById('logout').submit();">{{ __('message.logout') }}</a>
                             @csrf
                         </form>
                     @endguest
+                    <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ __('messages.language') }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                        <li><a class="dropdown-item" href="{{ route('language.change', 'en') }}">English</a></li>
+                        <li><a class="dropdown-item" href="{{ route('language.change', 'fr') }}">Français</a></li>
+                        <li><a class="dropdown-item" href="{{ route('language.change', 'ar') }}">العربية</a></li>
+                    </ul>
                 </div>
-            </nav>
+        </div>
+        </nav>
         </div>
     </header>
 
     <!-- Masthead -->
     <div class="masthead">
         <h2>@yield('subtitle', 'A Modern Online Store')</h2>
-        <div class="welcome-message">Welcome to your Online Store! Explore and shop the best products.</div>
+        <div class="welcome-message">{{__('message.welcome')}}</div>
     </div>
 
     <!-- Main Content -->
@@ -208,10 +222,12 @@
 
     <!-- Footer -->
     <footer>
-        <small>Copyright - <a href="https://twitter.com/danielgarax" target="_blank">Daniel Correa</a> - <b>Paola Vallejo</b></small>
+        <small>Copyright - <a href="https://twitter.com/danielgarax" target="_blank">Daniel Correa</a> - <b>Paola
+                Vallejo</b></small>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>

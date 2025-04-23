@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Imports\ProductImport;
+use App\Http\Controllers\LanguageController;
 use Maatwebsite\Excel\Facades\Excel;
 
 /*
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::put('orders/{orders}/status', [OrderStatusController::class] , 'update')->name('orders.status.update');
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {

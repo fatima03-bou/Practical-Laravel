@@ -24,16 +24,16 @@
     <h5 class="mb-3">{{__('message.product_list')}}</h5>
 
         <a href="{{ route('admin.product.export') }}" class="btn btn-success mb-3">
-            <i class="bi bi-download"></i> Export CSV
+            <i class="bi bi-download"></i> {{__('message.export_csv')}}
         </a>
 
         <form action="{{ route('admin.product.import') }}" method="POST" enctype="multipart/form-data" class="mb-4">
             @csrf
             <div class="input-group">
                 <input type="file" name="file" class="form-control" required>
-                <button type="submit" class="btn btn-primary">Import CSV</button>
+                <button type="submit" class="btn btn-primary">{{__('message.import_csv')}}</button>
             </div>
-            <button type="submit" class="btn btn-primary">Import Products</button>
+            <button type="submit" class="btn btn-primary">{{__('message.import_prod')}}</button>
         </form>
         </div>
       </div>
@@ -43,12 +43,12 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Supplier</th>
-          <th>Action</th>
+          <th>{{__('message.name')}}</th>
+          <th>{{__('message.price')}}</th>
+          <th>{{__('message.cat')}}</th>
+          <th>{{__('message.quantity')}}</th>
+          <th>{{__('message.fourni')}}</th>
+          <th>{{__('message.actions')}}</th>
         </tr>
       </thead>
       <tbody>
@@ -61,12 +61,12 @@
           <td>{{ $product->quantity_store }}</td>
           <td>{{ optional($product->fournisseur)->raison ?: 'No supplier' }}</td>
           <td>
-            <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-warning">Edit</a>
+            <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-warning">{{__('message.edit')}}</a>
             <form action="{{ route('admin.product.delete', $product->id) }}" method="POST" style="display:inline;">
               @csrf
               @method('DELETE')
               <button class="btn btn-danger" type="submit">
-                <i class="bi-trash"></i> Delete
+                <i class="bi-trash"></i> {{__('message.delete')}}
               </button>
             </form>
           </td>

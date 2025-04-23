@@ -195,7 +195,7 @@
               @if ($product->image)
                 <img src="{{ asset('storage/images/' . $product->image) }}" alt="image" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
               @else
-                <span class="text-muted">Pas d’image</span>
+                <span class="text-muted">{{__('message.pas_image')}}</span>
               @endif
             </td>
             <td>{{ $product->id }}</td>
@@ -210,7 +210,7 @@
               </a>
             </td>
             <td>
-              <form action="{{ route('admin.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('Confirmer la suppression ?')">
+              <form action="{{ route('admin.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('{{__('message.confirm_delete')}}')">
                 @csrf
                 @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">

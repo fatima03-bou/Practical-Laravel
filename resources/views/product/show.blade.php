@@ -20,7 +20,7 @@
 
         <form method="GET" action="{{ route('product.index') }}">
           <select name="categorie_id" class="form-select" onchange="this.form.submit()">
-            <option value="">Select category</option>
+            <option value="">{{ __('message.select_cat') }}</option>
             @foreach ($viewData['categories'] as $categorie)
               <option value="{{ $categorie->id }}"
                 @if(request('categorie_id') == $categorie->id) selected @endif>

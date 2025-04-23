@@ -35,7 +35,7 @@ return [
     'profile' => 'Profil',
     'orders' => 'Mes commandes',
     'address' => 'Adresse',
-    'welcome' => 'Bienvenue dans notre magasin',
+    'welcome' => 'Bienvenue dans votre boutique en ligne ! Explorez et achetez les meilleurs produits.',
 
 
     'admin_panel' => 'Panneau d\'administration',
@@ -168,4 +168,7 @@ return [
     'logged_in' => 'Vous êtes connecté !',
 
     'confirm_urpass' => 'Veuillez confirmer votre mot de passe avant de continuer.',
+    'export_csv'=>'Exporter CSV',
+    'import_csv'=>'Importer CSV',
+    'pas_image'=>"Pas d'image",
 ];

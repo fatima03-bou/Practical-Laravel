@@ -18,6 +18,14 @@ class Order extends Model
      * $this->user - User - contains the associated User
      * $this->items - Item[] - contains the associated items
      */
+    protected $fillable=[
+        'status',
+        'status_notes',
+        'status_updated_at',
+    ];
+    protected $casts = [
+        'status_updated_at' =>'datetime'
+    ];
 
     public static function validate($request)
     {
@@ -27,7 +35,7 @@ class Order extends Model
             "profit" => "required|numeric",
         ]);
     }
-    
+
     public function getId()
     {
         return $this->attributes['id'];

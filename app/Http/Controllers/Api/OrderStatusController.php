@@ -57,4 +57,21 @@ class OrderStatusController extends Controller
         return view('orders.status', compact('order'));
     }
 
+    function update(Request $request , Order $order) {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,packaged,shipped,in_transit,delivered,returned,closed',
+            'status_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $order->update([
+            'status' => $validated['status'],
+            'status_notes' => $validated['status_notes'],
+            'status_updated_at' => now(),
+        ]);
+
+        return redirect()->route('admin.orders.show', $order)
+            ->with('success', 'Order status updated successfully');
+    }
+    }
+
 }
