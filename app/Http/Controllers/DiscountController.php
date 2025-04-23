@@ -39,7 +39,7 @@ class DiscountController extends Controller
         if ($validated['type'] === 'product' && isset($validated['product_id'])) {
             $product = Product::find($validated['product_id']);
             $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
-            $product->update(['discounted_price' => $discountedPrice]);
+            $product->update(['discount_price' => $discountedPrice]);
         }
         
 
@@ -70,7 +70,7 @@ class DiscountController extends Controller
         if ($validated['type'] === 'product' && isset($validated['product_id'])) {
             $product = Product::find($validated['product_id']);
             $discountedPrice = $product->price * (1 - $validated['rate'] / 100);
-            $product->update(['discounted_price' => $discountedPrice]);
+            $product->update(['discount_price' => $discountedPrice]);
         }
         
 

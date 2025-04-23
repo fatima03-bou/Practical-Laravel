@@ -47,6 +47,18 @@
         </div>
       </div>
 
+     <!--     Discount type        -->
+      <div class="row">
+        <div class="col">
+          <div class="mb-3 row">
+            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Discount type:</label>
+            <div class="col-lg-10 col-md-6 col-sm-12">
+              <input name="type"  type="number" class="form-control">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
           <div class="mb-3 row">

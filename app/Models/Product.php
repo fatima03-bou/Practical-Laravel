@@ -39,6 +39,7 @@ class Product extends Model
 
     // ✅ Getters/Setters
     public function getId() { return $this->attributes['id']; }
+    public function getType() { return $this->attributes['id']; }
     public function setId($id) { $this->attributes['id'] = $id; }
 
     public function getName() { return $this->attributes['name']; }
@@ -127,4 +128,14 @@ class Product extends Model
 
         return $this->price * (1 - ($discount->rate / 100));
     }
+
+    public function discount()
+{
+    return $this->hasOne(Discount::class);
+}
+
+public function category()
+{
+    return $this->belongsTo(Categorie::class, 'category_id');
+}
 }

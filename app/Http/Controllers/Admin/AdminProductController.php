@@ -95,51 +95,50 @@ class AdminProductController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'quantity_store' => 'required|integer|min:1',
-            'image' => 'nullable|image|max:2048',
-            'description' => 'nullable|string|max:1000',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'categorie_id' => 'nullable|exists:categories,id|min:1',
-        ]);
-        $categorieId = $request->input('categorie_id', 1);
-        $quantityStore = $request->input('quantity_store', 1);
-        $product = Product::findOrFail($id);
-        $product->name = $request->input('name');
-        
-        $product->price = $request->input('price');
-        $product->quantity_store = $quantityStore;
-        $product->categorie_id = $categorieId;
-        $product->quantity_store = $request->input('quantity_store');
-        $product->categorie_id = $categorieId;
-        $product->fournisseur_id = $request->input('fournisseur_id');
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'quantity_store' => 'required|integer|min:1',
+        'image' => 'nullable|image|max:2048',
+        'description' => 'nullable|string|max:1000',
+        'fournisseur_id' => 'nullable|exists:fournisseurs,id',
+        'categorie_id' => 'nullable|exists:categories,id|min:1',
+    ]);
 
-        if ( $request->input('discount_price')  ) {
-            $product->description = $request->input('description');
+    $categorieId = $request->input('categorie_id', 1);
+    $quantityStore = $request->input('quantity_store', 1);
+    $product = Product::findOrFail($id);
+    $product->name = $request->input('name');
+    $product->price = $request->input('price');
+    $product->quantity_store = $quantityStore;
+    $product->categorie_id = $categorieId;
+    $product->fournisseur_id = $request->input('fournisseur_id');
 
+    if ($request->input('discount_price')) {
+        $product->discount_price = $request->input('discount_price');
+    }
+    $product->discount_price = $request->input('discount_price');
+
+    // ✅ Keep description update independent of discount logic
+    $product->description = $request->input('description');
+
+    if ($request->hasFile('image')) {
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
         }
 
-        if ($request->hasFile('image')) {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
-
-            $imageName = $product->id . "." . $request->file('image')->extension();
-            Storage::disk('public')->put(
-                $imageName,
-                file_get_contents($request->file('image')->getRealPath())
-            );
-            $product->image = $imageName;
-        }
-        $product->save();
-
-        return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
+        $imageName = $product->id . "." . $request->file('image')->extension();
+        Storage::disk('public')->put(
+            $imageName,
+            file_get_contents($request->file('image')->getRealPath())
+        );
+        $product->image = $imageName;
     }
-    public function exportCSV()
-    {
-        return Excel::download(new ProductExport, 'products.csv');
-    }
+
+    $product->save();
+
+    return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
+}
+
 }

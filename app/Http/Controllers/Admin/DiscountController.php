@@ -3,74 +3,75 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Categorie;
-use App\Models\Discount;
-use App\Models\Product;
 use Illuminate\Http\Request;
-
+use App\Models\Categorie;
+use App\Models\Product  ;
 class DiscountController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $discounts = Discount::with(['product', 'categorie'])->get();
-        return view('admin.discounts.index', compact('discounts'));
+        //
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $categories = Categorie::all();
         $products = Product::all();
-        return view('admin.discounts.create', compact('categories', 'products'));
+    
+        $viewData = [];
+        $viewData["title"] = "Créer une remise - Admin";
+        $viewData["categories"] = $categories;
+        $viewData["products"] = $products;
+        return view('admin.discounts.create')->with("viewData", $viewData);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:global,categorie,product',
-            'rate' => 'required|numeric|min:0|max:100',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'categorie_id' => 'nullable|required_if:type,categorie|exists:categories,id',
-            'product_id' => 'nullable|required_if:type,product|exists:products,id',
-        ]);
 
-        Discount::create($validated);
-
-        return redirect()->route('admin.discounts.index')
-            ->with('success', 'Remise créée avec succès');
+    
+        \App\Models\Discount::create($request->all());
+    
+        return redirect()->route('discounts.create')->with('success', 'Remise ajoutes avec Success');
     }
 
-    public function edit(Discount $discount)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        $categories = categorie::all();
-        $products = Product::all();
-        return view('admin.discounts.edit', compact('discount', 'categories', 'products'));
+        //
     }
 
-    public function update(Request $request, Discount $discount)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:global,categorie,product',
-            'rate' => 'required|numeric|min:0|max:100',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'categorie_id' => 'nullable|required_if:type,categorie|exists:categories,id',
-            'product_id' => 'nullable|required_if:type,product|exists:products,id',
-        ]);
-
-        $discount->update($validated);
-
-        return redirect()->route('admin.discounts.index')
-            ->with('success', 'Remise mise à jour avec succès');
+        //
     }
 
-    public function destroy(Discount $discount)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $discount->delete();
+        //
+    }
 
-        return redirect()->route('admin.discounts.index')
-            ->with('success', 'Remise supprimée avec succès');
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

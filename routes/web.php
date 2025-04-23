@@ -41,10 +41,12 @@ Route::get('/cart', [CartController::class, 'index'])->name("cart.index");
 Route::get('/cart/delete', [CartController::class, 'delete'])->name("cart.delete");
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name("cart.add");
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/cart/purchase', 'App\Http\Controllers\CartController@purchase')->name("cart.purchase");
     Route::get('/my-account/orders', 'App\Http\Controllers\MyAccountController@orders')->name("myaccount.orders");
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::resource('/discounts', \App\Http\Controllers\Admin\DiscountController::class);
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -57,6 +59,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('product.edit');
     Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('product.update');
     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('product.delete');
+    
+  
     Route::get('/products/export', function () {
         return Excel::download(new ProductExport, 'products.csv'); 
     })->name('product.export');

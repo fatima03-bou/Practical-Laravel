@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Can;
+use App\Http\Controllers\Product;
 
 class CategorieController extends Controller
 {
@@ -74,4 +75,7 @@ class CategorieController extends Controller
         $categorie->delete();
         return redirect()->route("categorie.index");
     }
+
+
+
 }

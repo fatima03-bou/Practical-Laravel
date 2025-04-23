@@ -2,40 +2,40 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Categorie;
 use App\Models\Product;
 
 class Discount extends Model
 {
-    use HasFactory;
+    
+    protected $fillable = ['type', 'category_id', 'product_id', 'percentage', 'start_date', 'end_date'];
 
-    protected $fillable = [
-        'name', 'type', 'rate', 'start_date', 'end_date', 'categorie_id', 'product_id'
-    ];
-
-    protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
-        'rate' => 'float'
-    ];
-
-    public function categorie(): BelongsTo
+    public function category()
     {
-        return $this->belongsTo(Categorie::class, 'categorie_id');
+        return $this->belongsTo(Categorie::class);
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function isActive(): bool
-    {
-        $now = now();
-        return $this->start_date <= $now && $this->end_date >= $now;
+
+    public function discount()
+{
+    return $this->hasOne(Discount::class);
+}
+
+public function getDiscountedPrice()
+{
+    $discount = $this->discount;
+
+    if ($discount && now()->between($discount->start_date, $discount->end_date)) {
+        return $this->price - ($this->price * $discount->percentage / 100);
     }
+
+    return null;
+}
+
 }
