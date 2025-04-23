@@ -8,6 +8,7 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "*",
         "guzzlehttp/guzzle": "^7.2",
+        "laravel-lang/publisher": "^16.6",
         "laravel-zero/foundation": "^11.5",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",

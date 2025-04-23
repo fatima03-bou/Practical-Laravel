@@ -22,38 +22,38 @@
     <!-- sidebar -->
     <div class="p-3 col fixed text-white bg-dark">
       <a href="{{ route('admin.home.index') }}" class="text-white text-decoration-none">
-        <span class="fs-4">Admin Panel</span>
+        <span class="fs-4">{{__('message.admin_panel')}}</span>
       </a>
       <hr />
       <ul class="nav flex-column">
         <li>
           <a href="{{ route('admin.home.index') }}"
              class="nav-link text-white {{ request()->routeIs('admin.home.index') ? 'active bg-primary' : '' }}">
-              - Admin - Home
+             {{__('message.admin_home')}}
           </a>
       </li>
       <li>
         <a href="{{ route('admin.products.index') }}"
             class="nav-link text-white {{ request()->routeIs('admin.products.index') ? 'active bg-primary' : '' }}">
-            - Admin - Products
+            {{__('message.admin_prod')}}
         </a>
 
       </li>
       <li>
           <a href="{{ route('admin.statistics.index') }}"
              class="nav-link text-white {{ request()->routeIs('admin.statistics.index') ? 'active bg-primary' : '' }}">
-              - Admin - Statistics
+             {{__('message.admin_stat')}}
           </a>
       </li>
 
-          <a href="{{ route('home.index') }}" class="mt-2 btn bg-primary text-white">Go back to the home page</a>
+          <a href="{{ route('home.index') }}" class="mt-2 btn bg-primary text-white">{{__('message.back_home')}}</a>
         </li>
       </ul>
     </div>
     <!-- sidebar -->
     <div class="col content-grey">
       <nav class="p-3 shadow text-end">
-        <span class="profile-font">Admin</span>
+        <span class="profile-font">{{__('message.admin')}}</span>
         <img class="img-profile rounded-circle" src="{{ asset('/img/undraw_profile.svg') }}">
       </nav>
 
@@ -67,7 +67,7 @@
   <div class="copyright py-4 text-center text-white">
     <div class="container">
       <small>
-        Copyright - <a class="text-reset fw-bold text-decoration-none" target="_blank"
+        {{__('message.copyright')}} - <a class="text-reset fw-bold text-decoration-none" target="_blank"
           href="https://twitter.com/danielgarax">
           Daniel Correa
         </a> - <b>Paola Vallejo</b>

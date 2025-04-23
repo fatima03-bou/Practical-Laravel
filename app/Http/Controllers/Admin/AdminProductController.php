@@ -37,7 +37,7 @@ class AdminProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-<<<<<<< HEAD
+
             'price' => 'required|numeric|min:1',
             'quantity_store' => 'required|integer|min:1',
             'image' => 'required|image|max:2048',
@@ -52,23 +52,12 @@ class AdminProductController extends Controller
         }
 
         $categorieId = $request->input('categorie_id', 1);
-=======
-            'price' => 'required|numeric',
-            'quantity_store' => 'required|integer|min:1',
-            'image' => 'nullable|image|max:2048',
-            'description' => 'nullable|string|max:1000',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'categorie_id' => 'nullable|exists:categories,id|min:1',
-        ]);
-        $categorieId = $request->input('categorie_id', 1);
         $newProduct = new Product();
         $newProduct->name = $request->input('name');
         $newProduct->description = $request->input('description');
         $newProduct->price = $request->input('price');
-<<<<<<< HEAD
         $newProduct->quantity_store = $quantityStore;
         $newProduct->categorie_id = $categorieId;
-=======
         $newProduct->quantity_store = $request->input('quantity_store');
         $newProduct->categorie_id = $categorieId;
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
@@ -102,10 +91,8 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
-<<<<<<< HEAD
         $viewData["fournisseurs"] = Fournisseur::all();
         $viewData["categories"] = Categorie::all();
-=======
         $viewData["fournisseurs"]=Fournisseur::all();
         $viewData["categories"] = Categorie::all();
         $viewData["product"] = Product::findOrFail($id);
@@ -128,10 +115,8 @@ class AdminProductController extends Controller
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
-<<<<<<< HEAD
         $product->quantity_store = $quantityStore;
         $product->categorie_id = $categorieId;
-=======
         $product->quantity_store = $request->input('quantity_store');
         $product->categorie_id = $categorieId;
         $product->fournisseur_id = $request->input('fournisseur_id');

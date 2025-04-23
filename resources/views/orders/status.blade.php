@@ -6,14 +6,14 @@
 
     <div class="card">
         <div class="card-body">
-            <p><strong>Commande N°:</strong> {{ $order->id }}</p>
-            <p><strong>Statut:</strong> {{ $order->status }}</p>
-            <p><strong>Total:</strong> {{ $order->total }} MAD</p>
-            <p><strong>Produit:</strong> {{ $order->product ? $order->product->name : 'Non spécifié' }}</p>
-            <p><strong>Mis à jour le:</strong> {{ $order->updated_at->format('d/m/Y H:i') }}</p>
+            <p><strong>{{__('message.order_n')}}:</strong> {{ $order->id }}</p>
+            <p><strong>{{__('message.statut')}}:</strong> {{ $order->status }}</p>
+            <p><strong>{{__('message.total')}}:</strong> {{ $order->total }} MAD</p>
+            <p><strong>{{__('message.prod')}}:</strong> {{ $order->product ? $order->product->name : 'Non spécifié' }}</p>
+            <p><strong>{{__('message.update')}}:</strong> {{ $order->updated_at->format('d/m/Y H:i') }}</p>
         </div>
     </div>
 
-    <a href="{{ route('home.index') }}" class="btn btn-secondary mt-3">Retour à l'accueil</a>
+    <a href="{{ route('home.index') }}" class="btn btn-secondary mt-3">{{__('message.back_home')}}</a>
 </div>
 @endsection

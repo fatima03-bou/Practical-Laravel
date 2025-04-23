@@ -1,0 +1,178 @@
+<?php
+
+return [
+
+    // Navigation
+    'home' => 'Home',
+    'products' => 'Products',
+    'cart' => 'Cart',
+    'login' => 'Login',
+    'register' => 'Register',
+    'logout' => 'Logout',
+    'dashboard' => 'Dashboard',
+    'language' => 'Language',
+    'my_orders'=>'My commandes',
+    'about'=>'About',
+    'online_store'=>'Online store',
+    'a_laravel_online_store'=>'A Laravel Online Store',
+    'copyright'=>"Copyright",
+
+
+    'product_list' => 'Product List',
+    'add_to_cart' => 'Add to Cart',
+    'out_of_stock' => 'Out of Stock',
+    'price' => 'Price',
+    'quantity' => 'Quantity',
+    'description' => 'Description',
+
+
+    'shopping_cart' => 'Shopping Cart',
+    'remove' => 'Remove',
+    'total' => 'Total',
+    'checkout' => 'Checkout',
+    'cart_empty' => 'Your cart is empty',
+
+
+    'profile' => 'Profile',
+    'orders' => 'My Orders',
+    'address' => 'Address',
+    'welcome' => 'Welcome to our store',
+
+
+    'admin_panel' => 'Admin Panel',
+    'manage_products' => 'Manage Products',
+    'manage_categories' => 'Manage Categories',
+    'manage_orders' => 'Manage Orders',
+    'manage_users' => 'Manage Users',
+    'statistics' => 'Statistics',
+
+
+    'save' => 'Save',
+    'update' => 'Update',
+    'delete' => 'Delete',
+    'cancel' => 'Cancel',
+    'submit' => 'Submit',
+    'create' => 'Create',
+    'edit' => 'Edit',
+    'search' => 'Search',
+
+
+    'name' => 'Name',
+    'email' => 'Email',
+    'password' => 'Password',
+    'confirm_password' => 'Confirm Password',
+    'remember_me'=>'Remember me',
+    'forgot_your_password?'=>'Forgot Your Password?',
+
+
+    'success' => 'Operation completed successfully',
+    'error' => 'An error occurred',
+    'confirm_delete' => 'Are you sure you want to delete this item?',
+
+    "verify"=>'Verify Your Email Address',
+    'fresh_verify'=>"A fresh verification link has been sent to your email address.",
+    'before_proceeding'=>'Before proceeding, please check your email for a verification link.',
+    'not_receiving_email'=>'If you did not receive the email',
+
+
+    'click_here'=>'Click here to request another',
+    'reset_link'=>'Send Password Reset Link',
+    'add_remise'=>'Add a remise',
+    'name_remise'=>'Name of remise',
+    'type_remise'=>'Type of remise',
+    'all_products'=>'All products',
+    'prod'=>'Product',
+    'by_cat'=>'By category',
+    'by_prod'=>'By product',
+    'select_prod'=>'Select product',
+    'edit_prod'=>'Edit product',
+    'cat'=>'Categorie',
+    'all_cat'=>'All categories',
+    'select_cat'=>'Select category',
+    'remise_rate'=>'Remise rate (%)',
+    'start_date'=>'Start date',
+    'end_date'=>'End date',
+    'type'=>'Type',
+    'rate'=>'Rate',
+    'period'=>'Period',
+    'apply_in'=>'Apply in',
+    'statut'=>'Statut',
+    'actions'=>'Actions',
+    'actif'=>'Actif',
+    'inactif'=>'Inactif',
+    'admin_panel_home_page'=>'Admin Panel - Home Page',
+    'export_pro'=>'Export Products (CSV)',
+    'import_prod'=>' Import Products (CSV)',
+    'choose_file'=>'Choose CSV file',
+    'fourni'=>'Supplier',
+    'select_fourni'=>'Select a supplier',
+    'all_fourni'=>'All suppliers',
+    'create_prod'=>'Create Product',
+    'discount_price'=>'Discount price',
+    'image'=>'Image',
+    'qte_instock'=>'Quantity in stock',
+    'filters'=>'Filters',
+    'filter'=>'Filter',
+    'produits_en_solde_uniquement'=>'Products on sale only',
+    'choose_per'=>'Choose period',
+    'today'=>'Today',
+    'this_month'=>'This month',
+    'this_year'=>'This year',
+    'custom_per'=>'Custom period',
+    'chiffre_aff'=>'Revenue',
+    'de'=>'From',
+    'à'=>'To',
+    'benifice'=>'Profit',
+    'revenu_by_cat'=>'Revenue by category',
+    'revenu_by_prod'=>'Revenue by product',
+    'revenu_by_country'=>'Revenue by country',
+    'pays'=>'Country',
+    'down_pdf'=>'Download as PDF',
+    'static_pdf'=>'Satistics - PDF',
+
+    'admin_users'=>'Admin Users',
+    'create_admin_user'=>'Create Admin User',
+    'edit_admin_user'=>'Edit Admin User',
+    'adminuser_details'=>'Admin users details',
+    'new_pass'=>'New password',
+    'back_to_list'=>'Back to list',
+    'add'=>'Add',
+    'not_found'=>'No admin users found',
+    'role'=>'Role',
+    'administr'=>'Administrator',
+    'last_updated'=>'Last updated',
+    'reset_pass'=>'Reset password',
+
+    'product_in_cart'=>'Product in cart',
+    'total_pay'=>"Total to pay",
+    'purchase'=>'Purchase',
+    'purchase_compl'=>'Purchase completed',
+    'succes_purch'=>"Congratulations, purchase completed. Order number is",
+    'remove_all_prod'=>'Remove all products from cart',
+    'show_status'=>'Show status of the order',
+
+    'admin_home'=>'- Admin - Home',
+    'admin_prod'=>'- Admin - Products',
+    'admin_stat'=>'- Admin - Statictics',
+    'admin'=>"Admin",
+    'back_home'=>"Go back to the home page",
+    'superadmin_panel'=>'SuperAdmin panel',
+    'super_home'=>'- SuperAdmin - Home',
+    'super'=>'SuperAdmin',
+
+
+    'order'=>'Order',
+    'order_n'=>'Order N°',
+    'date'=>'Date',
+    'order_alert'=>'Seems to be that you have not purchased anything in our store.',
+
+    'filter_bycat'=>'Filter by Category',
+    'filter_bysup'=>'Filter by supplier',
+    'logged_in'=>"You are logged in!",
+
+     'confirm_urpass'=>'Please confirm your password before continuing.',
+
+
+
+
+];

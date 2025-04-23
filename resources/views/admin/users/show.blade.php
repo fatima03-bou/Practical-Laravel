@@ -5,13 +5,13 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-item-center ">
-                <h3 class="card-title">Admin user Details</h3>
+                <h3 class="card-title">{{__('message.adminuser_details')}}</h3>
                 <div>
                     <a href="{{ route('admin.users.edit', $admin->id) }}">
-                        <i class="fas fa-edit"></i> Edit
+                        <i class="fas fa-edit"></i> {{__('message.edit')}}
                     </a>
                     <a href="{{ route('admin.users.index') }}">
-                        <i class="fas fa-left"></i> Back to List
+                        <i class="fas fa-left"></i> {{__('message.back_to_list')}}
                     </a>
                 </div>
             </div>
@@ -25,21 +25,21 @@
                             <td>{{ $admin->id }}</td>
                         </tr>
                         <tr>
-                            <th>Name</th>
+                            <th>{{__('message.name')}}</th>
                             <td>{{ $admin->name }}</td>
                         </tr>
                         <tr>
-                            <th>Email</th>
+                            <th>{{__('message.email')}}</th>
                             <td>{{ $admin->email }}</td>
                         </tr>
                         <tr>
-                            <th>Role</th>
+                            <th>{{__('message.role')}}</th>
                             <td>
-                                <span class="badge bg-success">Administrator</span>
+                                <span class="badge bg-success">{{__('message.administr')}}</span>
                             </td>
                         </tr>
                         <tr>
-                            <th>Last Updated</th>
+                            <th>{{__('message.last_updated')}}</th>
                             <td>{{ $admin->updated_at->format('F d, Y h:i A') }}</td>
                         </tr>
                     </tbody>
@@ -50,7 +50,7 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Delete User
+                    <i class="fas fa-trash"></i> {{__('message.delete')}}
                 </button>
             </form>
         </div>

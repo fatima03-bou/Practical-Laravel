@@ -8,11 +8,11 @@
   <form method="GET" action="{{ route('product.index') }}">
     <div class="row">
       <div class="col-md-6">
-        <label for="categorie_id" class="form-label">Filter by category:</label>
+        <label for="categorie_id" class="form-label">{{__('message.filter_bycat')}}:</label>
         <select name="categorie_id" class="form-select" onchange="this.form.submit()">
-          <option value="">All Categories</option>
+          <option value="">{{__('message.all_cat')}}</option>
           @foreach ($viewData['categories'] as $categorie)
-            <option value="{{ $categorie->id }}" 
+            <option value="{{ $categorie->id }}"
               @if(request('categorie_id') == $categorie->id) selected @endif>
               {{ $categorie->name }}
             </option>
@@ -21,11 +21,11 @@
       </div>
 
       <div class="col-md-6">
-        <label for="fournisseur_id" class="form-label">Filter by Supplier:</label>
+        <label for="fournisseur_id" class="form-label">{{__('message.filter_bysup')}}:</label>
         <select name="fournisseur_id" class="form-select" onchange="this.form.submit()">
-          <option value="">All Suppliers</option>
+          <option value="">{{__('message.all_fourni')}}</option>
           @foreach ($viewData['fournisseurs'] as $fournisseur)
-            <option value="{{ $fournisseur->id }}" 
+            <option value="{{ $fournisseur->id }}"
               @if(request('fournisseur_id') == $fournisseur->id) selected @endif>
               {{ $fournisseur->raison}}
             </option>
@@ -46,10 +46,10 @@
             {{ $product->getName() }}
           </a>
           <p>
-            <span>Quantity in stock: {{ $product->getQuantityStore() }}</span>
+            <span>{{__('message.qte_instock')}}: {{ $product->getQuantityStore() }}</span>
           </p>
           @if ($product->getQuantityStore() == 0)
-            <p class="badge bg-danger">Out of stock</p>
+            <p class="badge bg-danger">{{__('message.out_of_stock')}}</p>
           @endif
         </div>
       </div>

@@ -15,21 +15,21 @@
           {{ $viewData['product']->name }} (${{ $viewData['product']->price }})
         </h5>
         <p class="card-text">{{ $viewData['product']->description }}</p>
-        <p class="card-text">Quantity in stock : {{ $viewData['product']->getQuantityStore() }}</p>
+        <p class="card-text">{{__('message.qte_instock')}} : {{ $viewData['product']->getQuantityStore() }}</p>
 
 
         <form method="GET" action="{{ route('product.index') }}">
           <select name="categorie_id" class="form-select" onchange="this.form.submit()">
             <option value="">Select category</option>
             @foreach ($viewData['categories'] as $categorie)
-              <option value="{{ $categorie->id }}" 
+              <option value="{{ $categorie->id }}"
                 @if(request('categorie_id') == $categorie->id) selected @endif>
                 {{ $categorie->name }}
               </option>
             @endforeach
           </select>
 
-        </form>        
+        </form>
       </div>
     </div>
   </div>

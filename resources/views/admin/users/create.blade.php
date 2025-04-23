@@ -4,9 +4,9 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Create Admin user</h3>
+                <h3>{{__('message.create_admin_user')}}</h3>
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i>Back to list
+                    <i class="fas fa-arrow-left"></i>{{__('message.back_to_list')}}
                 </a>
             </div>
         </div>
@@ -24,7 +24,7 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
+                    <label for="name" class="form-label">{{__('message.name')}}</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
                         required />
                     @error('name')
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label">{{__('message.email')}}</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}"
                         required />
                     @error('email')
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">{{__('message.password')}}</label>
                     <input type="password" class="form-control" id="password" name="password" required />
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -50,13 +50,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label">Confirm password</label>
+                    <label for="password_confirmation" class="form-label">{{__('message.confirm_password')}}</label>
                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation"
                         required />
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Create Admin user</button>
+                    <button type="submit" class="btn btn-primary">{{__('message.create')}}</button>
                 </div>
 
             </form>

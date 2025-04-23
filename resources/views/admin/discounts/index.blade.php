@@ -13,13 +13,13 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Nom</th>
-                                <th>Type</th>
-                                <th>Taux</th>
-                                <th>Période</th>
-                                <th>Appliqué à</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
+                                <th>{{__('message.name')}}</th>
+                                <th>{{__('message.type')}}</th>
+                                <th>{{__('message.rate')}}</th>
+                                <th>{{__('message.period')}}</th>
+                                <th>{{__('message.apply_in')}}</th>
+                                <th>{{__('message.statut')}}</th>
+                                <th>{{__('message.actions')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -28,11 +28,11 @@
                                 <td>{{ $discount->name }}</td>
                                 <td>
                                     @if($discount->type == 'global')
-                                        Tous les produits
+                                    {{__('message.all_products')}}
                                     @elseif($discount->type == 'categorie')
-                                        Catégorie
+                                    {{__('message.cat')}}
                                     @else
-                                        Produit
+                                    {{__('message.products')}}
                                     @endif
                                 </td>
                                 <td>{{ $discount->rate }}%</td>
@@ -42,7 +42,7 @@
                                 </td>
                                 <td>
                                     @if($discount->type == 'global')
-                                        Tous les produits
+                                    {{__('message.all_products')}}
                                     @elseif($discount->type == 'categorie')
                                         {{ $discount->categorie->name ?? 'N/A' }}
                                     @else
@@ -51,17 +51,17 @@
                                 </td>
                                 <td>
                                     @if($discount->isActive())
-                                        <span class="badge bg-success">Actif</span>
+                                        <span class="badge bg-success">{{__('message.actif')}}</span>
                                     @else
-                                        <span class="badge bg-danger">Inactif</span>
+                                        <span class="badge bg-danger">{{__('message.inactif')}}</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.discounts.edit', $discount) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                    <a href="{{ route('admin.discounts.edit', $discount) }}" class="btn btn-sm btn-primary">{{__('message.update')}}</a>
                                     <form action="{{ route('admin.discounts.destroy', $discount) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette remise?')">Supprimer</button>
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette remise?')">{{__('message.delete')}}</button>
                                     </form>
                                 </td>
                             </tr>

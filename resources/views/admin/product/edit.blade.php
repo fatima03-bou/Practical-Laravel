@@ -3,7 +3,7 @@
 @section('content')
 <div class="card mb-4">
   <div class="card-header">
-    Edit Product
+    {{__('message.edit_prod')}}
   </div>
   <div class="card-body">
     @if($errors->any())
@@ -20,7 +20,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3 row">
-            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Name:</label>
+            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.name')}}:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
               <input name="name" value="{{ $viewData['product']->name }}" type="text" class="form-control">
             </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="col">
           <div class="mb-3 row">
-            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Price:</label>
+            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.price')}}:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
               <input name="price" value="{{ $viewData['product']->price }}" type="number" class="form-control">
             </div>
@@ -39,7 +39,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3 row">
-            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Discount Price:</label>
+            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.discount_price')}}:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
               <input name="discount_price" value="{{ $viewData['product']->getDiscountedPrice() }}" type="number" class="form-control">
             </div>
@@ -50,7 +50,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3 row">
-            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Image:</label>
+            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.image')}}:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
               <input class="form-control" type="file" name="image">
             </div>
@@ -62,22 +62,22 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Description</label>
+        <label class="form-label">{{__('message.description')}}</label>
         <textarea class="form-control" name="description" rows="3">{{ $viewData['product']->description }}</textarea>
       </div>
 
       <div class="mb-3 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Quantity in Stock:</label>
+        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.qte_instock')}}:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <input name="quantity_store" value="{{ old('quantity_store', $viewData['product']->quantity_store) }}" type="number" class="form-control">
         </div>
       </div>
 
       <div class="mb-3 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Fournisseur:</label>
+        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.fourni')}}:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="fournisseur_id" class="form-control">
-            <option value="">Select Supplier</option>
+            <option value="">{{__('message.select_fourni')}}</option>
             @foreach ($viewData['fournisseurs'] as $fournisseur)
               <option value="{{ $fournisseur->id }}"
                 {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
@@ -89,27 +89,20 @@
       </div>
 
       <div class="mb-3 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
+        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">{{__('message.cat')}}:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
           <select name="categorie_id" class="form-control">
-<<<<<<< HEAD
             @foreach ($viewData['categories'] as $categorie)
-              <option value="{{ $categorie->id }}" 
+              <option value="{{ $categorie->id }}"
                 {{ $viewData['product']->categorie_id == $categorie->id ? 'selected' : '' }}>
                 {{ $categorie->name }}
-=======
-            @foreach ($viewData['categories'] as $category)
-              <option value="{{ $category->id }}"
-                {{ $viewData['product']->categorie_id == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
->>>>>>> 2ae6c37 (Super admin can create new admin users)
               </option>
             @endforeach
           </select>
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary">Edit</button>
+      <button type="submit" class="btn btn-primary">{{__('message.edit')}}</button>
     </form>
   </div>
 </div>

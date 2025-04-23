@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\AdminUserController;
-
+use App\Http\Controllers\LanguageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\AdminUserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/language/{locale}', [LanguageController::class, 'change'])->name('language.change');
 
 
 

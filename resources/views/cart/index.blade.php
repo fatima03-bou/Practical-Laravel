@@ -4,16 +4,16 @@
 @section('content')
 <div class="card">
   <div class="card-header">
-    Products in Cart
+    {{__('message.product_in_cart')}}
   </div>
   <div class="card-body">
     <table class="table table-bordered table-striped text-center">
       <thead>
         <tr>
           <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
+          <th scope="col">{{__('message.name')}}</th>
+          <th scope="col">{{__('message.price')}}</th>
+          <th scope="col">{{__('message.quantity')}}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,12 +29,12 @@
     </table>
     <div class="row">
       <div class="text-end">
-        <a class="btn btn-outline-secondary mb-2"><b>Total to pay:</b> ${{ $viewData["total"] }}</a>
+        <a class="btn btn-outline-secondary mb-2"><b>{{__('message.total_pay')}}:</b> ${{ $viewData["total"] }}</a>
         @if (count($viewData["products"]) > 0)
-        <a href="{{ route('cart.purchase') }}" class="btn bg-primary text-white mb-2">Purchase</a>
+        <a href="{{ route('cart.purchase') }}" class="btn bg-primary text-white mb-2">{{__('message.purchase')}}</a>
         <a href="{{ route('cart.delete') }}">
           <button class="btn btn-danger mb-2">
-            Remove all products from Cart
+            {{__('message.remove_all_prod')}}
           </button>
         </a>
         @endif
