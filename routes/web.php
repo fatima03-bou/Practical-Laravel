@@ -80,7 +80,8 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('admin/users/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
     Route::put('admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::delete('admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
-});
+}
+);
 
 
 Auth::routes();

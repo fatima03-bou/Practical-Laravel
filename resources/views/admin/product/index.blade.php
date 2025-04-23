@@ -31,10 +31,6 @@
           <label class="form-label">Prix (€)</label>
           <input name="price" value="{{ old('price') }}" type="number" min="1" step="0.01" class="form-control" required>
         </div>
-        <div class="col-md-3">
-          <label class="form-label">Prix remisé (€)</label>
-          <input name="discount_price" value="{{ old('discount_price') }}" type="number" min="1" step="0.01" class="form-control">
-        </div>
         <div class="col-md-6">
           <label class="form-label">Quantité en stock</label>
           <input name="quantity_store" value="{{ old('quantity_store') }}" type="number" min="1" class="form-control" required>
@@ -90,8 +86,8 @@
         <select name="categorie_id" id="categorie_id" class="form-select">
           <option value="">Toutes les catégories</option>
           @foreach($viewData["categories"] as $category)
-            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-              {{ $category->name }}
+          <option value="{{ $category->id }}" {{ request('categorie_id') == $category->id ? 'selected' : '' }}>
+            {{ $categorie->name }}
             </option>
           @endforeach
         </select>

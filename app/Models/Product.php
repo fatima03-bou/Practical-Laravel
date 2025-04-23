@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Item;
-use App\Models\Categorie;
-use App\Models\Discount;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store',"fournisseur_id"];
+
+    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store', 'fournisseur_id'];
 
     // ✅ Validation statique
     public static function validate($request)
@@ -23,8 +21,8 @@ class Product extends Model
             "description" => "required",
             "price" => "required|numeric|gt:0",
             'image' => 'nullable|image',
-            "quantity_store" => "required|numeric|gt:1",  
-            "categorie_id" => "required|exists:categories,id", 
+            "quantity_store" => "required|numeric|gt:1",
+            "categorie_id" => "required|exists:categories,id",
             "fournisseur_id" => "required|exists:fournisseurs,id"
         ]);
     }
@@ -64,66 +62,69 @@ class Product extends Model
     public function getCategorieId() { return $this->attributes["categorie_id"]; }
     public function setCategorieId($categorieId) { $this->attributes["categorie_id"] = $categorieId; }
 
+    public function getQuantityStore() { return $this->attributes['quantity_store']; }
+
     // ✅ Relations
     public function items(): HasMany { return $this->hasMany(Item::class); }
-    public function getItems() { return $this->items; }
-    public function setItems($items) { $this->items = $items; }
 
     public function categorie(): BelongsTo { return $this->belongsTo(Categorie::class, 'categorie_id'); }
 
-    public function discounts(): HasMany { return $this->hasMany(Discount::class); }
+    public function discounts(): HasMany { return $this->hasMany(Discount::class, 'product_id'); }
+
+    public function fournisseur(): BelongsTo
+{
+    return $this->belongsTo(Fournisseur::class);
+}
+
 
     // ✅ Discounts logic
     public function getActiveDiscount()
     {
         $now = now();
 
-        // Produit spécifique
+        // ✅ Produit
         $productDiscount = $this->discounts()
-        ->where('type', 'product')
-        ->where('start_date', '<=', $now)
-        ->where('end_date', '>=', $now)
-        ->orderByDesc('rate')
-        ->first();
+            ->where('type', 'product')
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderByDesc('rate')
+            ->first();
 
         if ($productDiscount) return $productDiscount;
 
-        // Catégorie
-        $categoryDiscount = Discount::where('category_id', $this->categorie_id)
-        ->where('type', 'category')
-        ->where('start_date', '<=', $now)
-        ->where('end_date', '>=', $now)
-        ->orderByDesc('rate')
-        ->first();
+        // ✅ Categorie
+        if ($this->categorie_id) {
+            $categorieDiscount = Discount::where('categorie_id', $this->categorie_id) // 🔁 FIXED: `category_id` ➜ `categorie_id`
+                ->where('type', 'categorie') // 🔁 FIXED: type must match your data
+                ->where('start_date', '<=', $now)
+                ->where('end_date', '>=', $now)
+                ->orderByDesc('rate')
+                ->first();
 
-        if ($categoryDiscount) return $categoryDiscount;
+            if ($categorieDiscount) return $categorieDiscount;
+        }
 
-        // Globale
+        // ✅ Global
         return Discount::whereNull('product_id')
-        ->whereNull('category_id')
-        ->where('type', 'global')
-        ->where('start_date', '<=', $now)
-        ->where('end_date', '>=', $now)
-        ->orderByDesc('rate')
-        ->first();
+            ->whereNull('categorie_id')
+            ->where('type', 'global')
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->orderByDesc('rate')
+            ->first();
     }
 
     public function hasDiscount(): bool
     {
-        return $this->getActiveDiscount() !== null;   //check if there's a discount
+        return $this->getActiveDiscount() !== null;
     }
 
     public function getDiscountedPrice()
     {
-        $discount = $this->getActiveDiscount();  //calcule de prix apres la remise
+        $discount = $this->getActiveDiscount();
 
         if (!$discount) return $this->price;
 
         return $this->price * (1 - ($discount->rate / 100));
     }
-
-    public function getQuantityStore()
-   {
-    return $this->attributes['quantity_store'];
-   }
 }
