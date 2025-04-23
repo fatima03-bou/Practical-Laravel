@@ -131,5 +131,10 @@ class Product extends Model
     {
         return $this->belongsTo(Fournisseur::class);
     }
+    public function isDiscountActive()
+    {
+        $discount = $this->getActiveDiscount(); 
+        return $discount !== null; 
+    }
 
 }

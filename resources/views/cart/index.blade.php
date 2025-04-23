@@ -1,6 +1,8 @@
 @extends('layouts.app')
+
 @section('title', $viewData["title"])
 @section('subtitle', $viewData["subtitle"])
+
 @section('content')
 <div class="card">
   <div class="card-header">
@@ -14,19 +16,39 @@
           <th scope="col">Name</th>
           <th scope="col">Price</th>
           <th scope="col">Quantity</th>
+          <th scope="col">Subtotal</th>
         </tr>
       </thead>
       <tbody>
+        @php
+          $cart = json_decode(request()->cookie('cart'), true) ?? [];
+        @endphp
         @foreach ($viewData["products"] as $product)
         <tr>
           <td>{{ $product->getId() }}</td>
           <td>{{ $product->getName() }}</td>
-          <td>${{ $product->getPrice() }}</td>
-          <td>{{ session('products')[$product->getId()] }}</td>
+          <td>
+            @if ($product->hasDiscount())
+              <span class="text-danger fw-bold">${{ $product->getDiscountedPrice() }}</span>
+              <br>
+              <small><s>${{ $product->getPrice() }}</s></small>
+            @else
+              ${{ $product->getPrice() }}
+            @endif
+          </td>
+          <td>{{ $cart[$product->getId()] ?? 0 }}</td>
+          <td>
+            @php
+              $price = $product->hasDiscount() ? $product->getDiscountedPrice() : $product->getPrice();
+              $quantity = $cart[$product->getId()] ?? 0;
+            @endphp
+            ${{ $price * $quantity }}
+          </td>
         </tr>
         @endforeach
       </tbody>
     </table>
+
     <div class="row">
       <div class="text-end">
         <a class="btn btn-outline-secondary mb-2"><b>Total to pay:</b> ${{ $viewData["total"] }}</a>
