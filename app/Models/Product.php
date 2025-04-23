@@ -126,4 +126,10 @@ class Product extends Model
    {
     return $this->attributes['quantity_store'];
    }
+
+    public function fournisseur()
+    {
+        return $this->belongsTo(Fournisseur::class);
+    }
+
 }

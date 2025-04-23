@@ -9,24 +9,24 @@ use App\Services\CartService;
 class OrderController extends Controller
 {
     private $cartService;
-    
+
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
     }
-    
-    // Méthode existante qui affiche le formulaire de commande
+
+    // Display the order creation form
     public function create()
     {
         $cart = $this->cartService->getCart(request());
         if (count($cart->getItems()) == 0) {
             return redirect()->back()->with('error', 'Votre panier est vide');
         }
-        
+
         return view('order.create', compact('cart'));
     }
-    
-    // Méthode modifiée pour prendre en compte la méthode de paiement
+
+    // Handle order creation, including payment method selection
     public function store(Request $request)
     {
         $request->validate([
@@ -35,31 +35,31 @@ class OrderController extends Controller
             'postal_code' => 'required',
             'payment_method' => 'required|in:livraison,en_ligne',
         ]);
-        
-        // Si l'utilisateur choisit le paiement en ligne, le rediriger vers la passerelle de paiement
+
+        // If the user chooses online payment, redirect to the payment gateway
         if ($request->payment_method == 'en_ligne') {
-            // Stocker les informations de commande en session pour les récupérer après le paiement
+            // Store order data in session for later retrieval after payment
             session()->put('order_data', [
                 'address' => $request->address,
                 'city' => $request->city,
                 'postal_code' => $request->postal_code,
                 'payment_method' => 'en_ligne'
             ]);
-            
+
             return redirect()->route('payment.checkout');
         }
 
-        // Si c'est un paiement à la livraison, créer directement la commande
+        // If it's cash on delivery, create the order directly
         $order = $this->createOrder($request, 'livraison');
-        
-        // Vider le panier
+
+        // Clear the cart after placing the order
         $this->cartService->clear();
-        
+
         return redirect()->route('orders.success', ['order' => $order->id])
             ->with('success', 'Votre commande a été passée avec succès. Paiement à la livraison.');
     }
-    
-    // Méthode modifiée pour inclure la méthode de paiement
+
+    // Create the order and update product stock
     protected function createOrder($request, $paymentMethod, $transactionId = null)
     {
         $cart = $this->cartService->getCart(request());
@@ -69,42 +69,42 @@ class OrderController extends Controller
         $order->city = $request->city;
         $order->postal_code = $request->postal_code;
         $order->total = $cart->getTotal();
-        $order->status = 'Commandé';
+        $order->status = 'Commandé'; // Order placed
         $order->payment_method = $paymentMethod;
-        
+
         if ($transactionId) {
             $order->transaction_id = $transactionId;
         }
-        
+
         $order->save();
-        
-        // Ajouter les produits à la commande et mettre à jour le stock
+
+        // Add products to the order and update stock
         foreach ($cart->getItems() as $item) {
             $product = \App\Models\Product::findOrFail($item->getId());
-            
-            // Créer l'item de commande
+
+            // Create order item
             $order->items()->create([
                 'product_id' => $item->getId(),
                 'quantity' => $item->getQuantity(),
                 'price' => $product->getDiscountedPrice()
             ]);
-            
-            // Mettre à jour le stock
+
+            // Update product stock
             $product->quantity_store -= $item->getQuantity();
             $product->save();
         }
-        
+
         return $order;
     }
-    
-    // Méthode pour afficher la page de succès
+
+    // Show success page for order
     public function success(Order $order)
     {
-        // Vérifier que l'utilisateur actuel est bien le propriétaire de la commande
+        // Ensure that the current user is the owner of the order
         if ($order->user_id != auth()->id()) {
-            abort(403);
+            abort(403, 'Unauthorized');
         }
-        
+
         return view('order.success', compact('order'));
     }
 }

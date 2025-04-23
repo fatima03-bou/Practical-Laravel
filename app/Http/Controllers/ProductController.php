@@ -124,4 +124,5 @@ class ProductController extends Controller
 
         return redirect()->route('admin.product.index')->with('success', 'Product updated successfully!');
     }
+    
 }

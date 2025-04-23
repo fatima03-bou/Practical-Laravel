@@ -52,5 +52,9 @@
       </div>
     </div>
   @endforeach
+  <div class="d-flex justify-content-center mt-4">
+    {{ $viewData['products']->links() }}
+</div>
+
 </div>
 @endsection

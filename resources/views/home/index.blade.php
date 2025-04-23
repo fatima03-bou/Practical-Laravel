@@ -1,46 +1,74 @@
-@extends('layouts.app')  <!-- Extend the main layout -->
-
-@section('title', 'Home Page - Online Store')
+@extends('layouts.app')
 
 @section('content')
-    @if ($showImages)
-        <div class="row">
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/game.png') }}" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/safe.png') }}" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/submarine.png') }}" class="img-fluid rounded">
-            </div>
-        </div>
-    @endif
+<style>
+    .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+            url('/storage/products/3.jpg') center/cover no-repeat;
+        height: 70vh;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-radius: 20px;
+    }
 
-    <div class="row">
-        @foreach ($products as $product)
-            <div class="col-md-4 col-lg-3 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="{{ asset('storage/images/' . $product->image) }}" alt="{{ $product->name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column text-center">
-                        <h5 class="card-title fw-bold">{{ $product->getName() }}</h5>
-                        <p class="mb-2">
-                            <span class="badge bg-secondary">Prix : {{ number_format($product->getPrice(), 2) }} DH</span>
-                        </p>
-                        <p class="mb-1">
-                            <small>Quantité en stock : <strong>{{ $product->getQuantityStore() }}</strong></small>
-                        </p>
-                        @if ($product->getQuantityStore() == 0)
-                            <span class="badge bg-danger">Rupture de stock</span>
-                        @endif
-                        <div class="mt-auto">
-                            <a href="{{ route('product.show', ['id' => $product->getId()]) }}" class="btn btn-outline-primary mt-3 w-100">
-                                Voir le produit
-                            </a>
-                        </div>
-                    </div>
+    .hero h1 {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .features {
+        margin-top: 4rem;
+    }
+
+    .features .card {
+        transition: transform 0.3s ease;
+    }
+
+    .features .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="hero">
+        <div>
+            <h1>Bienvenue sur notre boutique en ligne</h1>
+            <p class="lead">Découvrez les meilleures offres et nos derniers produits</p>
+            <a href="{{ route('product.index') }}" class="btn btn-warning btn-lg mt-3">Voir les produits</a>
+        </div>
+    </div>
+
+    <div class="row features text-center">
+        <div class="col-md-4 mt-4">
+            <div class="card border-0 shadow">
+                <img src="/storage/products/4.jpg" class="card-img-top" alt="Feature 1">
+                <div class="card-body">
+                    <h5 class="card-title">Livraison Rapide</h5>
+                    <p class="card-text">Recevez vos produits en un temps record partout au Maroc.</p>
                 </div>
             </div>
-        @endforeach
+        </div>
+        <div class="col-md-4 mt-4">
+            <div class="card border-0 shadow">
+                <img src="/storage/products/5.jpg" class="card-img-top" alt="Feature 2">
+                <div class="card-body">
+                    <h5 class="card-title">Paiement Sécurisé</h5>
+                    <p class="card-text">Des options de paiement sûres pour une expérience sans souci.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mt-4">
+            <div class="card border-0 shadow">
+                <img src="/storage/products/6.jpg" class="card-img-top" alt="Feature 3">
+                <div class="card-body">
+                    <h5 class="card-title">Support 24/7</h5>
+                    <p class="card-text">Notre équipe est à votre écoute tous les jours, à toute heure.</p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 @endsection

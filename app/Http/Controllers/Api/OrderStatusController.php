@@ -8,39 +8,36 @@ use Illuminate\Http\Request;
 
 class OrderStatusController extends Controller
 {
+    // الحصول على حالة الطلب
     public function getStatus($orderId)
     {
-        // On récupère la commande avec les relations "produit", "utilisateur", et "items"
+        // البحث عن الطلب باستخدام الـ ID وإحضار العلاقات اللازمة مثل المنتج، المستخدم، والعناصر
         $order = Order::with(['product', 'user', 'items'])->find($orderId);
 
-        // Si la commande n'existe pas, on renvoie une erreur 404
+        // إذا لم نجد الطلب، نرجع خطأ 404
         if (!$order) {
-            return response()->json(['error' => 'Commande non trouvée'], 404);
+            return response()->json(['error' => 'Order not found'], 404);
         }
 
-        // On renvoie les données de la commande sous forme de JSON
+        // إرجاع البيانات المطلوبة بصيغة JSON
         return response()->json([
-            'order_id' => $order->getId(),
-            'status' => $order->getStatus(),
-            'total' => $order->getTotal(),
-            'product' => $order->product?->name, // nom du produit lié
-            'user' => $order->user?->name,       // nom de l'utilisateur
-            'created_at' => $order->getCreatedAt(),
-            'updated_at' => $order->getUpdatedAt(),
-
-            // Message d'état personnalisé selon le statut
-            'message' => match ($order->getStatus()) {
-                'processing' => 'Votre commande est en cours de traitement 💼',
-                'shipped' => 'Votre commande a été expédiée 🚚',
-                'delivered' => 'Votre commande a été livrée ✅',
-                'cancelled' => 'Votre commande a été annulée ❌',
-                default => 'Statut inconnu',
+            'order_id' => $order->id,
+            'status' => $order->status,
+            'total' => $order->total,
+            'product' => $order->product->name ?? 'No product specified',
+            'user' => $order->user->name ?? 'Unknown user',
+            'created_at' => $order->created_at,
+            'updated_at' => $order->updated_at,
+            'message' => match ($order->status) {
+                'processing' => 'Your order is being processed 💼',
+                'shipped' => 'Your order has been shipped 🚚',
+                'delivered' => 'Your order has been delivered ✅',
+                'cancelled' => 'Your order has been cancelled ❌',
+                default => 'Unknown status',
             },
-
-            // Liste des articles commandés (s’il y en a plusieurs)
             'items' => $order->items->map(function ($item) {
                 return [
-                    'name' => $item->product->name ?? 'Inconnu',
+                    'name' => $item->product->name ?? 'Unknown product',
                     'quantity' => $item->quantity,
                 ];
             }),
@@ -51,10 +48,11 @@ class OrderStatusController extends Controller
         $order = Order::with('product', 'user')->find($id);
 
         if (!$order) {
-            return abort(404, 'Commande non trouvée');
+            return abort(404, 'Order not found');
         }
 
         return view('orders.status', compact('order'));
     }
+
 
 }

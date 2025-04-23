@@ -18,17 +18,31 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["categories"] = Categorie::all();
-        $viewData["title"] = "Page Admin - Produits - Boutique en ligne";
+        $viewData["title"] = "Admin Page - Products - Online Store";
 
         $fournisseurId = $request->input('fournisseur_id');
+        $categorieId = $request->input('categorie_id');
+        $onSale = $request->input('on_sale');
+
+        $query = Product::query();
 
         if ($fournisseurId) {
-            $viewData["products"] = Product::where('fournisseur_id', $fournisseurId)->get();
-        } else {
-            $viewData["products"] = Product::all();
+            $query->where('fournisseur_id', $fournisseurId);
         }
 
+        if ($categorieId) {
+            $query->where('categorie_id', $categorieId);
+        }
+
+        if ($onSale) {
+            $query->whereNotNull('discount_price');
+        }
+
+        // Paginate the results
+        $viewData["products"] = $query->paginate(10)->withQueryString();
+
         $viewData["fournisseurs"] = Fournisseur::all();
+
         return view('admin.product.index')->with("viewData", $viewData);
     }
 
@@ -41,11 +55,12 @@ class AdminProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:1',
             'quantity_store' => 'required|integer|min:1',
-            'image' => 'required|image|max:2048',
+            'image' => 'nullable|image|max:2048',  
             'description' => 'required|string|max:1000',
             'fournisseur_id' => 'required|exists:fournisseurs,id',
             'categorie_id' => 'required|exists:categories,id|min:1',
         ]);
+        
 
         $newProduct = new Product();
         $newProduct->name = $request->input('name');
@@ -55,8 +70,8 @@ class AdminProductController extends Controller
         $newProduct->categorie_id = $request->input('categorie_id');
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
         $newProduct->save();
-
-        // Sauvegarde de l'image réelle
+        
+        // Sauvegarde de l'image réelle si elle existe
         if ($request->hasFile('image')) {
             $imageName = $newProduct->id . '.' . $request->file('image')->extension();
             Storage::disk('public')->put(
@@ -66,8 +81,8 @@ class AdminProductController extends Controller
             $newProduct->image = $imageName;
             $newProduct->save();
         }
-
-        return back()->with('success', 'Produit créé avec succès!');
+        
+        return back()->with('success', 'Produit créé avec succès!');        
     }
 
 

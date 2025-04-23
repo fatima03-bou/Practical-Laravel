@@ -14,14 +14,12 @@
   <title>@yield('title', 'Admin - Online Store')</title>
 
   <style>
-    /* Body Styling */
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #f4f7fb;
       margin: 0;
     }
 
-    /* Navbar Styling */
     .navbar {
       background-color: #1e1f25;
       padding: 15px 30px;
@@ -53,7 +51,6 @@
       margin-right: 8px;
     }
 
-    /* Admin Profile Dropdown */
     .profile-dropdown {
       position: relative;
     }
@@ -102,7 +99,6 @@
       transform: translateX(5px);
     }
 
-    /* Main Content */
     .content {
       background-color: #fff;
       padding: 40px 60px;
@@ -126,7 +122,6 @@
       font-weight: 700;
     }
 
-    /* Content Card */
     .card-custom {
       border: none;
       border-radius: 10px;
@@ -172,15 +167,12 @@
       background-color: #0056b3;
     }
 
-    /* Footer */
     .footer {
       background-color: #333;
       color: #fff;
       padding: 20px;
       text-align: center;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
+      margin-top: auto;
     }
 
     .footer a {
@@ -194,7 +186,7 @@
   </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="{{ route('admin.home.index') }}">Admin Panel</a>
@@ -221,42 +213,45 @@
         <li class="nav-item profile-dropdown">
           <img class="profile-avatar" src="{{ asset('/img/undraw_profile.svg') }}" alt="Admin Profile">
           <div class="profile-dropdown-menu">
-              <a href="#">My Profile</a>
-              <a href="#">Settings</a>
-              <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                  @csrf
-                  <button type="submit" class="dropdown-item text-danger" style="border: none; background: none; padding: 8px 0;">
-                      Logout
-                  </button>
-              </form>
+            <a href="#">My Profile</a>
+            <a href="#">Settings</a>
+            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+              @csrf
+              <button type="submit" class="dropdown-item text-danger" style="border: none; background: none; padding: 8px 0;">
+                Logout
+              </button>
+            </form>
           </div>
-      </li>
+        </li>
       </ul>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <div class="content">
-    <header>
-      <h1>{{ $viewData["title"] }}</h1>
-      <div>
-        <span class="profile-font">Admin</span>
-        <img class="img-profile" src="{{ asset('/img/undraw_profile.svg') }}" alt="Admin Profile">
-      </div>
-    </header>
+  <main class="flex-fill">
+    <div class="content">
+      <header>
+        <h1>{{ $viewData["title"] }}</h1>
+        <div>
+          <span class="profile-font">Admin</span>
+          <img class="img-profile" src="{{ asset('/img/undraw_profile.svg') }}" alt="Admin Profile">
+        </div>
+      </header>
 
-    <!-- Content Goes Here -->
-    <div class="g-0">
-      @yield('content')
+      <div class="g-0">
+        @yield('content')
+      </div>
     </div>
-  </div>
+  </main>
 
   <!-- Footer -->
-  <div class="footer">
+  <footer class="footer">
     <small>
-      Copyright - <a href="https://twitter.com/danielgarax" target="_blank">Daniel Correa</a> - <b>Paola Vallejo</b>
+      Copyright -
+      <a href="https://twitter.com/danielgarax" target="_blank">Daniel Correa</a> -
+      <b>Paola Vallejo</b>
     </small>
-  </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>

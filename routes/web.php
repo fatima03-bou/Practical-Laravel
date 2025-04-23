@@ -103,3 +103,5 @@ Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])
 Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
+Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
