@@ -11,11 +11,13 @@
   </div>
   <div class="card-body">
     @if ($errors->any())
-      <ul class="alert alert-danger list-unstyled">
-        @foreach ($errors->all() as $error)
-          <li>- {{ $error }}</li>
-        @endforeach
-      </ul>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          @foreach ($errors->all() as $error)
+            <li>- {{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
     @endif
 
     <form method="POST" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
@@ -156,7 +158,7 @@
         </select>
       </div>
 
-      <div class="form-check mb-3">
+      <div class="col-md-4 form-check mt-4">
         <input type="checkbox" class="form-check-input" id="on_sale" name="on_sale" value="1" {{ request('on_sale') ? 'checked' : '' }}>
         <label class="form-check-label" for="on_sale">{{__('message.produits_en_solde_uniquement')}}</label>
       </div>
@@ -173,7 +175,7 @@
   </div>
   <div class="card-body">
     <div class="table-responsive">
-      <table class="table table-bordered table-striped text-center">
+      <table class="table table-hover table-striped text-center align-middle">
         <thead class="table-dark">
           <tr>
             <th scope="col">ID</th>
@@ -189,6 +191,13 @@
         <tbody>
           @foreach ($viewData["products"] as $product)
           <tr>
+            <td>
+              @if ($product->image)
+                <img src="{{ asset('storage/images/' . $product->image) }}" alt="image" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+              @else
+                <span class="text-muted">Pas d’image</span>
+              @endif
+            </td>
             <td>{{ $product->id }}</td>
             <td>{{ $product->name }}</td>
             <td>{{ number_format($product->price, 2) }} €</td>
@@ -196,16 +205,16 @@
             <td>{{ optional($product->categorie)->name }}</td>
             <td>{{ optional($product->fournisseur)->raison }}</td>
             <td>
-              <a class="btn btn-primary btn-sm" href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
-                <i class="bi-pencil"></i>
+              <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.product.edit', ['id' => $product->id]) }}">
+                <i class="bi-pencil-square"></i>
               </a>
             </td>
             <td>
-              <form action="{{ route('admin.product.delete', $product->id) }}" method="POST">
+              <form action="{{ route('admin.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('Confirmer la suppression ?')">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-danger btn-sm">
-                  <i class="bi-trash"></i>
+                <button class="btn btn-sm btn-outline-danger">
+                  <i class="bi-trash3"></i>
                 </button>
               </form>
             </td>

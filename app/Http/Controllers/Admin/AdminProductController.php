@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ProductExport;
 use App\Models\Product;
 use App\Models\Categorie;
 use App\Models\Fournisseur;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminProductController extends Controller
@@ -37,7 +39,6 @@ class AdminProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-
             'price' => 'required|numeric|min:1',
             'quantity_store' => 'required|integer|min:1',
             'image' => 'required|image|max:2048',
@@ -59,13 +60,13 @@ class AdminProductController extends Controller
         $newProduct->quantity_store = $quantityStore;
         $newProduct->categorie_id = $categorieId;
         $newProduct->quantity_store = $request->input('quantity_store');
-        $newProduct->categorie_id = $categorieId;
+        $newProduct->categorie_id = $request->input('categorie_id');
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
-        $newProduct->image = "game.png";
         $newProduct->save();
 
+        // Sauvegarde de l'image réelle
         if ($request->hasFile('image')) {
-            $imageName = $newProduct->id . "." . $request->file('image')->extension();
+            $imageName = $newProduct->id . '.' . $request->file('image')->extension();
             Storage::disk('public')->put(
                 $imageName,
                 file_get_contents($request->file('image')->getRealPath())
@@ -77,7 +78,9 @@ class AdminProductController extends Controller
         return back()->with('success', 'Produit créé avec succès!');
     }
 
-    public function delete($id)
+
+
+    public function destroy($id)
     {
         $product = Product::findOrFail($id);
         if ($product->image && Storage::disk("public")->exists($product->image)) {
@@ -111,6 +114,7 @@ class AdminProductController extends Controller
             'categorie_id' => 'nullable|exists:categories,id|min:1',
         ]);
         $categorieId = $request->input('categorie_id', 1);
+        $quantityStore = $request->input('quantity_store', 1);
         $product = Product::findOrFail($id);
         $product->name = $request->input('name');
         $product->description = $request->input('description');
@@ -137,74 +141,8 @@ class AdminProductController extends Controller
 
         return redirect()->route('admin.home.index')->with('success', 'Produit mis à jour avec succès!');
     }
-
     public function exportCSV()
     {
-        $products = Product::all();
-        $csvData = [];
-
-        $csvData[] = ['ID', 'Name', 'Price', 'Category', 'Quantity'];
-        foreach ($products as $product) {
-            $csvData[] = [
-                $product->id,
-                $product->name,
-                $product->price,
-                optional($product->categorie)->name,
-                $product->quantity_store,
-            ];
-        }
-        $response = new StreamedResponse(function () use ($csvData) {
-            $handle = fopen('php://output', 'w');
-            foreach ($csvData as $row) {
-                fputcsv($handle, $row);
-            }
-            fclose($handle);
-        });
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename="products.csv"');
-
-        return $response;
+        return Excel::download(new ProductExport, 'products.csv');
     }
-    public function importCSV(Request $request)
-    {
-        $request->validate([
-            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
-        ]);
-
-        $file = $request->file('csv_file');
-
-        if (!$file) {
-            return back()->with('error', 'Aucun fichier sélectionné.');
-        }
-
-        $filePath = $file->getRealPath();
-        $handle = fopen($filePath, 'r');
-
-        if (!$handle) {
-            return back()->with('error', 'Impossible d\'ouvrir le fichier.');
-        }
-        fgetcsv($handle);
-        while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
-            if (count($row) < 7) {
-                continue;
-            }
-            $quantityStore = isset($row[4]) && $row[4] >= 1 ? $row[4] : 1;
-            Product::updateOrCreate(
-                ['id' => $row[0]],
-                [
-                    'name' => $row[1],
-                    'description' => $row[2],
-                    'price' => $row[3],
-                    'quantity_store' => $quantityStore,
-                    'categorie_id' => Categorie::firstOrCreate(['name' => $row[5]])->id,
-                    'fournisseur_id' => Fournisseur::firstOrCreate(['name' => $row[6]])->id,
-                ]
-            );
-        }
-
-        fclose($handle);
-
-        return back()->with('success', 'Importation réussie !');
-    }
-
 }

@@ -1,55 +1,49 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('message.login') }}</div>
-
+<div class="container d-flex justify-content-center align-items-center min-vh-100 py-5" style="background: linear-gradient(135deg, #6e7bff, #a8caff);">
+    <div class="row w-100">
+        <div class="col-md-6 col-lg-4 mx-auto">
+            <div class="card shadow-lg rounded-5 border-0 p-4" style="width: 350px; animation: fadeIn 1s ease-in-out;">
                 <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary fw-bold" style="font-family: 'Roboto Slab', serif;">Welcome Back!</h2>
+                        <p class="text-muted">Please login to your account</p>
+                    </div>
+
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('message.email') }}  </label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label for="email" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('message.email') }}  </label>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('message.password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('message.password') }}</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember"
+                        <!-- Remember Me Checkbox -->
+                        <div class="mb-4 d-flex justify-content-between align-items-center">
+                            <div>
+                                <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                         {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('message.remember_me') }}
-                                    </label>
-                                </div>
+                                <label class="form-check-label" for="remember">
+                                    {{ __('message.remember_me') }}
+                                </label>
                             </div>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-decoration-none text-primary">Forgot Password?</a>
+                            @endif
                         </div>
 
                         <div class="row mb-0">
@@ -71,4 +65,43 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Animation for fading in the card */
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card styling */
+    .card {
+        background-color: #ffffff;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Field focus effect */
+    .form-control:focus {
+        border-color: #6e7bff;
+        box-shadow: 0 0 8px rgba(110, 123, 255, 0.5);
+    }
+
+    /* Button hover effect */
+    .btn:hover {
+        background: linear-gradient(135deg, #3e5ad7, #6e7bff);
+        transform: scale(1.05);
+    }
+
+    /* Link hover effect */
+    .text-primary:hover {
+        text-decoration: underline;
+    }
+</style>
 @endsection
