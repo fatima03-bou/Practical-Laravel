@@ -90,10 +90,6 @@
 
           <!-- Language Dropdown -->
           <div x-data="{ open: false }" class="relative inline-block text-left">
-            <button @click="open = !open" type="button"
-              class="inline-flex justify-center w-full px-3 py-2 bg-primary-700 rounded-md text-sm font-medium text-white hover:bg-primary-800 focus:outline-none transition">
-              🌐 {{ strtoupper(app()->getLocale()) }}
-            </button>
           
             <div x-show="open" @click.away="open = false" 
                  class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
