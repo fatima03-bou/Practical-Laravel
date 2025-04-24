@@ -120,14 +120,7 @@ class Product extends Model
         return $this->getActiveDiscount() !== null;
     }
 
-    public function getDiscountedPrice()
-    {
-        $discount = $this->getActiveDiscount();
 
-        if (!$discount) return $this->price;
-
-        return $this->price * (1 - ($discount->rate / 100));
-    }
 
     public function discount()
 {
@@ -137,5 +130,23 @@ class Product extends Model
 public function category()
 {
     return $this->belongsTo(Categorie::class, 'category_id');
+}
+public function isDiscountActive()
+{
+    $discount = $this->discount;
+    $now = now();
+
+    return $discount && $now >= $discount->start_date && $now <= $discount->end_date;
+}
+public function getDiscountedPrice()
+{
+    if ($this->isDiscountActive()) {
+        return $this->price - ($this->price * $this->discount->percentage / 100);
+    }
+    return $this->price;
+}
+public function getFormattedDiscountedPrice()
+{
+    return number_format($this->getDiscountedPrice(), 2);
 }
 }
