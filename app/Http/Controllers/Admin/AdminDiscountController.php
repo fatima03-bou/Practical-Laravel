@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Categorie;
-use App\Models\Product  ;
-class DiscountController extends Controller
+
+class AdminDiscountController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,14 +20,7 @@ class DiscountController extends Controller
      */
     public function create()
     {
-        $categories = Categorie::all();
-        $products = Product::all();
-    
-        $viewData = [];
-        $viewData["title"] = "Créer une remise - Admin";
-        $viewData["categories"] = $categories;
-        $viewData["products"] = $products;
-        return view('admin.discounts.create')->with("viewData", $viewData);
+        return view('admin.discounts.create');
     }
 
     /**
@@ -36,11 +28,16 @@ class DiscountController extends Controller
      */
     public function store(Request $request)
     {
-
+        $request->validate([
+            'type' => 'required|in:all,category,product',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
     
         \App\Models\Discount::create($request->all());
     
-        return redirect()->route('discounts.create')->with('success', 'Remise ajoutes avec Success');
+        return redirect()->route('discounts.create')->with('success', 'Remise ajoutée avec succès.');
     }
 
     /**

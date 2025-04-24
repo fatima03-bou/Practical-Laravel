@@ -1,110 +1,213 @@
 @extends('layouts.admin')
-
+@section('title', $viewData["title"])
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
-        <div>
-            <h1 class="fw-bold">{{ $viewData["title"] }}</h1>
-            <h2 class="text-muted">{{ $viewData["subtitle"] }}</h2>
+<div class="container">
+    <h1 class="mb-4">{{ $viewData['title'] }}</h1>
+
+    <!-- Date Range Form -->
+    <form method="GET" action="{{ route('statistics.index') }}" class="mb-4">
+        <div class="row">
+            <div class="col-md-5">
+                @php
+                    use Carbon\Carbon;
+                @endphp
+                <input type="date" name="start_date" class="form-control" value="{{ request('start_date', Carbon::today()->toDateString()) }}">
+            </div>
+            <div class="col-md-5">
+                <input type="date" name="end_date" class="form-control" value="{{ request('end_date', Carbon::tomorrow()->toDateString()) }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filtrer</button>
+            </div>
         </div>
-        <div class="mt-3 mt-md-0">
-            <a href="{{ route('admin.statistics.pdf') }}" class="btn btn-danger btn-lg">
-                <i class="bi bi-file-earmark-pdf"></i> Télécharger en PDF
-            </a>
+    </form>
+    <!-- Chiffre d'affaires (Revenue) -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    Chiffre d'affaires
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><strong>Aujourd'hui:</strong> ${{ $viewData['revenueToday'] }}</li>
+                        <li><strong>Ce mois-ci:</strong> ${{ $viewData['revenueMonth'] }}</li>
+                        <li><strong>Cette année:</strong> ${{ $viewData['revenueYear'] }}</li>
+                        {{-- <li><strong>Période:</strong> ${{ $viewData['revenuePeriod'] }}</li> --}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    Bénéfice
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><strong>Aujourd'hui:</strong> ${{ $viewData['profitToday'] }}</li>
+                        <li><strong>Ce mois-ci:</strong> ${{ $viewData['profitMonth'] }}</li>
+                        <li><strong>Cette année:</strong> ${{ $viewData['profitYear'] }}</li>
+                        {{-- <li><strong>Période:</strong> ${{ $viewData['profitPeriod'] }}</li> --}}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Period Selector -->
+    <!-- Chiffre d'affaires par Produit -->
     <div class="card mb-4">
-        <div class="card-body">
-            <form method="GET" action="{{ route('admin.statistics.index') }}">
-                <div class="mb-3">
-                    <label for="period" class="form-label">Choisir la période :</label>
-                    <select name="period" id="period" class="form-select" onchange="this.form.submit()">
-                        <option value="day" {{ $viewData['selectedPeriod'] === 'day' ? 'selected' : '' }}>Aujourd'hui</option>
-                        <option value="month" {{ $viewData['selectedPeriod'] === 'month' ? 'selected' : '' }}>Ce mois-ci</option>
-                        <option value="year" {{ $viewData['selectedPeriod'] === 'year' ? 'selected' : '' }}>Cette année</option>
-                        <option value="custom" {{ $viewData['selectedPeriod'] === 'custom' ? 'selected' : '' }}>Période personnalisée</option>
-                    </select>
-                </div>
-
-                <div id="custom-dates" class="row g-3 {{ $viewData['selectedPeriod'] === 'custom' ? '' : 'd-none' }}">
-                    <div class="col-md-6">
-                        <label for="start_date" class="form-label">De :</label>
-                        <input type="date" name="start_date" value="{{ $viewData['startDate'] }}" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="end_date" class="form-label">À :</label>
-                        <input type="date" name="end_date" value="{{ $viewData['endDate'] }}" class="form-control">
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
-                    </div>
-                </div>
-            </form>
+        <div class="card-header bg-secondary text-white">
+            Chiffre d'affaires par Produit
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Chiffre d'affaires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['revenueByProduct'] as $data)
+                        <tr>
+                            <td>{{ $data->produit }}</td>
+                            <td>${{ $data->revenue }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Revenue & Profit Summary -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title">Chiffre d'affaires ({{ ucfirst($viewData["selectedPeriod"]) }})</h3>
-                    <p class="h4 text-success">{{ number_format($viewData["revenue"], 2) }} €</p>
-                </div>
-            </div>
+    <!-- Chiffre d'affaires par Catégorie -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            Chiffre d'affaires par Catégorie
         </div>
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title">Bénéfices ({{ ucfirst($viewData["selectedPeriod"]) }})</h3>
-                    <p class="h4 text-success">{{ number_format($viewData["profit"], 2) }} €</p>
-                </div>
-            </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Catégorie</th>
+                        <th>Chiffre d'affaires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['revenueByCategory'] as $data)
+                        <tr>
+                            <td>{{ $data->category }}</td>
+                            <td>${{ $data->revenue }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Tables -->
-    @php
-        $tables = [
-            'Revenus par Catégorie' => $viewData["categorieRevenue"],
-            'Revenus par Produit' => $viewData["productRevenue"],
-            'Revenus par Pays' => $viewData["countryRevenue"]
-        ];
-    @endphp
-
-    @foreach ($tables as $title => $data)
-        <div class="mb-4">
-            <h3 class="mb-3">{{ $title }}</h3>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>{{ $title === 'Revenus par Pays' ? 'Pays' : ($title === 'Revenus par Produit' ? 'Produit' : 'Catégorie') }}</th>
-                            <th>Revenu (€)</th>
-                            <th>Bénéfice (€)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data as $item)
-                        <tr>
-                            <td>{{ $item->name ?? $item->country }}</td>
-                            <td>{{ number_format($item->revenue, 2) }} €</td>
-                            <td>{{ number_format($item->profit, 2) }} €</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <!-- Chiffre d'affaires par Pays -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            Chiffre d'affaires par Pays
         </div>
-    @endforeach
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Pays</th>
+                        <th>Chiffre d'affaires</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['revenueByCountry'] as $data)
+                        <tr>
+                            <td>{{ $data->pays }}</td>
+                            <td>${{ $data->revenue }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bénéfice par Produit -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            Bénéfice par Produit
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Bénéfice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['profitByProduct'] as $data)
+                        <tr>
+                            <td>{{ $data->produit }}</td>
+                            <td>${{ $data->profit }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bénéfice par Catégorie -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            Bénéfice par Catégorie
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Catégorie</th>
+                        <th>Bénéfice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['profitByCategory'] as $data)
+                        <tr>
+                            <td>{{ $data->category }}</td>
+                            <td>${{ $data->profit }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bénéfice par Pays -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            Bénéfice par Pays
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered m-0">
+                <thead>
+                    <tr>
+                        <th>Pays</th>
+                        <th>Bénéfice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($viewData['profitByCountry'] as $data)
+                        <tr>
+                            <td>{{ $data->pays }}</td>
+                            <td>${{ $data->profit }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bouton pour exporter en PDF -->
+    <div class="text-center my-4">
+        <a href="{{ route('statistics.exportPdf', request()->all() ) }}" class="btn btn-danger">Télécharger le rapport PDF</a>
+    </div>
 </div>
-
-<script>
-    document.getElementById("period").addEventListener("change", function () {
-        const customDates = document.getElementById("custom-dates");
-        customDates.classList.toggle("d-none", this.value !== "custom");
-    });
-</script>
 @endsection

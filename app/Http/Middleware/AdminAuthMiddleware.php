@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -17,7 +16,7 @@ class AdminAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user() &&  Auth::user()->role == 'admin') {
+        if (Auth::user() && Auth::user()->role == 'admin') {
             return $next($request);
         } else {
             return redirect()->route('home.index');

@@ -3,11 +3,6 @@
 
 @section('content')
 <div class="row justify-content-center">
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
- @endif
   <div class="col-lg-8">
     <div class="card shadow">
       <div class="card-header">
@@ -22,8 +17,7 @@
 
           <div class="mb-3">
             <label for="type" class="form-label">Type de remise</label>
-            <div class="input-group"> 
-
+            <div class="input-group">
               <span class="input-group-text"><i class="bi bi-tag"></i></span>
               <select name="type" id="type" class="form-select" required>
                 <option value="all">Tous les produits</option>
@@ -32,14 +26,13 @@
               </select>
             </div>
           </div>
-         
 
           <div id="category-div" class="mb-3 d-none">
             <label for="category_id" class="form-label">Catégorie</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-folder"></i></span>
               <select name="category_id" class="form-select">
-                @foreach(\App\Models\Categorie::all() as $category)
+                @foreach(\App\Models\Category::all() as $category)
                   <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
               </select>

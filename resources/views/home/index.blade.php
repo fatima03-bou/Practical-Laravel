@@ -1,78 +1,56 @@
-@extends('layouts.app')  <!-- Extend the main layout -->
-
-@section('title', 'Home Page - Online Store')
-
+@extends('layouts.app')
+@section('title', $viewData["title"])
 @section('content')
-    @if (isset($showImages) && $showImages)
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/game.png') }}" class="img-fluid rounded shadow-sm">
-            </div>
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/safe.png') }}" class="img-fluid rounded shadow-sm">
-            </div>
-            <div class="col-md-6 col-lg-4 mb-2">
-                <img src="{{ asset('/img/submarine.png') }}" class="img-fluid rounded shadow-sm">
-            </div>
-        </div>
-    @endif
 
-    {{-- نموذج الفلترة --}}
-    <div class="card p-3 mb-4 shadow-sm">
-        <form method="GET" action="{{ route('product.index') }}">
-            <div class="row align-items-end g-3">
-                <div class="col-md-8">
-                    <label for="categorie_id" class="form-label fw-semibold">Filtrer par catégorie</label>
-                    <select name="categorie_id" id="categorie_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">Toutes les catégories</option>
-                        @foreach ($categories as $categorie)
-                            <option value="{{ $categorie->id }}"
-                                {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
-                                {{ $categorie->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4 text-end">
-                    <a href="{{ route('product.index') }}" class="btn btn-outline-secondary">
-                        Réinitialiser les filtres
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Bannière principale -->
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 items-center">
+                <div class="p-10">
+                    <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ __('messages.welcome_store') }}</h1>
+                    <p class="text-gray-600 text-lg mb-6">
+                        {{ __('messages.store_intro') }}
+                    </p>
+                    <a href="{{ route('product.index') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition">
+                        {{ __('messages.shop_now') }}
                     </a>
                 </div>
-            </div>
-        </form>
-    </div>
-
-    {{-- المنتجات --}}
-    <div class="row">
-        @forelse ($products as $product)
-            <div class="col-md-4 col-lg-3 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="{{ asset('storage/images/' . $product->image) }}" alt="{{ $product->name }}"
-                         class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column text-center">
-                        <h5 class="card-title fw-bold">{{ $product->getName() }}</h5>
-                        <p class="mb-2">
-                            <span class="badge bg-secondary">Prix : {{ number_format($product->getPrice(), 2) }} DH</span>
-                        </p>
-                        <p class="mb-1">
-                            <small>Quantité en stock : <strong>{{ $product->getQuantityStore() }}</strong></small>
-                        </p>
-                        @if ($product->getQuantityStore() == 0)
-                            <span class="badge bg-danger">Rupture de stock</span>
-                        @endif
-                        <div class="mt-auto">
-                            <a href="{{ route('product.show', ['id' => $product->getId()]) }}"
-                               class="btn btn-outline-primary mt-3 w-100">
-                                Voir le produit
-                            </a>
-                        </div>
-                    </div>
+                <div class="hidden md:block">
+                    <img src="https://source.unsplash.com/600x400/?shopping,store" alt="store" class="w-full h-full object-cover">
                 </div>
             </div>
-        @empty
-            <div class="col-12 text-center">
-                <p class="text-muted">Aucun produit trouvé pour cette catégorie.</p>
+        </div>
+
+        <!-- Fonctionnalités de la boutique -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-blue-500 text-4xl mb-4">🛒</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('messages.diverse_products') }}</h3>
+                <p class="text-gray-600">{{ __('messages.diverse_products_desc') }}</p>
             </div>
-        @endforelse
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-green-500 text-4xl mb-4">🚚</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('messages.fast_delivery') }}</h3>
+                <p class="text-gray-600">{{ __('messages.fast_delivery_desc') }}</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-yellow-500 text-4xl mb-4">💳</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('messages.payment_options') }}</h3>
+                <p class="text-gray-600">{{ __('messages.payment_options_desc') }}</p>
+            </div>
+        </div>
+
+        <!-- Appel à l'inscription -->
+        <div class="bg-blue-600 text-white text-center p-10 rounded-2xl">
+            <h2 class="text-3xl font-bold mb-3">{{ __('messages.join_now') }}</h2>
+            <p class="text-lg mb-6">{{ __('messages.join_now_desc') }}</p>
+            <a href="{{ route('register') }}" class="inline-block bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition">
+                {{ __('messages.register_now') }}
+            </a>
+        </div>
+
     </div>
+</div>
 @endsection
