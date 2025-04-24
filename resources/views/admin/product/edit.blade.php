@@ -14,7 +14,8 @@
     </ul>
     @endif
 
-    <form method="POST" action="{{ route('admin.product.update', ['id' => $viewData['product']->id]) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.product.update', ['id'=> $viewData['product']->getId()]) }}"
+      enctype="multipart/form-data">
       @csrf
       @method('PUT')
       <div class="row">
@@ -22,7 +23,7 @@
           <div class="mb-3 row">
             <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Name:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
-              <input name="name" value="{{ $viewData['product']->name }}" type="text" class="form-control">
+              <input name="name" value="{{ $viewData['product']->getName() }}" type="text" class="form-control">
             </div>
           </div>
         </div>
@@ -30,23 +31,11 @@
           <div class="mb-3 row">
             <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Price:</label>
             <div class="col-lg-10 col-md-6 col-sm-12">
-              <input name="price" value="{{ $viewData['product']->price }}" type="number" class="form-control">
+              <input name="price" value="{{ $viewData['product']->getPrice() }}" type="number" class="form-control">
             </div>
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col">
-          <div class="mb-3 row">
-            <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Discount Price:</label>
-            <div class="col-lg-10 col-md-6 col-sm-12">
-              <input name="discount_price" value="{{ $viewData['product']->getDiscountedPrice() }}" type="number" class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="row">
         <div class="col">
           <div class="mb-3 row">
@@ -60,49 +49,25 @@
           &nbsp;
         </div>
       </div>
-
       <div class="mb-3">
         <label class="form-label">Description</label>
-        <textarea class="form-control" name="description" rows="3">{{ $viewData['product']->description }}</textarea>
+        <textarea class="form-control" name="description"
+          rows="3">{{ $viewData['product']->getDescription() }}</textarea>
       </div>
-
-      <div class="mb-3 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Quantity in Stock:</label>
-        <div class="col-lg-10 col-md-6 col-sm-12">
-          <input name="quantity_store" value="{{ old('quantity_store', $viewData['product']->quantity_store) }}" type="number" class="form-control">
-        </div>
-      </div>
-
-      <div class="mb-3 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Fournisseur:</label>
-        <div class="col-lg-10 col-md-6 col-sm-12">
-          <select name="fournisseur_id" class="form-control">
-            <option value="">Select Supplier</option>
-            @foreach ($viewData['fournisseurs'] as $fournisseur)
-              <option value="{{ $fournisseur->id }}"
-                {{ $viewData['product']->fournisseur_id == $fournisseur->id ? 'selected' : '' }}>
-                {{ $fournisseur->raison_social}}
-              </option>
-            @endforeach
-          </select>
-        </div>
-      </div>
-
-      <div class="mb-3 row">
+      <div class="mb-5 row">
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
-          <select name="categorie_id" class="form-control">
-            @foreach ($viewData['categories'] as $category)
-              <option value="{{ $category->id }}"
-                {{ $viewData['product']->categorie_id == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
-              </option>
+          <select name="category_id" class="form-control">
+            <option value="-1" disabled selected>Choose a category</option>
+            @foreach($viewData['categories'] as $category)
+                <option value="{{ $category['id'] }}" 
+                    {{ old('category_id',  $viewData['product']->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
             @endforeach
-          </select>
+        </select>
         </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Edit</button>
+      <button type="submit" class="btn btn-primary mt-2">Edit</button>
     </form>
   </div>
 </div>

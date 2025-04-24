@@ -2,138 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\Item;
-use App\Models\User;
-use App\Services\CartService;
 
 class CartController extends Controller
 {
-    private $cartService;
-
-    public function __construct(CartService $cartService)
+    public function addToCart(Request $request, $productId)
     {
-        $this->cartService = $cartService;
-    }
+        $product = Product::findOrFail($productId);
+        $quantity = $request->input('quantity', 1);
 
-    public function index(Request $request)
-    {
-        // Get cart from cookie (default to empty array if not set)
-        $cart = json_decode($request->cookie('cart'), true) ?? [];
+        // If there's no active order, create one
+        $order = Order::firstOrCreate(
+            ['user_id' => Auth::id(), 'status' => 'pending']
+        );
 
-        // Fetch products from the cart by their IDs
-        $productsInCart = !empty($cart) ? Product::findMany(array_keys($cart)) : [];
-        $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $cart) : 0;
-        $quantities = $cart; // same as json_decode($request->cookie('cart'), true)
+        // Check if the product is already in the cart
+        $item = Item::where('order_id', $order->id)
+                    ->where('product_id', $product->id)
+                    ->first();
 
-        $viewData = [
-            "title" => "Cart - Online Store",
-            "subtitle" => "Shopping Cart",
-            "total" => $total,
-            "products" => $productsInCart,
-            "quantities" => $quantities,
-        ];
-        
-
-        return view('cart.index')->with("viewData", $viewData);
-    }
-
-    public function add(Request $request, $id)
-    {
-        // $products = $request->session()->get("products");
-        $products = json_decode($request->cookie("products"), true) ?? [];
-        $products[$id] = $request->input('quantity');
-        // $request->session()->put('products', $products);
-        cookie()->queue(cookie("cart", json_encode($products), 60 * 24 * 7));
-
+        if ($item) {
+            // If item exists, update the quantity
+            $item->quantity += $quantity;
+            $item->price = $product->getDiscountedPrice();
+            $item->save();
+        } else {
+            // If item does not exist, create a new one
+            Item::create([
+                'quantity' => $quantity,
+                'price' => $product->getDiscountedPrice(),
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+            ]);
+        }
 
         return redirect()->route('cart.index');
     }
 
-    public function delete(Request $request)
+    public function viewCart()
     {
-        // $request->session()->forget('products');
-        cookie()->queue(cookie("cart", "", -1));
-        return back();
-    }
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
 
-    
-
-    public function purchase(Request $request)
-    {
-        // Get products from cookie
-        $productsInCookie = json_decode($request->cookie("products"), true) ?? [];
-        
-        if ($productsInCookie) {
-            // Get the user ID
-            $userId = Auth::user()->id;  // Use $userId = Auth::user()->id
-            
-            // Create a new order
-            $order = new Order();
-            $order->user_id = $userId;  // Direct assignment
-            $order->total = 0;  // Direct assignment
-            $order->save();
-        
-            // Calculate the total price
-            $total = 0;
-            $productsInCart = Product::findMany(array_keys($productsInCookie));
-        
-            foreach ($productsInCart as $product) {
-                $quantity = $productsInCookie[$product->id];  // Use $product->id
-                
-                // Create an item for each product (not the order)
-                $item = new Item();
-                $item->quantity = $quantity;  // Direct assignment
-                $item->price = $product->price;  // Direct assignment
-                $item->product_id = $product->id;  // Direct assignment (this should be in `items` table)
-                $item->order_id = $order->id;  // Use $order->id
-                $item->save();
-        
-                // Update the product stock
-                $product->quantity_store -= $quantity;
-                $product->save();
-        
-                // Update the total
-                $total += $product->price * $quantity;
-            }
-        
-            // Update the order's total
-            $order->total = $total;  // Direct assignment
-            $order->save();
-        
-            // Update the user's balance
-            $newBalance = Auth::user()->balance - $total;  // Use Auth::user()->balance
-            Auth::user()->balance = $newBalance;  // Update balance directly
-            Auth::user()->save();
-        
-            // Clear the cart cookie
-            cookie()->queue(cookie("products", "", -1));
-        
-            // Return the purchase view with order data
-            $viewData = [];
-            $viewData["title"] = "Purchase - Online Store";
-            $viewData["subtitle"] = "Purchase Status";
-            $viewData["order"] = $order;
-        
-            return view('cart.purchase')->with("viewData", $viewData);
-        } else {
-            return redirect()->route('cart.index');
+        if (!$order) {
+            return view('cart.index', ['message' => 'Your cart is empty.']);
         }
-    }
-    
 
+        $items = $order->items;
+        $total = $order->getTotalPrice();
 
-    // Helper Methods for Cart
-    private function getCart()
-    {
-        return json_decode(request()->cookie('cart'), true) ?? [];
+        return view('cart.index', compact('items', 'total'));
     }
 
-    private function saveCart($cart)
+    public function updateCart(Request $request)
     {
-        return response()->withCookie(cookie('cart', json_encode($cart), 60 * 24 * 30));  // Save cart for 30 days
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        foreach ($request->input('items') as $itemId => $quantity) {
+            $item = Item::find($itemId);
+            if ($item && $item->order_id == $order->id) {
+                $item->quantity = $quantity;
+                $item->save();
+            }
+        }
+
+        return redirect()->route('cart.index');
+    }
+
+    public function removeFromCart($itemId)
+    {
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        $item = Item::find($itemId);
+        if ($item && $item->order_id == $order->id) {
+            $item->delete();
+        }
+
+        return redirect()->route('cart.index');
+    }
+
+    public function checkout()
+    {
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        if (!$order || $order->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+        }
+
+        // Update order status to 'completed' or proceed to payment...
+        $order->status = 'completed';
+        $order->save();
+
+        return redirect()->route('orders.index')->with('success', 'Your order has been placed!');
     }
 }

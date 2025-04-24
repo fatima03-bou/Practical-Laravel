@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Fournisseur extends Model
 {
     use HasFactory;
-    protected $table = 'fournisseurs';
-    protected $fillable=["raison_social","adresse","tele","email","description"];
-    public function products(){
+    protected $fillable = [
+        'raison_social',
+        'adresse',
+        'tele',
+        'email',
+        'description',
+    ];
+    public function product()
+    {
         return $this->hasMany(Product::class);
     }
 }

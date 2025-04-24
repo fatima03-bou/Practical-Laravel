@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Fournisseur;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,21 +9,19 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class FournisseurFactory extends Factory
 {
-    protected $model = Fournisseur::class;
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'raison_social' => $this->faker->company,
-            'adresse' => $this->faker->address,           
+            'raison_social' => $this->faker->name,
+            'adresse' => $this->faker->address,
             'tele' => $this->faker->phoneNumber,
-            'email' => $this->faker->unique()->safeEmail,
-            'description' => $this->faker->text(200),
-
+            'email' => $this->faker->email,
+            'description' => $this->faker->text(20),
         ];
     }
 }

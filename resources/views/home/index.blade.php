@@ -1,79 +1,56 @@
 @extends('layouts.app')
-
+@section('title', $viewData["title"])
 @section('content')
-<style>
-    .hero {
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-            url('/storage/products/3.jpg') center/cover no-repeat;
-        height: 70vh;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        border-radius: 20px;
-    }
 
-    .hero h1 {
-        font-size: 3rem;
-        font-weight: bold;
-    }
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    .features {
-        margin-top: 4rem;
-    }
-
-    .features .card {
-        transition: transform 0.3s ease;
-    }
-
-    .features .card:hover {
-        transform: translateY(-5px);
-    }
-</style>
-<!-- في view الصفحة الرئيسية أو أي صفحة يتم إعادة التوجيه إليها -->
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-<div class="container mt-4">
-    <div class="hero">
-        <div>
-            <h1>Bienvenue sur notre boutique en ligne</h1>
-            <p class="lead">Découvrez les meilleures offres et nos derniers produits</p>
-            <a href="{{ route('product.index') }}" class="btn btn-warning btn-lg mt-3">Voir les produits</a>
-        </div>
-    </div>
-
-    <div class="row features text-center">
-        <div class="col-md-4 mt-4">
-            <div class="card border-0 shadow">
-                <img src="/storage/products/4.jpg" class="card-img-top" alt="Feature 1">
-                <div class="card-body">
-                    <h5 class="card-title">Livraison Rapide</h5>
-                    <p class="card-text">Recevez vos produits en un temps record partout au Maroc.</p>
+        <!-- Bannière principale -->
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 items-center">
+                <div class="p-10">
+                    <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ __('welcome_store') }}</h1>
+                    <p class="text-gray-600 text-lg mb-6">
+                        {{ __('store_intro') }}
+                    </p>
+                    <a href="{{ route('product.index') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition">
+                        {{ __('shop_now') }}
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <img src="https://source.unsplash.com/600x400/?shopping,store" alt="store" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card border-0 shadow">
-                <img src="/storage/products/5.jpg" class="card-img-top" alt="Feature 2">
-                <div class="card-body">
-                    <h5 class="card-title">Paiement Sécurisé</h5>
-                    <p class="card-text">Des options de paiement sûres pour une expérience sans souci.</p>
-                </div>
+
+        <!-- Fonctionnalités de la boutique -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-blue-500 text-4xl mb-4">🛒</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('diverse_products') }}</h3>
+                <p class="text-gray-600">{{ __('diverse_products_desc') }}</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-green-500 text-4xl mb-4">🚚</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('fast_delivery') }}</h3>
+                <p class="text-gray-600">{{ __('fast_delivery_desc') }}</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow hover:shadow-md transition">
+                <div class="text-yellow-500 text-4xl mb-4">💳</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('payment_options') }}</h3>
+                <p class="text-gray-600">{{ __('payment_options_desc') }}</p>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card border-0 shadow">
-                <img src="/storage/products/6.jpg" class="card-img-top" alt="Feature 3">
-                <div class="card-body">
-                    <h5 class="card-title">Support 24/7</h5>
-                    <p class="card-text">Notre équipe est à votre écoute tous les jours, à toute heure.</p>
-                </div>
-            </div>
+
+        <!-- Appel à l'inscription -->
+        <div class="bg-blue-600 text-white text-center p-10 rounded-2xl">
+            <h2 class="text-3xl font-bold mb-3">{{ __('join_now') }}</h2>
+            <p class="text-lg mb-6">{{ __('join_now_desc') }}</p>
+            <a href="{{ route('register') }}" class="inline-block bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition">
+                {{ __('register_now') }}
+            </a>
         </div>
+
     </div>
 </div>
 @endsection
