@@ -9,7 +9,7 @@
   <div class="bg-white shadow-lg rounded-lg p-8">
     <!-- Header Section -->
     <div class="border-b pb-4 mb-6">
-      <h3 class="text-2xl font-bold text-gray-800">🎉 {{ __('messages.purchase_completed') }}</h3>
+      <h3 class="text-2xl font-bold text-gray-800">🎉 {{ __('purchase_completed') }}</h3>
     </div>
 
     <!-- Success Message -->
@@ -19,13 +19,13 @@
       </div>
       <div>
         <p class="text-lg font-medium">
-          {{ __('messages.congratulations') }} 
+          {{ __('congratulations') }} 
         
         </p>
         <p class="mt-2">
-          {{ __('messages.thank_you_for_your_order') }} <br>
-          {{ __('messages.your_order_is_being_processed') }} <br>
-          {{ __('messages.your_order_number') }}: <b class="text-green-800">#{{ $viewData["order"]->getId() }}</b>.
+          {{ __('thank_you_for_your_order') }} <br>
+          {{ __('your_order_is_being_processed') }} <br>
+          {{ __('your_order_number') }}: <b class="text-green-800">#{{ $viewData["order"]->getId() }}</b>.
          
         </p>
       </div>

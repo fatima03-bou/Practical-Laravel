@@ -9,23 +9,23 @@
   <form method="GET" action="{{ route('product.index') }}" class="flex items-center space-x-4">
     <!-- Sale Filter -->
     <label for="on_sale" class="text-lg font-semibold text-primary-800">
-        {{ __('messages.filter_products') }}
+        {{ __('filter_products') }}
     </label>
     <select name="on_sale" onchange="this.form.submit()"
         class="px-4 py-2 rounded-md border border-primary-200 focus:ring-2 focus:ring-primary-500">
-        <option value="">{{ __('messages.all_products') }}</option>
+        <option value="">{{ __('all_products') }}</option>
         <option value="1" {{ request('on_sale') == '1' ? 'selected' : '' }}>
-            {{ __('messages.discounted_products') }}
+            {{ __('discounted_products') }}
         </option>
     </select>
    
     <!-- Category Filter -->
     <label for="category_id" class="text-lg font-semibold text-primary-800">
-        {{ __('messages.category') }}
+        {{ __('category') }}
     </label>
     <select name="category_id" onchange="this.form.submit()"
         class="px-4 py-2 rounded-md border border-primary-200 focus:ring-2 focus:ring-primary-500">
-        <option value="">{{ __('messages.all_categories') }}</option>
+        <option value="">{{ __('all_categories') }}</option>
         @foreach ($viewData['categories'] as $category)
             <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
                 {{ $category->name }}
@@ -48,7 +48,7 @@
     <!-- Out of Stock Badge -->
     @if($product->quantity_store == 0)
     <span
-      class="absolute top-3 right-3 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">{{ __('messages.out_of_stock') }}</span>
+      class="absolute top-3 right-3 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">{{ __('out_of_stock') }}</span>
     @endif
 
     <!-- Product Details -->

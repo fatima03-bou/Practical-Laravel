@@ -10,7 +10,7 @@
   <div class="bg-white rounded-lg shadow-md mb-6 p-6">
     <div class="flex justify-between items-center border-b pb-2 mb-4">
       <h2 class="text-lg font-semibold text-gray-800">
-        {{ __('messages.order') }} #{{ $order->getId() }}
+        {{ __('order') }} #{{ $order->getId() }}
       </h2>
       <span class="text-sm text-gray-500">
         {{ __('Date:') }} {{ $order->getCreatedAt() }}
@@ -18,7 +18,7 @@
     </div>
 
     <div class="mb-4 text-gray-700">
-      <p><strong>{{ __('messages.total') }}:</strong> ${{ number_format($order->getTotal(), 2) }}</p>
+      <p><strong>{{ __('total') }}:</strong> ${{ number_format($order->getTotal(), 2) }}</p>
     </div>
 
     {{-- Order Items Table --}}
@@ -26,10 +26,10 @@
       <table class="w-full text-sm text-center border border-gray-300">
         <thead class="bg-gray-100">
           <tr>
-            <th class="p-2 border">{{ __('messages.item_id') }}</th>
-            <th class="p-2 border">{{ __('messages.product_name') }}</th>
-            <th class="p-2 border">{{ __('messages.price') }}</th>
-            <th class="p-2 border">{{ __('messages.quantity') }}</th>
+            <th class="p-2 border">{{ __('item_id') }}</th>
+            <th class="p-2 border">{{ __('product_name') }}</th>
+            <th class="p-2 border">{{ __('price') }}</th>
+            <th class="p-2 border">{{ __('quantity') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@
 
   @empty
   <div class="bg-red-100 text-red-700 p-4 rounded-md text-center">
-    {{ __('messages.no_purchases') }}
+    {{ __('no_purchases') }}
   </div>
   @endforelse
 

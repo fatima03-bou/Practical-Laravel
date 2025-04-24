@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('type', ['all', 'category', 'product']);
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->float('percentage'); // نسبة التخفيض
+            $table->float('percentage');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();

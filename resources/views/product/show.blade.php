@@ -1,41 +1,4 @@
 @extends('layouts.app')
-<<<<<<< HEAD
-@section('title', $viewData["title"])
-@section('subtitle', $viewData["subtitle"])
-@section('content')
-<div class="card mb-3">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{ asset('/storage/'.$viewData["product"]->getImage()) }}" class="img-fluid rounded-start">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">
-          {{ $viewData["product"]->getName() }} (${{ $viewData["product"]->getPrice() }})
-        </h5>
-        <p class="card-text">{{ $viewData["product"]->getDescription() }}</p>
-        <p class="card-text">
-        <form method="POST" action="{{ route('cart.add', ['id'=> $viewData['product']->getId()]) }}">
-          <div class="row">
-            @csrf
-            <div class="col-auto">
-              <div class="input-group col-auto">
-                <div class="input-group-text">Quantity</div>
-                <input type="number" min="1" max="10" class="form-control quantity-input" name="quantity" value="1">
-              </div>
-            </div>
-            <div class="col-auto">
-              <button class="btn bg-primary text-white" type="submit">Add to cart</button>
-            </div>
-          </div>
-        </form>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-@endsection
-=======
 
 @section('title', $viewData["title"])
 @section('subtitle', $viewData["subtitle"])
@@ -106,23 +69,23 @@
           <!-- Stock and Description -->
           <div class="mb-6">
             <div class="flex items-center mb-2">
-              <span class="font-semibold text-gray-700 mr-2">{{ __('messages.stock_available') }}:</span>
+              <span class="font-semibold text-gray-700 mr-2">{{ __('stock_available') }}:</span>
               @if($viewData['product']->quantity_store > 10)
                 <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                  {{ $viewData['product']->quantity_store }} {{ __('messages.in_stock') }}
+                  {{ $viewData['product']->quantity_store }} {{ __('in_stock') }}
                 </span>
               @elseif($viewData['product']->quantity_store > 0)
                 <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded">
-                  {{ __('messages.only') }} {{ $viewData['product']->quantity_store }} {{ __('messages.left') }}
+                  {{ __('only') }} {{ $viewData['product']->quantity_store }} {{ __('left') }}
                 </span>
               @else
                 <span class="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded">
-                  {{ __('messages.out_of_stock') }}
+                  {{ __('out_of_stock') }}
                 </span>
               @endif
             </div>
 
-            <h3 class="font-semibold text-gray-700 mb-2">{{ __('messages.description') }}:</h3>
+            <h3 class="font-semibold text-gray-700 mb-2">{{ __('description') }}:</h3>
             <p class="text-gray-600">{{ $viewData['product']->getDescription() }}</p>
           </div>
         </div>
@@ -133,7 +96,7 @@
           <div class="space-y-4">
             <div class="flex items-center">
               <label for="quantity" class="block text-sm font-medium text-gray-700 mr-4">
-                {{ __('messages.quantity') }}:
+                {{ __('quantity') }}:
               </label>
               <div class="relative flex items-center max-w-[8rem]">
                 <button type="button" id="decrement-button" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-l-lg p-2 h-10 focus:outline-none" {{ $viewData["product"]->quantity_store == 0 ? 'disabled' : '' }}>
@@ -159,14 +122,14 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                {{ __('messages.add_to_cart') }}
+                {{ __('add_to_cart') }}
               </button>
               
               <button type="button" class="sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-                {{ __('messages.add_to_wishlist') ?? 'Add to Wishlist' }}
+                {{ __('add_to_wishlist') ?? 'Add to Wishlist' }}
               </button>
             </div>
           </div>
@@ -180,13 +143,13 @@
     <div class="border-b border-gray-200">
       <nav class="flex -mb-px">
         <button @click="activeTab = 'description'" :class="{ 'border-primary-500 text-primary-600': activeTab === 'description', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'description' }" class="py-4 px-6 font-medium text-sm border-b-2 transition">
-          {{ __('messages.description') ?? 'Description' }}
+          {{ __('description') ?? 'Description' }}
         </button>
         <button @click="activeTab = 'specifications'" :class="{ 'border-primary-500 text-primary-600': activeTab === 'specifications', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'specifications' }" class="py-4 px-6 font-medium text-sm border-b-2 transition">
-          {{ __('messages.specifications') ?? 'Specifications' }}
+          {{ __('specifications') ?? 'Specifications' }}
         </button>
         <button @click="activeTab = 'reviews'" :class="{ 'border-primary-500 text-primary-600': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }" class="py-4 px-6 font-medium text-sm border-b-2 transition">
-          {{ __('messages.reviews') ?? 'Reviews' }}
+          {{ __('reviews') ?? 'Reviews' }}
         </button>
       </nav>
     </div>
@@ -293,7 +256,7 @@
   
   <!-- Related Products -->
   <div class="mb-12">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ __('messages.related_products') ?? 'Related Products' }}</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ __('related_products') ?? 'Related Products' }}</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       @for ($i = 1; $i <= 4; $i++)
       <div class="bg-white rounded-xl shadow-md overflow-hidden transition transform hover:scale-105 hover:shadow-lg">
@@ -360,4 +323,3 @@
   });
 </script>
 @endsection
->>>>>>> feature_gestion_soldes

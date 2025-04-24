@@ -5,8 +5,8 @@
     <div class="max-w-md mx-auto">
         <!-- Payment Header -->
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ __('messages.online_payment') ?? 'Online Payment' }}</h1>
-            <p class="text-gray-600">{{ __('messages.secure_payment_process') ?? 'Complete your purchase with our secure payment process' }}</p>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ __('online_payment') ?? 'Online Payment' }}</h1>
+            <p class="text-gray-600">{{ __('secure_payment_process') ?? 'Complete your purchase with our secure payment process' }}</p>
         </div>
         
         <!-- Payment Card -->
@@ -18,7 +18,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        <span class="font-semibold">{{ __('messages.secure_checkout') ?? 'Secure Checkout' }}</span>
+                        <span class="font-semibold">{{ __('secure_checkout') ?? 'Secure Checkout' }}</span>
                     </div>
                     <div class="flex space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,12 +34,12 @@
 
                 <!-- Personal Information -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-800 pb-2 border-b">{{ __('messages.personal_information') ?? 'Personal Information' }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 pb-2 border-b">{{ __('personal_information') ?? 'Personal Information' }}</h3>
                     
                     <!-- Full Name -->
                     <div>
                         <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ __('messages.full_name') ?? 'Full Name' }} <span class="text-red-500">*</span>
+                            {{ __('full_name') ?? 'Full Name' }} <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="full_name" id="full_name"
                             class="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition"
@@ -49,7 +49,7 @@
                     <!-- Email -->
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ __('messages.email') ?? 'Email' }} <span class="text-red-500">*</span>
+                            {{ __('email') ?? 'Email' }} <span class="text-red-500">*</span>
                         </label>
                         <input type="email" name="email" id="email"
                             class="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition"
@@ -59,12 +59,12 @@
 
                 <!-- Payment Information -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-800 pb-2 border-b">{{ __('messages.payment_information') ?? 'Payment Information' }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 pb-2 border-b">{{ __('payment_information') ?? 'Payment Information' }}</h3>
                     
                     <!-- Card Number -->
                     <div>
                         <label for="card_number" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ __('messages.card_number') ?? 'Card Number' }} <span class="text-red-500">*</span>
+                            {{ __('card_number') ?? 'Card Number' }} <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
                             <input type="text" name="card_number" id="card_number"
@@ -92,7 +92,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="expiry_date" class="block text-sm font-medium text-gray-700 mb-1">
-                                {{ __('messages.expiry_date') ?? 'Expiry Date' }} <span class="text-red-500">*</span>
+                                {{ __('expiry_date') ?? 'Expiry Date' }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="expiry_date" id="expiry_date"
                                 class="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition"
@@ -100,7 +100,7 @@
                         </div>
                         <div>
                             <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">
-                                {{ __('messages.cvv') ?? 'CVV' }} <span class="text-red-500">*</span>
+                                {{ __('cvv') ?? 'CVV' }} <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
                                 <input type="text" name="cvv" id="cvv"
@@ -120,23 +120,23 @@
 
                 <!-- Order Summary -->
                 <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ __('messages.order_summary') ?? 'Order Summary' }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ __('order_summary') ?? 'Order Summary' }}</h3>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span class="text-gray-600">{{ __('messages.subtotal') ?? 'Subtotal' }}</span>
+                            <span class="text-gray-600">{{ __('subtotal') ?? 'Subtotal' }}</span>
                             <span class="font-medium">$99.99</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">{{ __('messages.shipping') ?? 'Shipping' }}</span>
+                            <span class="text-gray-600">{{ __('shipping') ?? 'Shipping' }}</span>
                             <span class="font-medium">$4.99</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">{{ __('messages.tax') ?? 'Tax' }}</span>
+                            <span class="text-gray-600">{{ __('tax') ?? 'Tax' }}</span>
                             <span class="font-medium">$10.00</span>
                         </div>
                         <div class="border-t pt-2 mt-2">
                             <div class="flex justify-between font-semibold">
-                                <span class="text-gray-800">{{ __('messages.total') ?? 'Total' }}</span>
+                                <span class="text-gray-800">{{ __('total') ?? 'Total' }}</span>
                                 <span class="text-primary-600">$114.98</span>
                             </div>
                         </div>
@@ -150,13 +150,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        {{ __('messages.pay_now') ?? 'Pay Now' }}
+                        {{ __('pay_now') ?? 'Pay Now' }}
                     </button>
                 </div>
 
                 <!-- Alternative Payment Methods -->
                 <div class="text-center">
-                    <p class="text-sm text-gray-600 mb-3">{{ __('messages.or_pay_using') ?? 'Or pay using' }}</p>
+                    <p class="text-sm text-gray-600 mb-3">{{ __('or_pay_using') ?? 'Or pay using' }}</p>
                     <div class="flex justify-center space-x-3">
                         <button type="button" class="bg-[#0070BA] hover:bg-[#005ea6] text-white font-medium py-2 px-4 rounded-lg transition flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" class="mr-2">
@@ -180,7 +180,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    {{ __('messages.secure_transaction') ?? 'Secure Transaction' }}
+                    {{ __('secure_transaction') ?? 'Secure Transaction' }}
                 </div>
                 <div class="flex justify-center space-x-4">
                     <img src="https://cdn.pixabay.com/photo/2015/05/26/09/37/paypal-784404_1280.png" alt="PayPal" class="h-6">

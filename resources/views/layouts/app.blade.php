@@ -59,14 +59,14 @@
 
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex items-center space-x-6">
-          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.index') }}">{{ __('messages.home') ?? 'Home' }}</a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('product.index') }}">{{ __('messages.products') ?? 'Products' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
           <a class="text-white hover:text-primary-200 transition-colors font-medium relative group" href="{{ route('cart.index') }}">
             <div class="flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span>{{ __('messages.cart') ?? 'Cart' }}</span>
+              <span>{{ __('cart') ?? 'Cart' }}</span>
               <!-- Cart Count Badge -->
               @if(session()->has('products') && count(session()->get('products')) > 0)
                 <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
@@ -75,25 +75,21 @@
               @endif
             </div>
           </a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.about') }}">{{ __('messages.about') ?? 'About' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
 
           @guest
-            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('login') }}">{{ __('messages.login') ?? 'Login' }}</a>
-            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium" href="{{ route('register') }}">{{ __('messages.register') ?? 'Register' }}</a>
+            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
+            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
           @else
-            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('orders.index') }}">{{ __('messages.my_orders') ?? 'My Orders' }}</a>
+            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
             <form id="logout" action="{{ route('logout') }}" method="POST" class="inline">
               @csrf
-              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium">{{ __('messages.logout') ?? 'Logout' }}</button>
+              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium">{{ __('logout') ?? 'Logout' }}</button>
             </form>
           @endguest
 
           <!-- Language Dropdown -->
           <div x-data="{ open: false }" class="relative inline-block text-left">
-            <button @click="open = !open" type="button"
-              class="inline-flex justify-center w-full px-3 py-2 bg-primary-700 rounded-md text-sm font-medium text-white hover:bg-primary-800 focus:outline-none transition">
-              🌐 {{ strtoupper(app()->getLocale()) }}
-            </button>
           
             <div x-show="open" @click.away="open = false" 
                  class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
@@ -112,31 +108,31 @@
       <!-- Mobile Navigation -->
       <div id="mobile-menu" class="lg:hidden hidden mt-4 bg-primary-700 rounded-lg p-4 shadow-lg">
         <div class="flex flex-col space-y-3">
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.index') }}">{{ __('messages.home') ?? 'Home' }}</a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('product.index') }}">{{ __('messages.products') ?? 'Products' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
           <a class="text-white hover:text-primary-200 transition-colors font-medium py-2 flex items-center gap-2" href="{{ route('cart.index') }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span>{{ __('messages.cart') ?? 'Cart' }}</span>
+            <span>{{ __('cart') ?? 'Cart' }}</span>
             @if(session()->has('products') && count(session()->get('products')) > 0)
               <span class="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {{ count(session()->get('products')) }}
               </span>
             @endif
           </a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.about') }}">{{ __('messages.about') ?? 'About' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
           
           <div class="border-t border-primary-500 my-2"></div>
           
           @guest
-            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('login') }}">{{ __('messages.login') ?? 'Login' }}</a>
-            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium text-center" href="{{ route('register') }}">{{ __('messages.register') ?? 'Register' }}</a>
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
+            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium text-center" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
           @else
-            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('orders.index') }}">{{ __('messages.my_orders') ?? 'My Orders' }}</a>
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
             <form action="{{ route('logout') }}" method="POST">
               @csrf
-              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium py-2 w-full text-left">{{ __('messages.logout') ?? 'Logout' }}</button>
+              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium py-2 w-full text-left">{{ __('logout') ?? 'Logout' }}</button>
             </form>
           @endguest
           
@@ -182,56 +178,56 @@
         
         <!-- About Us -->
         <div>
-          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('messages.about_us') ?? 'About Us' }}</h4>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('about_us') ?? 'About Us' }}</h4>
           <p class="text-gray-400 text-sm">
-            {{ __('messages.about_us_description') ?? 'We are dedicated to providing the best shopping experience with quality products at competitive prices.' }}
+            {{ __('about_us_description') ?? 'We are dedicated to providing the best shopping experience with quality products at competitive prices.' }}
           </p>
         </div>
   
         <!-- Quick Links -->
         <div>
-          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('messages.quick_links') ?? 'Quick Links' }}</h4>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('quick_links') ?? 'Quick Links' }}</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="{{ route('home.index') }}" class="text-gray-400 hover:text-white transition">{{ __('messages.home') ?? 'Home' }}</a></li>
-            <li><a href="{{ route('product.index') }}" class="text-gray-400 hover:text-white transition">{{ __('messages.products') ?? 'Products' }}</a></li>
-            <li><a href="{{ route('home.about') }}" class="text-gray-400 hover:text-white transition">{{ __('messages.about_us') ?? 'About Us' }}</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('messages.contact') ?? 'Contact' }}</a></li>
+            <li><a href="{{ route('home.index') }}" class="text-gray-400 hover:text-white transition">{{ __('home') ?? 'Home' }}</a></li>
+            <li><a href="{{ route('product.index') }}" class="text-gray-400 hover:text-white transition">{{ __('products') ?? 'Products' }}</a></li>
+            <li><a href="{{ route('home.about') }}" class="text-gray-400 hover:text-white transition">{{ __('about_us') ?? 'About Us' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('contact') ?? 'Contact' }}</a></li>
           </ul>
         </div>
   
         <!-- Customer Service -->
         <div>
-          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('messages.customer_service') ?? 'Customer Service' }}</h4>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('customer_service') ?? 'Customer Service' }}</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('messages.faq') ?? 'FAQ' }}</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('messages.shipping_policy') ?? 'Shipping Policy' }}</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('messages.returns_refunds') ?? 'Returns & Refunds' }}</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('messages.privacy_policy') ?? 'Privacy Policy' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('faq') ?? 'FAQ' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('shipping_policy') ?? 'Shipping Policy' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('returns_refunds') ?? 'Returns & Refunds' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('privacy_policy') ?? 'Privacy Policy' }}</a></li>
           </ul>
         </div>
   
         <!-- Contact Us -->
         <div>
-          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('messages.contact_us') ?? 'Contact Us' }}</h4>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('contact_us') ?? 'Contact Us' }}</h4>
           <ul class="space-y-3 text-sm text-gray-400">
             <li class="flex items-start gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span>{{ __('messages.address_detail') ?? '123 Shopping Street, Retail City, 10001' }}</span>
+              <span>{{ __('address_detail') ?? '123 Shopping Street, Retail City, 10001' }}</span>
             </li>
             <li class="flex items-start gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <span>{{ __('messages.support_email') ?? 'support@onlinestore.com' }}</span>
+              <span>{{ __('support_email') ?? 'support@onlinestore.com' }}</span>
             </li>
             <li class="flex items-start gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <span>{{ __('messages.phone_number') ?? '+1 (555) 123-4567' }}</span>
+              <span>{{ __('phone_number') ?? '+1 (555) 123-4567' }}</span>
             </li>
           </ul>
           
@@ -259,7 +255,7 @@
       <!-- Copyright -->
       <div class="border-t border-gray-700 pt-6 text-center">
         <small class="text-gray-400">
-          {{ __('messages.copyright') ?? 'Copyright' }} © {{ date('Y') }} - 
+          {{ __('copyright') ?? 'Copyright' }} © {{ date('Y') }} - 
           <a class="text-primary-400 hover:underline transition" target="_blank" href="https://twitter.com/danielgarax">
             Daniel Correa
           </a> - <b>Paola Vallejo</b>
