@@ -6,7 +6,7 @@ use App\Exports\ProductExport;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Imports\ProductImport;
-use App\Models\Category;
+use App\Models\Categorie;
 use App\Models\fournisseur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,13 +18,13 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Products - Online Store";
-        $viewData["categories"] = Category::all();
+        $viewData["categories"] = Categorie::all();
         $viewData["fournisseurs"] = fournisseur::all();
         
-        $categoryId = $request->query('category_id');
+        $categoryId = $request->query('categorie_id');
         $fournisseurId = $request->query('fournisseur_id');
         if ($categoryId) { 
-            $viewData["products"] = Product::where('category_id', $categoryId)->get();
+            $viewData["products"] = Product::where('categorie_id', $categoryId)->get();
         }else if ($fournisseurId) { 
             $viewData["products"] = Product::where('fournisseur_id', $fournisseurId)->get();
         }
@@ -47,7 +47,7 @@ class AdminProductController extends Controller
         $newProduct->setImage("game.png");
     
         // Assign category_id
-        $newProduct->category_id = $request->input('category_id');
+        $newProduct->categorie_id = $request->input('categorie_id');
     
         $newProduct->save();
     
@@ -76,7 +76,7 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
         $viewData["product"] = Product::findOrFail($id);
-        $viewData["categories"] = Category::all();
+        $viewData["categories"] = Categorie::all();
 
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -89,7 +89,7 @@ class AdminProductController extends Controller
         $product->setName($request->input('name'));
         $product->setDescription($request->input('description'));
         $product->setPrice($request->input('price'));
-        $product->category_id = $request->input('category_id');
+        $product->categorie_id = $request->input('categorie_id');
 
         if ($request->hasFile('image')) {
             $imageName = $product->getId().".".$request->file('image')->extension();

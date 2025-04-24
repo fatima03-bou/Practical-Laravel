@@ -57,11 +57,11 @@
       <div class="mb-5 row">
         <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
         <div class="col-lg-10 col-md-6 col-sm-12">
-          <select name="category_id" class="form-control">
+          <select name="categorie_id" class="form-control">
             <option value="-1" disabled selected>Choose a category</option>
             @foreach($viewData['categories'] as $category)
                 <option value="{{ $category['id'] }}" 
-                    {{ old('category_id',  $viewData['product']->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                    {{ old('categorie_id',  $viewData['product']->categorie_id ?? '') == $category->id ? 'selected' : '' }}>
                     {{ $category->name }}
                 </option>
             @endforeach

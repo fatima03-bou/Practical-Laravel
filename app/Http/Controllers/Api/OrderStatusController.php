@@ -3,58 +3,103 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use Illuminate\Http\Response;
 
 class OrderStatusController extends Controller
 {
-    public function getStatus($orderId)
+   
+    public function index()
     {
-        // On récupère la commande avec les relations "produit", "utilisateur", et "items"
-        $order = Order::with(['product', 'user', 'items'])->find($orderId);
+       
+        $orders = Order::with('items')->where('user_id', auth()->id())->get();
 
-        // Si la commande n'existe pas, on renvoie une erreur 404
-        if (!$order) {
-            return response()->json(['error' => 'Commande non trouvée'], 404);
-        }
+        return response()->json($orders, Response::HTTP_OK);
+    }
 
-        // On renvoie les données de la commande sous forme de JSON
-        return response()->json([
-            'order_id' => $order->getId(),
-            'status' => $order->getStatus(),
-            'total' => $order->getTotal(),
-            'product' => $order->product?->name, // nom du produit lié
-            'user' => $order->user?->name,       // nom de l'utilisateur
-            'created_at' => $order->getCreatedAt(),
-            'updated_at' => $order->getUpdatedAt(),
-
-            // Message d'état personnalisé selon le statut
-            'message' => match ($order->getStatus()) {
-                'processing' => 'Votre commande est en cours de traitement 💼',
-                'shipped' => 'Votre commande a été expédiée 🚚',
-                'delivered' => 'Votre commande a été livrée ✅',
-                'cancelled' => 'Votre commande a été annulée ❌',
-                default => 'Statut inconnu',
-            },
-
-            // Liste des articles commandés (s’il y en a plusieurs)
-            'items' => $order->items->map(function ($item) {
-                return [
-                    'name' => $item->product->name ?? 'Inconnu',
-                    'quantity' => $item->quantity,
-                ];
-            }),
+    
+    public function store(Request $request)
+    {
+       
+        $validatedData = $request->validate([
+            'total' => 'required|integer',
+            
         ]);
+
+      
+        $order = Order::create([
+            'total'   => $validatedData['total'],
+            'user_id' => auth()->id(),
+            'status'  => 'Packed' 
+        ]);
+
+        return response()->json($order, Response::HTTP_CREATED);
     }
-    public function showStatus($id)
+
+   
+    public function show($id)
     {
-        $order = Order::with('product', 'user')->find($id);
+        
+        $order = Order::with('items')->find($id);
 
         if (!$order) {
-            return abort(404, 'Commande non trouvée');
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
         }
 
-        return view('orders.status', compact('order'));
+        return response()->json($order, Response::HTTP_OK);
     }
 
+
+    public function update(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+       
+        $validatedData = $request->validate([
+            'total' => 'sometimes|required|integer',
+            
+        ]);
+
+        $order->update($validatedData);
+
+        return response()->json($order, Response::HTTP_OK);
+    }
+
+ 
+    public function destroy($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+        $order->delete();
+
+        return response()->json(['message' => 'Commande supprimée avec succès'], Response::HTTP_NO_CONTENT);
+    }
+
+ 
+    public function updateStatus(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+
+        $validatedData = $request->validate([
+            'status' => 'required|in:Packed,Shipped,In Transit,Received,Returned,Closed'
+        ]);
+
+        $order->update(['status' => $validatedData['status']]);
+
+        return response()->json($order, Response::HTTP_OK);
+    }
 }

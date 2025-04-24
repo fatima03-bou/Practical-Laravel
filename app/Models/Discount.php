@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Category;
+use App\Models\Categorie;
 use App\Models\Product;
 
 class Discount extends Model
@@ -12,7 +12,7 @@ class Discount extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Categorie::class);
     }
 
     public function product()

@@ -28,10 +28,10 @@
           </div>
 
           <div id="category-div" class="mb-3 d-none">
-            <label for="category_id" class="form-label">Catégorie</label>
+            <label for="categorie_id" class="form-label">Catégorie</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-folder"></i></span>
-              <select name="category_id" class="form-select">
+              <select name="categorie_id" class="form-select">
                 @foreach(\App\Models\Category::all() as $category)
                   <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach

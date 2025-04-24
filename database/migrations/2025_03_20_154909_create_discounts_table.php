@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['all', 'category', 'product']);
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('categorie_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->float('percentage');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();
     
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }

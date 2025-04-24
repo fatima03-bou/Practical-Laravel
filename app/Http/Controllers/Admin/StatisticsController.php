@@ -33,8 +33,8 @@ class StatisticsController extends Controller
             ->get();
 
         $revenueByCategory = Item::join('products', 'items.product_id', '=', 'products.id')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->selectRaw('categories.name as category, SUM(items.quantity * items.price) as revenue')
+            ->join('categories', 'products.categorie_id', '=', 'categories.id')
+            ->selectRaw('categories.name as categorie, SUM(items.quantity * items.price) as revenue')
             ->whereBetween('items.created_at', [$startDate, $endDate])
             ->groupBy('categories.name')
             ->get();
@@ -60,7 +60,7 @@ class StatisticsController extends Controller
             ->get();
 
         $profitByCategory = Item::join('products', 'items.product_id', '=', 'products.id')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('categories', 'products.categorie_id', '=', 'categories.id')
             ->selectRaw('categories.name as categorie, SUM(items.quantity) * 5 as profit')
             ->whereBetween('items.created_at', [$startDate, $endDate])
             ->groupBy('categories.name')

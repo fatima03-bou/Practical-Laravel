@@ -20,14 +20,14 @@
     </select>
    
     <!-- Category Filter -->
-    <label for="category_id" class="text-lg font-semibold text-primary-800">
+    <label for="categorie_id" class="text-lg font-semibold text-primary-800">
         {{ __('category') }}
     </label>
-    <select name="category_id" onchange="this.form.submit()"
+    <select name="categorie_id" onchange="this.form.submit()"
         class="px-4 py-2 rounded-md border border-primary-200 focus:ring-2 focus:ring-primary-500">
         <option value="">{{ __('all_categories') }}</option>
         @foreach ($viewData['categories'] as $category)
-            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+            <option value="{{ $category->id }}" {{ request('categorie_id') == $category->id ? 'selected' : '' }}>
                 {{ $category->name }}
             </option>
         @endforeach
