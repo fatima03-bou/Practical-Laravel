@@ -82,11 +82,6 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::post('/superAdmin/create', [UserController::class, 'createAdmin'])->name("superAdmin.createAdmin");
     Route::get('/superAdmin', [UserController::class, 'index'])->name("superAdmin.index");
 });
-Route::get('/lang/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'fr', 'ar'])) {
-        Session::put('locale', $locale);
-    }
-    return redirect()->back();
-})->name('lang.switch');
+
 
 Auth::routes();

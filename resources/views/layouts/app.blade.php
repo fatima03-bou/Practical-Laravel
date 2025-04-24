@@ -100,11 +100,6 @@
                  x-transition:leave-start="transform opacity-100 scale-100"
                  x-transition:leave-end="transform opacity-0 scale-95"
                  x-cloak>
-              <div class="py-1 text-gray-700">
-                <a href="{{ route('lang.switch', 'en') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇺🇸 English</a>
-                <a href="{{ route('lang.switch', 'fr') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇫🇷 Français</a>
-                <a href="{{ route('lang.switch', 'ar') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇸🇦 العربية</a>
-              </div>
             </div>
           </div>
         </div>
@@ -141,14 +136,7 @@
             </form>
           @endguest
           
-          <div class="border-t border-primary-500 my-2"></div>
-          
-          <!-- Language Options -->
-          <div class="flex space-x-2 pt-2">
-            <a href="{{ route('lang.switch', 'en') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇺🇸 EN</a>
-            <a href="{{ route('lang.switch', 'fr') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇫🇷 FR</a>
-            <a href="{{ route('lang.switch', 'ar') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇸🇦 AR</a>
-          </div>
+          <div class="border-t border-primary-500 my-2"></div>          
         </div>
       </div>
     </div>
