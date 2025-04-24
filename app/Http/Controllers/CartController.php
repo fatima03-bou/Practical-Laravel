@@ -2,125 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\Item;
-use App\Models\User;
-use App\Services\CartService;
 
 class CartController extends Controller
 {
-    private $cartService;
-
-    public function __construct(CartService $cartService)
+    public function addToCart(Request $request, $productId)
     {
-        $this->cartService = $cartService;
-    }
+        $product = Product::findOrFail($productId);
+        $quantity = $request->input('quantity', 1);
 
-    public function index(Request $request)
-    {
-        $cart = $this->getCart();
-        $productsInCart = !empty($cart) ? Product::findMany(array_keys($cart)) : [];
-        $total = !empty($productsInCart) ? Product::sumPricesByQuantities($productsInCart, $cart) : 0;
+        // If there's no active order, create one
+        $order = Order::firstOrCreate(
+            ['user_id' => Auth::id(), 'status' => 'pending']
+        );
 
-        $viewData = [
-            "title" => "Cart - Online Store",
-            "subtitle" => "Shopping Cart",
-            "total" => $total,
-            "products" => $productsInCart
-        ];
+        // Check if the product is already in the cart
+        $item = Item::where('order_id', $order->id)
+                    ->where('product_id', $product->id)
+                    ->first();
 
-        return view('cart.index')->with("viewData", $viewData);
-    }
-
-    public function add(Product $product, Request $request)
-    {
-        $quantity = $request->quantity ?? 1;
-
-        // Vérifier la disponibilité du stock
-        if ($product->quantity_store <= 0) {
-            return back()->with('error', 'Produit en rupture de stock.');
+        if ($item) {
+            // If item exists, update the quantity
+            $item->quantity += $quantity;
+            $item->price = $product->getDiscountedPrice();
+            $item->save();
+        } else {
+            // If item does not exist, create a new one
+            Item::create([
+                'quantity' => $quantity,
+                'price' => $product->getDiscountedPrice(),
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+            ]);
         }
 
-        if ($product->quantity_store < $quantity) {
-            return back()->with('error', 'Quantité insuffisante en stock.');
+        return redirect()->route('cart.index');
+    }
+
+    public function viewCart()
+    {
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        if (!$order) {
+            return view('cart.index', ['message' => 'Your cart is empty.']);
         }
 
-        // Using CartService to handle the addition of the item
-        $cookie = $this->cartService->add($request, $product->id, $quantity);
+        $items = $order->items;
+        $total = $order->getTotalPrice();
 
-        return back()->with('success', 'Produit ajouté au panier.')->cookie($cookie);
+        return view('cart.index', compact('items', 'total'));
     }
 
-    public function delete(Request $request)
+    public function updateCart(Request $request)
     {
-        return back()->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
-            ->with('success', 'Cart cleared successfully.');
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        foreach ($request->input('items') as $itemId => $quantity) {
+            $item = Item::find($itemId);
+            if ($item && $item->order_id == $order->id) {
+                $item->quantity = $quantity;
+                $item->save();
+            }
+        }
+
+        return redirect()->route('cart.index');
     }
 
-    public function purchase(Request $request)
+    public function removeFromCart($itemId)
     {
-        $cart = $this->getCart();
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
 
-        if (empty($cart)) {
+        $item = Item::find($itemId);
+        if ($item && $item->order_id == $order->id) {
+            $item->delete();
+        }
+
+        return redirect()->route('cart.index');
+    }
+
+    public function checkout()
+    {
+        $order = Order::where('user_id', Auth::id())
+                      ->where('status', 'pending')
+                      ->first();
+
+        if (!$order || $order->items->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
-        $user = Auth::user();
-
-        if (!$user instanceof User) {
-            return back()->with('error', 'User not found.');
-        }
-
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->total = 0;
+        // Update order status to 'completed' or proceed to payment...
+        $order->status = 'completed';
         $order->save();
 
-        $total = 0;
-        $productsInCart = Product::findMany(array_keys($cart));
-
-        foreach ($productsInCart as $product) {
-            $quantity = $cart[$product->id];
-
-            if ($product->quantity_store < $quantity) {
-                $order->delete();
-                return redirect()->route("cart.index")
-                    ->with("error", "Quantity requested for product " . $product->name . " not available in stock.");
-            }
-
-            $product->quantity_store -= $quantity;
-            $product->save();
-
-            $item = new Item();
-            $item->quantity = $quantity;
-            $item->price = $product->hasDiscount() ? $product->getDiscountedPrice() : $product->price;
-            $item->product_id = $product->id;
-            $item->order_id = $order->id;
-            $item->save();
-
-            $total += $item->price * $quantity;
-        }
-
-        if ($user->balance < $total) {
-            $order->delete();
-            return back()->with('error', 'Insufficient funds to complete the purchase.');
-        }
-
-        $user->balance -= $total;
-        $user->save();
-
-        $order->total = $total;
-        $order->save();
-
-        return redirect()->route('cart.index')->withCookie(cookie('cart', json_encode([]), 60 * 24 * 30))
-            ->with('success', 'Purchase completed successfully.');
-    }
-
-    private function getCart()
-    {
-        return json_decode(request()->cookie('cart'), true) ?? [];
+        return redirect()->route('orders.index')->with('success', 'Your order has been placed!');
     }
 }

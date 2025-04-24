@@ -1,160 +1,114 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use Illuminate\Support\Facades\Schema;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Item;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\Categorie;
-use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
 {
     public function index(Request $request)
     {
-        $viewData = [];
-        $viewData["title"] = "Statistiques - Tableau de bord";
-        $viewData["subtitle"] = "Statistiques des ventes et bénéfices";
+        // Capture date range from request
+        $startDate = $request->input('start_date', Carbon::today()->toDateString());
+        $endDate = $request->input('end_date', Carbon::today()->toDateString());
 
-        // Récupération du paramètre de la période
-        $periodType = $request->input('period', 'month'); // Valeur par défaut : mois
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
+        // 1. Chiffre d'affaires (Revenue)
+        // ------------------------------
+        $revenueToday = Order::whereDate('created_at', Carbon::today())->sum('total');
+        $revenueMonth = Order::whereMonth('created_at', Carbon::now()->month)->sum('total');
+        $revenueYear = Order::whereYear('created_at', Carbon::now()->year)->sum('total');
+        $revenueByPeriod = Order::whereBetween('created_at', [$startDate, $endDate])->sum('total');
 
-        if ($periodType === 'day') {
-            $startDate = Carbon::today();
-            $endDate = Carbon::today();
-        } elseif ($periodType === 'year') {
-            $startDate = Carbon::now()->startOfYear();
-            $endDate = Carbon::now()->endOfYear();
-        } elseif ($periodType === 'custom') {
-            $startDate = Carbon::parse($request->input('start_date'));
-            $endDate = Carbon::parse($request->input('end_date'));
-        }
-
-        // Chiffre d'affaires et bénéfices par période sélectionnée
-        $viewData["revenue"] = Order::whereBetween('created_at', [$startDate, $endDate])->sum('total');
-        $viewData["profit"] = Order::whereBetween('created_at', [$startDate, $endDate])->sum(DB::raw('total * 0.2'));
-
-        // Revenus et bénéfices par catégorie
-        $viewData["categorieRevenue"] = Categorie::join('products', 'categories.id', '=', 'products.categorie_id')
-            ->join('orders', 'products.id', '=', 'orders.product_id')
-            ->whereBetween('orders.created_at', [$startDate, $endDate])
-            ->select('categories.name')
-            ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
-            ->groupBy('categories.name')
-            ->get();
-
-        // Revenus et bénéfices par produit
-        $viewData["productRevenue"] = Product::join('orders', 'products.id', '=', 'orders.product_id')
-            ->whereBetween('orders.created_at', [$startDate, $endDate])
-            ->select('products.name')
-            ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
+        // Revenue breakdown
+        $revenueByProduct = Item::join('products', 'items.product_id', '=', 'products.id')
+            ->selectRaw('products.name as produit, SUM(items.quantity * items.price) as revenue')
+            ->whereBetween('items.created_at', [$startDate, $endDate])
             ->groupBy('products.name')
             ->get();
 
-        // Vérification de la colonne 'country' avant d'exécuter la requête
-        if (Schema::hasColumn('users', 'country')) {
-            // Revenus et bénéfices par pays
-            $viewData["countryRevenue"] = User::join('orders', 'users.id', '=', 'orders.user_id')
-                ->whereBetween('orders.created_at', [$startDate, $endDate])
-                ->select('users.country')
-                ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
-                ->groupBy('users.country')
-                ->get();
-        } else {
-            $viewData["countryRevenue"] = collect(); // Retourne une collection vide si 'country' n'existe pas
-        }
+        $revenueByCategory = Item::join('products', 'items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->selectRaw('categories.name as category, SUM(items.quantity * items.price) as revenue')
+            ->whereBetween('items.created_at', [$startDate, $endDate])
+            ->groupBy('categories.name')
+            ->get();
 
-        // Passer la période sélectionnée à la vue
-        $viewData["selectedPeriod"] = $periodType;
-        $viewData["startDate"] = $startDate->toDateString();
-        $viewData["endDate"] = $endDate->toDateString();
-
-        return view('admin.statistics.index')->with("viewData", $viewData);
-    }
-
-    public function downloadPDF(Request $request)
-{
-    // Appeler `index()` et extraire `viewData`
-    $viewData = $this->getStatisticsData($request);
-
-    // Générer le PDF avec les données
-    $pdf = Pdf::loadView('admin.statistics.pdf', compact('viewData'));
-
-    return $pdf->download('statistics_'.$viewData["startDate"].'_to_'.$viewData["endDate"].'pdf');
-}
-
-// Nouvelle fonction pour récupérer les statistiques sans retourner une vue
-private function getStatisticsData(Request $request)
-{
-    $viewData = [];
-    $viewData["title"] = "Statistiques - Tableau de bord";
-    $viewData["subtitle"] = "Statistiques des ventes et bénéfices";
-
-    $periodType = $request->input('period', 'month'); 
-    $startDate = Carbon::now()->startOfMonth();
-    $endDate = Carbon::now()->endOfMonth();
-
-    if ($periodType === 'day') {
-        $startDate = Carbon::today();
-        $endDate = Carbon::today();
-    } elseif ($periodType === 'year') {
-        $startDate = Carbon::now()->startOfYear();
-        $endDate = Carbon::now()->endOfYear();
-    } elseif ($periodType === 'custom') {
-        $startDate = Carbon::parse($request->input('start_date'));
-        $endDate = Carbon::parse($request->input('end_date'));
-    }
-
-    // Ajout des valeurs manquantes
-    $viewData["dailyRevenue"] = Order::whereDate('created_at', Carbon::today())->sum('total');
-    $viewData["monthlyRevenue"] = Order::whereMonth('created_at', Carbon::now()->month)->sum('total');
-    $viewData["yearlyRevenue"] = Order::whereYear('created_at', Carbon::now()->year)->sum('total');
-
-    $viewData["dailyProfit"] = $viewData["dailyRevenue"] * 0.2;
-    $viewData["monthlyProfit"] = $viewData["monthlyRevenue"] * 0.2;
-    $viewData["yearlyProfit"] = $viewData["yearlyRevenue"] * 0.2;
-
-    $viewData["revenue"] = Order::whereBetween('created_at', [$startDate, $endDate])->sum('total');
-    $viewData["profit"] = Order::whereBetween('created_at', [$startDate, $endDate])->sum(DB::raw('total * 0.2'));
-
-    $viewData["categorieRevenue"] = Categorie::join('products', 'categories.id', '=', 'products.categorie_id')
-        ->join('orders', 'products.id', '=', 'orders.product_id')
-        ->whereBetween('orders.created_at', [$startDate, $endDate])
-        ->select('categories.name')
-        ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
-        ->groupBy('categories.name')
-        ->get();
-
-    $viewData["productRevenue"] = Product::join('orders', 'products.id', '=', 'orders.product_id')
-        ->whereBetween('orders.created_at', [$startDate, $endDate])
-        ->select('products.name')
-        ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
-        ->groupBy('products.name')
-        ->get();
-
-    if (Schema::hasColumn('users', 'country')) {
-        $viewData["countryRevenue"] = User::join('orders', 'users.id', '=', 'orders.user_id')
+        $revenueByCountry = Order::join('users', 'orders.user_id', '=', 'users.id')
+            ->selectRaw('users.country as pays, SUM(orders.total) as revenue')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
-            ->select('users.country')
-            ->selectRaw('SUM(orders.total) as revenue, SUM(orders.total * 0.2) as profit')
             ->groupBy('users.country')
             ->get();
-    } else {
-        $viewData["countryRevenue"] = collect();
+
+        // ------------------------------
+        // 2. Bénéfice (Profit)
+        // ------------------------------
+        $profitToday = Item::whereDate('created_at', Carbon::today())->sum('quantity') * 5;
+        $profitMonth = Item::whereMonth('created_at', Carbon::now()->month)->sum('quantity') * 5;
+        $profitYear = Item::whereYear('created_at', Carbon::now()->year)->sum('quantity') * 5;
+        $profitByPeriod = Item::whereBetween('created_at', [$startDate, $endDate])->sum('quantity') * 5;
+
+        $profitByProduct = Item::join('products', 'items.product_id', '=', 'products.id')
+            ->selectRaw('products.name as produit, SUM(items.quantity) * 5 as profit')
+            ->whereBetween('items.created_at', [$startDate, $endDate])
+            ->groupBy('products.name')
+            ->get();
+
+        $profitByCategory = Item::join('products', 'items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->selectRaw('categories.name as categorie, SUM(items.quantity) * 5 as profit')
+            ->whereBetween('items.created_at', [$startDate, $endDate])
+            ->groupBy('categories.name')
+            ->get();
+
+        $profitByCountry = Order::join('users', 'orders.user_id', '=', 'users.id')
+            ->join('items', 'orders.id', '=', 'items.order_id')
+            ->selectRaw('users.country as pays, SUM(items.quantity) * 5 as profit')
+            ->whereBetween('items.created_at', [$startDate, $endDate])
+            ->groupBy('users.country')
+            ->get();
+
+        // Data for the view
+        $viewData = [
+            'title' => 'Statistiques Utiles',
+            'revenueToday' => $revenueToday,
+            'revenueMonth' => $revenueMonth,
+            'revenueYear' => $revenueYear,
+            'revenueByPeriod' => $revenueByPeriod,
+            'revenueByProduct' => $revenueByProduct,
+            'revenueByCategory' => $revenueByCategory,
+            'revenueByCountry' => $revenueByCountry,
+            'profitToday' => $profitToday,
+            'profitMonth' => $profitMonth,
+            'profitYear' => $profitYear,
+            'profitByPeriod' => $profitByPeriod,
+            'profitByProduct' => $profitByProduct,
+            'profitByCategory' => $profitByCategory,
+            'profitByCountry' => $profitByCountry,
+        ];
+
+        return view('admin.statistics.index',compact('viewData'));
     }
 
-    $viewData["selectedPeriod"] = $periodType;
-    $viewData["startDate"] = $startDate->toDateString();
-    $viewData["endDate"] = $endDate->toDateString();
+    public function exportPdf(Request $request)
+    {
+        // $viewData = $this->getAllStatistics($request);
+        $viewData = $this->index($request)->getData()['viewData'];
+        // dd($viewData);
+        $pdf = FacadePdf::loadView('admin.statistics.pdf',compact('viewData'));
+        return $pdf->download('admin.statistics.pdf');
+    }
 
-    return $viewData;
-}
+    private function getAllStatistics(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::today()->toDateString());
+        $endDate = $request->input('end_date', Carbon::today()->toDateString());
 
+        return $this->index($request)->getData();
+    }
 }

@@ -3,66 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\Checkout\Session;
-use App\Models\Product;
-use App\Services\CartService;
+use App\Models\Order;
 
 class PaymentController extends Controller
 {
-    private $cartService;
 
-    public function __construct(CartService $cartService)
+
+
+    public function processPaymentMethod(Request $request)
     {
-        $this->cartService = $cartService;
-    }
-
-    public function checkout(Request $request)
-    {
-        // Get cart items from cookies using CartService
-        $cartItems = $this->cartService->getCart($request); // Must return a collection or array
-
-        // Set Stripe API key
-        Stripe::setApiKey(config('services.stripe.secret'));
-
-        $lineItems = [];
-
-        foreach ($cartItems as $item) {
-            $product = Product::findOrFail($item->id);
-
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'product_data' => [
-                        'name' => $product->name,
-                    ],
-                    'unit_amount' => intval(($product->getDiscountedPrice() ?? $product->price) * 100), // in cents
-                ],
-                'quantity' => $item->quantity,
-            ];
-        }
-
-        $session = Session::create([
-            'payment_method_types' => ['card'],
-            'line_items' => $lineItems,
-            'mode' => 'payment',
-            'success_url' => route('payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => route('payment.cancel'),
+        $request->validate([
+            'payment_method' => 'required|in:Cash on Delivery,Online',
         ]);
 
-        return redirect($session->url);
+        if ($request->payment_method === 'Online') {
+            return view('payment.online');
+        } else {
+            return view('payment.cash_payment_info');
+        }
     }
 
-    public function success(Request $request)
-    {
-        $sessionId = $request->get('session_id');
 
-        // TODO: retrieve session from Stripe, store order in DB, update stock
-        return view('payment.success');
-    }
-
-    public function cancel()
-    {
-        return view('payment.cancel');
-    }
 }

@@ -1,103 +1,64 @@
 @extends('layouts.app')
-<div class="container d-flex justify-content-center align-items-center min-vh-100 py-5" style="background: linear-gradient(135deg, #6e7bff, #a8caff);">
-    <div class="row w-100">
-        <div class="col-md-6 col-lg-4 mx-auto">
-            <div class="card shadow-lg rounded-5 border-0 p-4" style="width: 350px; animation: fadeIn 1s ease-in-out;">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h2 class="text-primary fw-bold" style="font-family: 'Roboto Slab', serif;">Create Your Account</h2>
-                        <p class="text-muted">Please register to continue</p>
-                    </div>
 
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+@section('content')
 
-                        <!-- Name Field -->
-                        <div class="mb-4">
-                            <label for="name" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('Name') }}</label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+<div class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+  <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-xl">
+    <h2 class="text-4xl font-bold text-center text-gray-800 mb-10">{{ __('messages.create_account') }}</h2>
 
-                        <!-- Email Field -->
-                        <div class="mb-4">
-                            <label for="email" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('Email Address') }}</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <!-- Password Field -->
-                        <div class="mb-4">
-                            <label for="password" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('Password') }}</label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+    <form method="POST" action="{{ route('register') }}" class="space-y-6">
+      @csrf
 
-                        <!-- Confirm Password Field -->
-                        <div class="mb-4">
-                            <label for="password-confirm" class="form-label text-dark" style="font-size: 1.1rem;">{{ __('Confirm Password') }}</label>
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" style="border-radius: 12px; padding: 18px; border: 2px solid #ddd;">
-                        </div>
 
-                        <!-- Register Button -->
-                        <div class="d-grid gap-2 mb-4">
-                            <button type="submit" class="btn" style="background: linear-gradient(135deg, #6e7bff, #3e5ad7); color: white; border-radius: 12px; padding: 15px 25px; font-size: 16px; transition: transform 0.2s ease, background 0.3s ease;">
-                                {{ __('Register') }}
-                            </button>
-                        </div>
+      {{-- Full Name --}}
+      <div class="mb-6">
+        <label for="name" class="block text-lg font-medium text-gray-700 mb-2">{{ __('messages.full_name') }}</label>
+        <input id="name" type="text" name="name" required value="{{ old('name') }}"
+          class="w-full px-6 py-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 @enderror">
+        @error('name')
+        <p class="text-base text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
 
-                        <!-- Login Link -->
-                        <div class="text-center mt-3">
-                            <small class="text-muted">Already have an account? <a href="{{ route('login') }}" class="text-primary">Login</a></small>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+      {{-- Email --}}
+      <div class="mb-6">
+        <label for="email" class="block text-lg font-medium text-gray-700 mb-2">{{ __('messages.email') }}</label>
+        <input id="email" type="email" name="email" required value="{{ old('email') }}"
+          class="w-full px-6 py-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror">
+        @error('email')
+        <p class="text-base text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
+
+      {{-- Password --}}
+      <div class="mb-6">
+        <label for="password" class="block text-lg font-medium text-gray-700 mb-2">{{ __('messages.password') }}</label>
+        <input id="password" type="password" name="password" required
+          class="w-full px-6 py-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-500 @enderror">
+        @error('password')
+        <p class="text-base text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
+
+      {{-- Confirm Password --}}
+      <div class="mb-10">
+        <label for="password-confirm" class="block text-lg font-medium text-gray-700 mb-2">{{ __('messages.confirm_password') }}</label>
+        <input id="password-confirm" type="password" name="password_confirmation" required
+          class="w-full px-6 py-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      </div>
+
+      {{-- Register Button --}}
+      <div class="text-center">
+        <button type="submit"
+
+          class="w-full bg-green-600 hover:bg-green-700 text-white text-xl font-semibold py-3 rounded-lg transition">
+          {{ __('messages.register') }}
+
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
-
-<style>
-    /* Animation for fading in the card */
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Card styling */
-    .card {
-        background-color: #ffffff;
-        border-radius: 20px;
-        border: none;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Form Field focus effect */
-    .form-control:focus {
-        border-color: #6e7bff;
-        box-shadow: 0 0 8px rgba(110, 123, 255, 0.5);
-    }
-
-    /* Button hover effect */
-    .btn:hover {
-        background: linear-gradient(135deg, #3e5ad7, #6e7bff);
-        transform: scale(1.05);
-    }
-
-    /* Link hover effect */
-    .text-primary:hover {
-        text-decoration: underline;
-    }
-</style>
+@endsection
