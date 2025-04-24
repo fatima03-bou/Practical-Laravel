@@ -4,7 +4,7 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4">
-                <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <img src="{{ asset('storage/images/' . $product->image) }}" alt="{{ $product->name }}">
             </div>
             <div class="col-md-8">
                 <div class="card-body">

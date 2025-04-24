@@ -8,6 +8,7 @@ use App\Models\Categorie;
 use App\Models\Fournisseur;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -47,6 +48,11 @@ class AdminProductController extends Controller
     }
 
 
+    public function markAsDelivered(Order $order)
+    {
+        $order->status = 'delivered';
+        $order->save();
+    }
 
 
     public function store(Request $request)

@@ -8,23 +8,18 @@ use Illuminate\Http\Request;
 
 class OrderStatusController extends Controller
 {
-    // الحصول على حالة الطلب
     public function getStatus($orderId)
     {
-        // البحث عن الطلب باستخدام الـ ID وإحضار العلاقات اللازمة مثل المنتج، المستخدم، والعناصر
-        $order = Order::with(['product', 'user', 'items'])->find($orderId);
+        $order = Order::with(['user', 'items.product'])->find($orderId);
 
-        // إذا لم نجد الطلب، نرجع خطأ 404
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        // إرجاع البيانات المطلوبة بصيغة JSON
         return response()->json([
             'order_id' => $order->id,
             'status' => $order->status,
             'total' => $order->total,
-            'product' => $order->product->name ?? 'No product specified',
             'user' => $order->user->name ?? 'Unknown user',
             'created_at' => $order->created_at,
             'updated_at' => $order->updated_at,
@@ -43,9 +38,11 @@ class OrderStatusController extends Controller
             }),
         ]);
     }
+
+    // Web - Afficher l'état dans une vue Blade
     public function showStatus($id)
     {
-        $order = Order::with('product', 'user')->find($id);
+        $order = Order::with(['user', 'items.product'])->find($id);
 
         if (!$order) {
             return abort(404, 'Order not found');
@@ -53,6 +50,4 @@ class OrderStatusController extends Controller
 
         return view('orders.status', compact('order'));
     }
-
-
 }

@@ -31,7 +31,12 @@
         transform: translateY(-5px);
     }
 </style>
-
+<!-- في view الصفحة الرئيسية أو أي صفحة يتم إعادة التوجيه إليها -->
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
 <div class="container mt-4">
     <div class="hero">
         <div>

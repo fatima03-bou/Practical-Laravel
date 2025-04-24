@@ -31,11 +31,10 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/', 'App\Http\Controllers\HomeController@index')->name("home.index");
 Route::get('/about', 'App\Http\Controllers\HomeController@about')->name("home.about");
 Route::get('/products', 'App\Http\Controllers\ProductController@index')->name("product.index");
-Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->name("product.show");
 
 
 
-
+Route::get('/order-status/{id}', [OrderStatusController::class, 'showStatus'])->name('order.status');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/cart/delete', [CartController::class, 'delete'])->name('cart.delete');
@@ -104,7 +103,20 @@ Route::post('/categories/{categorie}/discount', [AdminProductController::class, 
 Route::get('/commande/{id}/suivi', [OrderStatusController::class, 'showStatus'])->name('order.status');
 
 Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
-Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
-Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+//Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+Route::match(['get', 'post'], '/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+//Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
 
-Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
+
+
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])
+    ->middleware('auth')
+   ->name('payment.process');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('orders.success');
+Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::get('/orders/success/{order}', [OrderController::class, 'success'])->name('orders.success');
+// Route pour afficher l'historique des commandes
+Route::get('/my-account/orders', [MyAccountController::class, 'orders'])->name('myaccount.orders');
+
+Route::get('products/{id}', [ProductController::class, 'show'])->name('product.show');

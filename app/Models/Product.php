@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store',"fournisseur_id"];
+    protected $fillable = ['name', 'description', 'image', 'price', 'categorie_id', 'quantity_store',"fournisseur_id","order_id"];
 
     // ✅ Validation statique
     public static function validate($request)
@@ -136,5 +136,8 @@ class Product extends Model
         $discount = $this->getActiveDiscount(); 
         return $discount !== null; 
     }
-
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
