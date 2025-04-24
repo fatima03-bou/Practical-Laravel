@@ -54,9 +54,9 @@
           <select name="categorie_id" class="form-control">
             <option value="-1" disabled selected>Choose a category</option>
             @foreach($viewData['categories'] as $categorie)
-                <option value="{{ $category['id'] }}" 
-                    {{ old('categorie_id', $product->categorie_id ?? '') == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
+                <option value="{{ $categorie['id'] }}" 
+                    {{ old('categorie_id', $product->categorie_id ?? '') == $categorie->id ? 'selected' : '' }}>
+                    {{ $categorie->name }}
                 </option>
             @endforeach
           </select>
@@ -79,9 +79,9 @@
         <label for="categorie_id" class="me-2 fw-bold">Category:</label>
         <select name="categorie_id" id="categorie_id" class="form-select" onchange="this.form.submit()">
           <option value="">All Categories</option>
-          @foreach($viewData['categories'] as $category)
-            <option value="{{ $category->id }}" {{ request('categorie_id') == $category->id ? 'selected' : '' }}>
-              {{ $category->name }}
+          @foreach($viewData['categories'] as $categorie)
+            <option value="{{ $categorie->id }}" {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
+              {{ $categorie->name }}
             </option>
           @endforeach
         </select>

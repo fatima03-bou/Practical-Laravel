@@ -290,7 +290,7 @@
         </li>
         
         <li class="nav-item">
-          <a href="{{ route('admin.category.index') }}" class="nav-link sidebar-link">
+          <a href="{{ route('admin.categorie.index') }}" class="nav-link sidebar-link">
             <i class="bi bi-tags"></i>
             <span>Categories</span>
           </a>

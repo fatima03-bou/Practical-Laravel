@@ -90,6 +90,10 @@
 
           <!-- Language Dropdown -->
           <div x-data="{ open: false }" class="relative inline-block text-left">
+            <button @click="open = !open" type="button"
+              class="inline-flex justify-center w-full px-3 py-2 bg-primary-700 rounded-md text-sm font-medium text-white hover:bg-primary-800 focus:outline-none transition">
+              🌐 {{ strtoupper(app()->getLocale()) }}
+            </button>
           
             <div x-show="open" @click.away="open = false" 
                  class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
@@ -100,6 +104,11 @@
                  x-transition:leave-start="transform opacity-100 scale-100"
                  x-transition:leave-end="transform opacity-0 scale-95"
                  x-cloak>
+              <div class="py-1 text-gray-700">
+                <a href="{{ route('lang.switch', 'en') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇺🇸 English</a>
+                <a href="{{ route('lang.switch', 'fr') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇫🇷 Français</a>
+                <a href="{{ route('lang.switch', 'ar') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇸🇦 العربية</a>
+              </div>
             </div>
           </div>
         </div>
@@ -138,7 +147,12 @@
           
           <div class="border-t border-primary-500 my-2"></div>
           
-          
+          <!-- Language Options -->
+          <div class="flex space-x-2 pt-2">
+            <a href="{{ route('lang.switch', 'en') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇺🇸 EN</a>
+            <a href="{{ route('lang.switch', 'fr') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇫🇷 FR</a>
+            <a href="{{ route('lang.switch', 'ar') }}" class="bg-primary-800 hover:bg-primary-900 text-white px-3 py-1 rounded text-sm transition">🇸🇦 AR</a>
+          </div>
         </div>
       </div>
     </div>

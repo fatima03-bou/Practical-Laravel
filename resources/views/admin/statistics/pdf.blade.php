@@ -109,11 +109,11 @@
         <tbody>
             @foreach($viewData['revenueByCategory'] as $category)
                 <tr>
-                    <td>{{ $category->category }}</td>
+                    <td>{{ $category->categorie }}</td>
                     <td>{{ number_format($category->revenue, 2) }}</td>
                     <td>
                         @php
-                            $profit = $viewData['profitByCategory']->firstWhere('category', $category->category);
+                            $profit = $viewData['profitByCategory']->firstWhere('categorie', $category->categorie);
                         @endphp
                         {{ number_format($profit ? $profit->profit : 0, 2) }}
                     </td>

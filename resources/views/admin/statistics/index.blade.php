@@ -96,7 +96,7 @@
                 <tbody>
                     @foreach($viewData['revenueByCategory'] as $data)
                         <tr>
-                            <td>{{ $data->category }}</td>
+                            <td>{{ $data->categorie }}</td>
                             <td>${{ $data->revenue }}</td>
                         </tr>
                     @endforeach
@@ -171,7 +171,7 @@
                 <tbody>
                     @foreach($viewData['profitByCategory'] as $data)
                         <tr>
-                            <td>{{ $data->category }}</td>
+                            <td>{{ $data->categorie }}</td>
                             <td>${{ $data->profit }}</td>
                         </tr>
                     @endforeach
