@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
-<<<<<<< HEAD
-    use HasFactory;
-=======
     /**
      * ITEM ATTRIBUTES
      * $this->attributes['id'] - int - contains the item primary key (id)
@@ -24,7 +21,6 @@ class Item extends Model
      * $this->order - Order - contains the associated Order
      * $this->product - Product - contains the associated Product
      */
->>>>>>> origin
 
     protected $fillable = [
         'quantity',

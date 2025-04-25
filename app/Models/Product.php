@@ -7,6 +7,7 @@ use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Discount;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class Product extends Model
 {
@@ -22,12 +23,7 @@ class Product extends Model
      * $this->items - Item[] - contains the associated items
      */
     use HasFactory;
-<<<<<<< HEAD
-
-    protected $fillable = [
-=======
     protected $fillable =[
->>>>>>> origin
         'name',
         'description',
         'image',
@@ -46,17 +42,8 @@ class Product extends Model
         ]);
     }
     public function category()
-<<<<<<< HEAD
     {
         return $this->belongsTo(Category::class, 'categorie_id');
-=======
-{
-    return $this->belongsTo(Categorie::class, 'categorie_id');
-}
-
-    public function fournisseur(){
-        return $this->belongsTo(fournisseur::class);
->>>>>>> origin
     }
 
     public static function sumPricesByQuantities($products, $productsInSession)
@@ -154,19 +141,10 @@ class Product extends Model
         $this->items = $items;
     }
 
-<<<<<<< HEAD
     public function getFormattedDiscountedPrice()
     {
         return number_format($this->getDiscountedPrice(), 2);
     }
-=======
->>>>>>> origin
-
-
-<<<<<<< HEAD
-        return $discount && $now >= $discount->start_date && $now <= $discount->end_date;
-    }
-=======
 public function discount()
 {
     return $this->hasOne(Discount::class);
@@ -180,10 +158,7 @@ public function getDiscountedPrice()
     return $this->price;
 }
 
-public function getFormattedDiscountedPrice()
-{
-    return number_format($this->getDiscountedPrice(), 2);
-}
+
 
 public function isDiscountActive()
 {
@@ -192,5 +167,4 @@ public function isDiscountActive()
 
     return $discount && $now >= $discount->start_date && $now <= $discount->end_date;
 }
->>>>>>> origin
 }
