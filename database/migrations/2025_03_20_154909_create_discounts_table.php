@@ -9,20 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->float('rate', 5, 2);
+            $table->enum('type', ['all', 'category', 'product']);
+            $table->unsignedBigInteger('categorie_id')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->float('percentage');
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('type', ['product', 'category', 'global']);
-            $table->foreignId('product_id')->nullable()->constrained()->OnDelete('cascade');
-            $table->foreignId('categorie_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
+    
+            $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

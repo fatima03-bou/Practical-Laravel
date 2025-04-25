@@ -1,36 +1,61 @@
-@foreach($orders as $order)
-    <h3>Order #{{ $order->id }}</h3>
-    <p>Status: {{ $order->status }}</p>
-    <p>Total: ${{ $order->calculated_total }}</p>  <!-- عرض المجموع المحسوب -->
+@extends('layouts.app')
 
-    <ul class="list-group">
-        @forelse($order->items as $item)
-            <li class="list-group-item d-flex align-items-center">
-                {{-- Image du produit --}}
-                <a href="{{ route('product.show', ['id' => $item->product->id]) }}" class="me-3">
-                    <img src="{{ asset('storage/images/' . $item->product->image) }}"
-                         alt="{{ $item->product->name }}"
-                         class="img-thumbnail"
-                         style="width: 100px; height: 100px;">
-                </a>
+@section('title', $viewData["title"])
+@section('subtitle', $viewData["subtitle"])
 
-                {{-- Infos produit --}}
-                <div>
-                    <p class="mb-1">
-                        <strong>Product:</strong>
-                        <a href="{{ route('product.show', ['id' => $item->product->id]) }}">
-                            {{ $item->product->name }}
-                        </a>
-                    </p>
-                    <p class="mb-1"><strong>Quantity:</strong> {{ $item->quantity }}</p>
-                    <p class="mb-1"><strong>Unit Price:</strong> ${{ $item->price }}</p>
-                    <p class="mb-0 text-primary fw-bold">
-                        Total: ${{ $item->quantity * $item->price }}
-                    </p>
-                </div>
-            </li>
-        @empty
-            <li class="list-group-item">No products found in this order.</li>
-        @endforelse
-    </ul>
-@endforeach
+@section('content')
+<div class="max-w-4xl mx-auto mt-10">
+
+  @forelse ($viewData["orders"] as $order)
+  <div class="bg-white rounded-lg shadow-md mb-6 p-6">
+    <div class="flex justify-between items-center border-b pb-2 mb-4">
+      <h2 class="text-lg font-semibold text-gray-800">
+        {{ __('order') }} #{{ $order->getId() }}
+      </h2>
+      <span class="text-sm text-gray-500">
+        {{ __('Date:') }} {{ $order->getCreatedAt() }}
+      </span>
+    </div>
+
+    <div class="mb-4 text-gray-700">
+      <p><strong>{{ __('total') }}:</strong> ${{ number_format($order->getTotal(), 2) }}</p>
+    </div>
+
+    {{-- Order Items Table --}}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-center border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="p-2 border">{{ __('item_id') }}</th>
+            <th class="p-2 border">{{ __('product_name') }}</th>
+            <th class="p-2 border">{{ __('price') }}</th>
+            <th class="p-2 border">{{ __('quantity') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($order->getItems() as $item)
+          <tr class="hover:bg-gray-50">
+            <td class="p-2 border">{{ $item->getId() }}</td>
+            <td class="p-2 border">
+              <a href="{{ route('product.show', ['id'=> $item->getProduct()->getId()]) }}"
+                 class="text-blue-600 hover:underline">
+                {{ $item->getProduct()->getName() }}
+              </a>
+            </td>
+            <td class="p-2 border">${{ number_format($item->getPrice(), 2) }}</td>
+            <td class="p-2 border">{{ $item->getQuantity() }}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @empty
+  <div class="bg-red-100 text-red-700 p-4 rounded-md text-center">
+    {{ __('no_purchases') }}
+  </div>
+  @endforelse
+
+</div>
+@endsection

@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'fournisseur_id')) {
-                $table->foreignId('fournisseur_id')->nullable()->constrained()->cascadeOnDelete();
-            }
+            $table->integer('quantity_store')->default(0)->after('price');
         });
     }
 
@@ -23,9 +21,13 @@ return new class extends Migration
      */
     public function down(): void
     {
+<<<<<<< HEAD:database/migrations/2025_04_22_004019_add_type_to_discounts_table.php
+        Schema::table('discounts', function (Blueprint $table) {
+            $table->dropColumn(['type', 'category_id']);
+=======
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['fournisseur_id']);
-            $table->dropColumn("fournisseur_id");
+            //
+>>>>>>> 39d86d0e895ae945a9fb013d0fe2904cf1e2fcc2:database/migrations/2025_03_08_144552_add_column_to_table.php
         });
     }
 };

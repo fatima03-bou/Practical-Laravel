@@ -196,5 +196,7 @@ return [
         //'Pdf' => Barryvdh\DomPDF\Facade\Pdf::class,
         // ...
     ])->toArray(),
-
+     
+    // Ajouter dans le tableau de configuration
+'currency' => 'USD', // Ou la devise de votre choix
 ];

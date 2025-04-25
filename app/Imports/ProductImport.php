@@ -4,31 +4,27 @@ namespace App\Imports;
 
 use App\Models\Categorie;
 use App\Models\Product;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\ToModel;
 
-class ProductImport implements ToCollection
+
+class ProductImport implements ToModel
 {
     /**
-    * @param Collection $collection
+    * @param array $row
+    *
+    * @return \Illuminate\Database\Eloquent\Model|null
     */
-    public function collection(Collection $collection)
+    public function model(array $row)
     {
-        foreach ($collection as $row) {
-            if (count($row) < 7) {
-                continue;  
-            }
-            $category = Categorie::firstOrCreate(['name' => $row[4]]);
+        $category = Categorie::firstOrCreate(['name' => $row[4]]);
 
-            Product::create([
-                'name' => $row[0],              
-                'description' => $row[1],   
-                'image' => $row[2],              
-                'price' => $row[3],              
-                'categorie_id' => $category->id, 
-                'quantity_store' => $row[5],    
-                'fournisseur_id' => $row[6],     
-            ]);
-        }
+        return new Product([
+            'name' => $row[0],        
+            'description' => $row[1], 
+            'image' => $row[2],      
+            'price' => $row[3],  
+            "quantity_store"=>[5]??0,
+            'categorie_id' => $category->id,    
+        ]);
     }
 }

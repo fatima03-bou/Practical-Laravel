@@ -1,217 +1,265 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
-    <link href="{{ asset('/css/app.css') }}" rel="stylesheet" />
-    <title>@yield('title', 'Online Store')</title>
-
-    <style>
-        /* Root Variables */
-        :root {
-            --primary-color: #2d98da;
-            --secondary-color: #f5f7fa;
-            --dark-color: #212121;
-            --light-color: #ffffff;
-            --font-family: 'Roboto', sans-serif;
-            --header-height: 80px;
-            --footer-bg: #1e1e1e;
-            --transition-speed: 0.3s;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              950: '#082f49',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
         }
-
-        /* General Styles */
-        body {
-            font-family: var(--font-family);
-            font-size: 1rem;
-            color: var(--dark-color);
-            margin: 0;
-            background-color: var(--secondary-color);
-            line-height: 1.6;
-        }
-
-        h1, h2, h3 {
-            font-weight: 500;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        /* Header */
-        header {
-            background-color: var(--primary-color);
-            color: var(--light-color);
-            padding: 20px 30px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        header .navbar-brand {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .navbar-nav .nav-link {
-            color: var(--light-color);
-            font-size: 1rem;
-            padding: 10px 15px;
-            transition: color var(--transition-speed), transform var(--transition-speed);
-        }
-
-        .navbar-nav .nav-link:hover,
-        .navbar-nav .nav-link.active {
-            color: var(--secondary-color);
-            transform: scale(1.05);
-        }
-
-        /* Masthead */
-        .masthead {
-            background: linear-gradient(135deg, #2d98da, #00bcd4);
-            color: var(--light-color);
-            padding: 120px 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--secondary-color);
-            margin-top: 100px;
-        }
-
-        .masthead h2 {
-            font-size: 3.5rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .masthead .welcome-message {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: var(--light-color);
-        }
-
-        /* Content */
-        .content {
-            background-color: var(--light-color);
-            border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-            padding: 40px;
-            margin-top: 30px;
-            transition: transform var(--transition-speed);
-        }
-
-        .content:hover {
-            transform: translateY(-8px);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--footer-bg);
-            color: var(--light-color);
-            padding: 20px 30px;
-            text-align: center;
-            font-size: 0.9rem;
-            margin-top: 30px;
-        }
-
-        footer a {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        footer a:hover {
-            color: var(--light-color);
-            text-decoration: underline;
-        }
-
-        /* Button */
-        .btn-warning {
-            background-color: #f39c12;
-            color: var(--light-color);
-            padding: 12px 25px;
-            font-weight: 600;
-            border-radius: 5px;
-            transition: background-color var(--transition-speed), transform var(--transition-speed);
-        }
-
-        .btn-warning:hover {
-            background-color: #e67e22;
-            transform: scale(1.05);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            .masthead h2 {
-                font-size: 2.5rem;
-            }
-
-            .content {
-                padding: 30px;
-            }
-
-            footer {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>@yield('title', 'Online Store') - Best Deals Online</title>
+  <meta name="description" content="Shop the best products at unbeatable prices. Free shipping on orders over $50!">
+  <style>
+    [x-cloak] { display: none !important; }
+  </style>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-sans antialiased">
+  <!-- Header -->
+  <nav class="bg-primary-600 text-white py-4 shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <a class="text-2xl font-bold hover:text-primary-200 transition-colors flex items-center gap-2" href="{{ route('home.index') }}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span>Online Store</span>
+        </a>
 
-<body>
+        <!-- Mobile menu button -->
+        <button x-data @click="document.getElementById('mobile-menu').classList.toggle('hidden')" class="lg:hidden text-white focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
 
-    <!-- Header -->
-    <header>
-        <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home.index') }}" class="navbar-brand">Online Store</a>
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <div class="navbar-nav">
-                    @if (Auth::check() && Auth::user()->role == 'super_admin')
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-warning">SuperAdmin Panel</a>
-                    @endif
-                    <a class="nav-link active" href="{{ route('home.index') }}">Home</a>
-                    <a class="nav-link active" href="{{ route('product.index') }}">Products</a>
-                    <a class="nav-link active" href="{{ route('cart.index') }}">Cart</a>
-                    <a class="nav-link active" href="{{ route('home.about') }}">About</a>
-                    @guest
-                        <a class="nav-link active" href="{{ route('login') }}">Login</a>
-                        <a class="nav-link active" href="{{ route('register') }}">Register</a>
-                    @else
-                        <a class="nav-link active" href="{{ route('myaccount.orders') }}">My Orders</a>
-                        <form id="logout" action="{{ route('logout') }}" method="POST" class="d-inline">
-                            <a role="button" class="nav-link active"
-                                onclick="document.getElementById('logout').submit();">Logout</a>
-                            @csrf
-                        </form>
-                    @endguest
-                </div>
-            </nav>
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex items-center space-x-6">
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium relative group" href="{{ route('cart.index') }}">
+            <div class="flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span>{{ __('cart') ?? 'Cart' }}</span>
+              <!-- Cart Count Badge -->
+              @if(session()->has('products') && count(session()->get('products')) > 0)
+                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {{ count(session()->get('products')) }}
+                </span>
+              @endif
+            </div>
+          </a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
+
+          @guest
+            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
+            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
+          @else
+            <a class="text-white hover:text-primary-200 transition-colors font-medium" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
+            <form id="logout" action="{{ route('logout') }}" method="POST" class="inline">
+              @csrf
+              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium">{{ __('logout') ?? 'Logout' }}</button>
+            </form>
+          @endguest
+
+          <!-- Language Dropdown -->
+          <div x-data="{ open: false }" class="relative inline-block text-left">
+          
+            <div x-show="open" @click.away="open = false" 
+                 class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 x-cloak>
+            </div>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <!-- Masthead -->
-    <div class="masthead">
-        <h2>@yield('subtitle', 'A Modern Online Store')</h2>
-        <div class="welcome-message">Welcome to your Online Store! Explore and shop the best products.</div>
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="lg:hidden hidden mt-4 bg-primary-700 rounded-lg p-4 shadow-lg">
+        <div class="flex flex-col space-y-3">
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2 flex items-center gap-2" href="{{ route('cart.index') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>{{ __('cart') ?? 'Cart' }}</span>
+            @if(session()->has('products') && count(session()->get('products')) > 0)
+              <span class="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {{ count(session()->get('products')) }}
+              </span>
+            @endif
+          </a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
+          
+          <div class="border-t border-primary-500 my-2"></div>
+          
+          @guest
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
+            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium text-center" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
+          @else
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium py-2 w-full text-left">{{ __('logout') ?? 'Logout' }}</button>
+            </form>
+          @endguest
+          
+          <div class="border-t border-primary-500 my-2"></div>          
+        </div>
+      </div>
     </div>
+  </nav>
 
-    <!-- Main Content -->
-    <div class="container content">
-        @yield('content')
+  <!-- Main content -->
+  <div class="container mx-auto px-4 py-8 flex-grow">
+    @if(session('success'))
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm" role="alert">
+      <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <p>{{ session('success') }}</p>
+      </div>
     </div>
+    @endif
+    
+    @if(session('error'))
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm" role="alert">
+      <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <p>{{ session('error') }}</p>
+      </div>
+    </div>
+    @endif
+    
+    @yield('content')
+  </div>
 
-    <!-- Footer -->
-    <footer>
-        <small>Copyright - <a href="https://twitter.com/danielgarax" target="_blank">Daniel Correa</a> - <b>Paola Vallejo</b></small>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-10 mt-auto">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        
+        <!-- About Us -->
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('about_us') ?? 'About Us' }}</h4>
+          <p class="text-gray-400 text-sm">
+            {{ __('about_us_description') ?? 'We are dedicated to providing the best shopping experience with quality products at competitive prices.' }}
+          </p>
+        </div>
+  
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('quick_links') ?? 'Quick Links' }}</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="{{ route('home.index') }}" class="text-gray-400 hover:text-white transition">{{ __('home') ?? 'Home' }}</a></li>
+            <li><a href="{{ route('product.index') }}" class="text-gray-400 hover:text-white transition">{{ __('products') ?? 'Products' }}</a></li>
+            <li><a href="{{ route('home.about') }}" class="text-gray-400 hover:text-white transition">{{ __('about_us') ?? 'About Us' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('contact') ?? 'Contact' }}</a></li>
+          </ul>
+        </div>
+  
+        <!-- Customer Service -->
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('customer_service') ?? 'Customer Service' }}</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('faq') ?? 'FAQ' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('shipping_policy') ?? 'Shipping Policy' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('returns_refunds') ?? 'Returns & Refunds' }}</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">{{ __('privacy_policy') ?? 'Privacy Policy' }}</a></li>
+          </ul>
+        </div>
+  
+        <!-- Contact Us -->
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-primary-300">{{ __('contact_us') ?? 'Contact Us' }}</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li class="flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>{{ __('address_detail') ?? '123 Shopping Street, Retail City, 10001' }}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>{{ __('support_email') ?? 'support@onlinestore.com' }}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span>{{ __('phone_number') ?? '+1 (555) 123-4567' }}</span>
+            </li>
+          </ul>
+          
+          <!-- Social Media Icons -->
+          <div class="mt-4 flex space-x-3">
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition">
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition">
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition">
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Copyright -->
+      <div class="border-t border-gray-700 pt-6 text-center">
+        <small class="text-gray-400">
+          {{ __('copyright') ?? 'Copyright' }} © {{ date('Y') }} - 
+          <a class="text-primary-400 hover:underline transition" target="_blank" href="https://twitter.com/danielgarax">
+            Daniel Correa
+          </a> - <b>Paola Vallejo</b>
+        </small>
+      </div>
+    </div>
+  </footer>
 </body>
-
 </html>

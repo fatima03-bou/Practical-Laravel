@@ -69,16 +69,6 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'balance' => 5000,
-            'role' => 'admin',
         ]);
-    }
-     /**
-     * Rediriger l'utilisateur après son inscription.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    protected function redirectTo()
-    {
-        return route('admin.home.index');  // Rediriger vers la page Admin après l'inscription
     }
 }

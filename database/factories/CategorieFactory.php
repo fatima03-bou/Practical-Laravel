@@ -14,11 +14,11 @@ class CategorieFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
+            'name' => $this->faker->name(),
+            'description' => $this->faker->text(),
         ];
     }
 }

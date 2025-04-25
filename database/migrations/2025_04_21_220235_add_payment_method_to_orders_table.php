@@ -1,33 +1,23 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+return new class extends Migration {
+    public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('payment_method', ['livraison', 'en_ligne'])->default('livraison');
-            $table->string('transaction_id')->nullable(); // Pour les paiements en ligne
+            $table->string('name')->nullable()->after('user_id');
+            $table->string('phone')->nullable()->after('name');
+            $table->string('address')->nullable()->after('phone');
+            $table->enum('payment_method', ['Cash on Delivery', 'Online'])->default('Cash on Delivery')->after('address');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('payment');
+            $table->dropColumn(['name', 'phone', 'address', 'payment_method']);
         });
     }
 };

@@ -2,61 +2,71 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Session;
 
 class CartService
 {
-    private $cookieName = 'shopping_cart';
-    private $cookieExpire = 60 * 24 * 30; // 30 jours
-    
-    public function getCart(Request $request)
+    protected $sessionKey = 'cart';
+
+    public function getCart(): array
     {
-        $cartItems = json_decode($request->cookie($this->cookieName), true) ?? [];
-        $items = collect();
-        
-        foreach ($cartItems as $id => $quantity) {
-            $product = Product::find($id);
-            if ($product) {
-                $items->put($id, (object) [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'price' => $product->getDiscountedPrice(),
-                    'quantity' => $quantity,
-                    'image' => $product->image
-                ]);
-            }
-        }
-        
-        return $items;
+        return Session::get($this->sessionKey, []);
     }
-    
-    public function add(Request $request, $id, $quantity = 1)
+
+    public function saveCart(array $cart): void
     {
-        $cartItems = json_decode($request->cookie($this->cookieName), true) ?? [];
-        
-        if (isset($cartItems[$id])) {
-            $cartItems[$id] += $quantity;
+        Session::put($this->sessionKey, $cart);
+    }
+
+    public function addItem(int $productId, int $quantity = 1): void
+    {
+        $cart = $this->getCart();
+        if (isset($cart[$productId])) {
+            $cart[$productId] += $quantity;
         } else {
-            $cartItems[$id] = $quantity;
+            $cart[$productId] = $quantity;
         }
-        
-        return cookie($this->cookieName, json_encode($cartItems), $this->cookieExpire);
+        $this->saveCart($cart);
     }
-    
-    public function remove(Request $request, $id)
+
+    public function removeItem(int $productId): void
     {
-        $cartItems = json_decode($request->cookie($this->cookieName), true) ?? [];
-        
-        if (isset($cartItems[$id])) {
-            unset($cartItems[$id]);
+        $cart = $this->getCart();
+        unset($cart[$productId]);
+        $this->saveCart($cart);
+    }
+
+    public function clearCart(): void
+    {
+        Session::forget($this->sessionKey);
+    }
+
+    public function getCartItems()
+ {
+    $cart = session()->get('cart', []);
+    $items = [];
+
+    foreach ($cart as $productId => $quantity) {
+        $product = Product::find($productId);
+        if ($product) {
+            $items[] = [
+                'product' => $product,
+                'quantity' => $quantity
+            ];
         }
-        
-        return cookie($this->cookieName, json_encode($cartItems), $this->cookieExpire);
     }
-    
-    public function clear()
+
+    return $items;
+ }
+
+
+    public function getTotal(): float
     {
-        return cookie($this->cookieName, json_encode([]), $this->cookieExpire);
+        $total = 0;
+        foreach ($this->getCartItems() as $item) {
+            $total += $item['product']->getDiscountedPrice() * $item['quantity'];
+        }
+        return $total;
     }
 }

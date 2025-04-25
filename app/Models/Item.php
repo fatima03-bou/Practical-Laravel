@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
@@ -20,7 +21,14 @@ class Item extends Model
      * $this->order - Order - contains the associated Order
      * $this->product - Product - contains the associated Product
      */
-    protected $fillable = ["quantity","price",'order_id', 'product_id',"status"];
+
+    protected $fillable = [
+        'quantity',
+        'price',
+        'order_id',
+        'product_id',
+    ];
+
     public static function validate($request)
     {
         $request->validate([

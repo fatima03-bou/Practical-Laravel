@@ -3,51 +3,103 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use Illuminate\Http\Response;
 
 class OrderStatusController extends Controller
 {
-    public function getStatus($orderId)
+   
+    public function index()
     {
-        $order = Order::with(['user', 'items.product'])->find($orderId);
+       
+        $orders = Order::with('items')->where('user_id', auth()->id())->get();
 
-        if (!$order) {
-            return response()->json(['error' => 'Order not found'], 404);
-        }
-
-        return response()->json([
-            'order_id' => $order->id,
-            'status' => $order->status,
-            'total' => $order->total,
-            'user' => $order->user->name ?? 'Unknown user',
-            'created_at' => $order->created_at,
-            'updated_at' => $order->updated_at,
-            'message' => match ($order->status) {
-                'processing' => 'Your order is being processed 💼',
-                'shipped' => 'Your order has been shipped 🚚',
-                'delivered' => 'Your order has been delivered ✅',
-                'cancelled' => 'Your order has been cancelled ❌',
-                default => 'Unknown status',
-            },
-            'items' => $order->items->map(function ($item) {
-                return [
-                    'name' => $item->product->name ?? 'Unknown product',
-                    'quantity' => $item->quantity,
-                ];
-            }),
-        ]);
+        return response()->json($orders, Response::HTTP_OK);
     }
 
-    // Web - Afficher l'état dans une vue Blade
-    public function showStatus($id)
+    
+    public function store(Request $request)
     {
-        $order = Order::with(['user', 'items.product'])->find($id);
+       
+        $validatedData = $request->validate([
+            'total' => 'required|integer',
+            
+        ]);
+
+      
+        $order = Order::create([
+            'total'   => $validatedData['total'],
+            'user_id' => auth()->id(),
+            'status'  => 'Packed' 
+        ]);
+
+        return response()->json($order, Response::HTTP_CREATED);
+    }
+
+   
+    public function show($id)
+    {
+        
+        $order = Order::with('items')->find($id);
 
         if (!$order) {
-            return abort(404, 'Order not found');
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
         }
 
-        return view('orders.status', compact('order'));
+        return response()->json($order, Response::HTTP_OK);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+       
+        $validatedData = $request->validate([
+            'total' => 'sometimes|required|integer',
+            
+        ]);
+
+        $order->update($validatedData);
+
+        return response()->json($order, Response::HTTP_OK);
+    }
+
+ 
+    public function destroy($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+        $order->delete();
+
+        return response()->json(['message' => 'Commande supprimée avec succès'], Response::HTTP_NO_CONTENT);
+    }
+
+ 
+    public function updateStatus(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Commande non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+
+
+        $validatedData = $request->validate([
+            'status' => 'required|in:Packed,Shipped,In Transit,Received,Returned,Closed'
+        ]);
+
+        $order->update(['status' => $validatedData['status']]);
+
+        return response()->json($order, Response::HTTP_OK);
     }
 }
