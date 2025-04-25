@@ -12,13 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->unsignedBigInteger('fournisseur_id');
-            $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('cascade');
-        });
-        
+        if (!Schema::hasColumn('products', 'fournisseur_id')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->unsignedBigInteger('fournisseur_id');
+                $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('cascade');
+            });
+        }
     }
-
+    
     /**
      * Reverse the migrations.
      */

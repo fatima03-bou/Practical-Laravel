@@ -1,66 +1,65 @@
 @extends('layouts.app')
 
-@section('title', $viewData["title"])
-@section('subtitle', $viewData["subtitle"])
-
+@section('title', __('About Us'))
 @section('content')
-<div class="bg-white min-h-screen py-12">
-    <div class="max-w-6xl mx-auto px-6">
-        
-        <!-- Title -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-semibold text-gray-800">{{ $viewData["title"] }}</h1>
-            <p class="text-gray-600 text-lg">{{ $viewData["subtitle"] }}</p>
+<div class="bg-gradient-to-b from-blue-50 to-white py-20 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">{{ __('Your Trusted Online Destination') }}</h1>
+            <p class="text-lg text-gray-600">{{ __('We bring together fashion, technology, and service to create something exceptional.') }}</p>
         </div>
 
-        <!-- About the Project -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-            <div>
-                <h2 class="text-2xl font-semibold text-blue-700 mb-4">{{ __('who_are_we') }}</h2>
-                <p class="text-gray-700 text-lg leading-relaxed">
-                    {{ $viewData["description"] }}
+        <!-- Who We Are -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
+            <div class="order-2 md:order-1">
+                <h2 class="text-2xl font-semibold text-blue-600 mb-4">{{ __('Who We Are') }}</h2>
+                <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                    {{ __('We are a passionate team redefining online shopping in the modern era. Our mission is simple: combine style and accessibility, while offering a seamless user experience.') }}
                 </p>
+                <ul class="list-disc list-inside text-gray-700">
+                    <li>{{ __('100% satisfaction guarantee') }}</li>
+                    <li>{{ __('Curated collections updated weekly') }}</li>
+                    <li>{{ __('Friendly and responsive support') }}</li>
+                </ul>
             </div>
-            <div>
-                <img src="https://cdn.prod.website-files.com/62196607bf1b46c300301846/6568ada0ea9d4603d85a24df_ojszptselv3sfysmejml.webp" alt="About us" class="w-full h-auto rounded-xl shadow-lg">
+            <div class="order-1 md:order-2">
+                <img src="{{ asset('storage/images/team.png') }}" alt="Team image" class="w-full rounded-xl shadow-lg">
             </div>
         </div>
 
-        <!-- Developer / Team Information -->
-        <div class="bg-gray-100 rounded-xl p-10 shadow-md mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ __('developer_team') }}</h2>
-            <p class="text-gray-700 text-lg">
-                {{ $viewData["author"] }}
-            </p>
-        </div>
-
-        <!-- Project Features -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">{{ __('unique_project') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="p-6 bg-white rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-4xl mb-3 text-blue-500">⚡</div>
-                    <h3 class="font-semibold text-xl mb-2">{{ __('fast_interface') }}</h3>
-                    <p class="text-gray-600">{{ __('fast_interface_description') }}</p>
+        <!-- Why Choose Us -->
+        <div class="bg-white rounded-3xl shadow-xl px-8 py-14 mb-20">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-10">{{ __('Why Choose Us?') }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-center">
+                <div>
+                    <div class="text-5xl text-indigo-500 mb-4">🚚</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('Fast Delivery') }}</h3>
+                    <p class="text-gray-600">{{ __('We ship across the country in record time.') }}</p>
                 </div>
-                <div class="p-6 bg-white rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-4xl mb-3 text-green-500">🔒</div>
-                    <h3 class="font-semibold text-xl mb-2">{{ __('security_privacy') }}</h3>
-                    <p class="text-gray-600">{{ __('security_privacy_description') }}</p>
+                <div>
+                    <div class="text-5xl text-pink-500 mb-4">🌟</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('Top Rated Products') }}</h3>
+                    <p class="text-gray-600">{{ __('All products are hand-picked by our team.') }}</p>
                 </div>
-                <div class="p-6 bg-white rounded-lg shadow hover:shadow-md transition">
-                    <div class="text-4xl mb-3 text-purple-500">🌍</div>
-                    <h3 class="font-semibold text-xl mb-2">{{ __('comprehensive_support') }}</h3>
-                    <p class="text-gray-600">{{ __('comprehensive_support_description') }}</p>
+                <div>
+                    <div class="text-5xl text-green-500 mb-4">📞</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ __('Customer First') }}</h3>
+                    <p class="text-gray-600">{{ __('Our team is available 24/7 to help you.') }}</p>
                 </div>
             </div>
         </div>
 
-        <!-- Call to Contact -->
-        <div class="text-center mt-16">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-3">{{ __('contact_us') }}</h2>
-            <p class="text-gray-600 mb-4">{{ __('contact_us_description') }}</p>
+        <!-- Call to Action -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ __('Join Our Story') }}</h2>
+            <p class="text-gray-600 text-lg mb-6">{{ __('Create your account and enjoy exclusive benefits and promotions!') }}</p>
+            <a href="{{ route('register') }}" class="inline-block bg-blue-600 text-white font-semibold px-8 py-3 rounded-full hover:bg-blue-700 transition">
+                {{ __('Sign Up Now') }}
+            </a>
         </div>
+
     </div>
 </div>
 @endsection

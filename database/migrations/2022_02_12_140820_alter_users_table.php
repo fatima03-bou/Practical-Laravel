@@ -14,9 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('client');
-            $table->integer('balance')->nullable();
-        });
+
+                    if (!Schema::hasColumn('users', 'role')) {
+                        $table->string('role')->default('client');
+                    }
+
+                    if (!Schema::hasColumn('users', 'balance')) {
+                        $table->integer('balance')->nullable();
+                    }
+                });
     }
 
     /**

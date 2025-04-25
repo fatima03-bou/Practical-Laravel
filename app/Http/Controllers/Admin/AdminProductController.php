@@ -37,32 +37,41 @@ class AdminProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
+        // Validate the request
         Product::validate($request);
     
+        // Create a new product instance
         $newProduct = new Product();
-        $newProduct->setName($request->input('name'));
-        $newProduct->setDescription($request->input('description'));
-        $newProduct->setPrice($request->input('price'));
-        $newProduct->setImage("game.png");
     
+        // Assign values to the product attributes
+        $newProduct->name = $request->input('name');
+        $newProduct->description = $request->input('description');
+        $newProduct->price = $request->input('price');
+        $newProduct->image = "game.png"; // Default image
+        $newProduct->fournisseur_id = $request->input('fournisseur_id');
+
         // Assign category_id
-        $newProduct->category_id = $request->input('category_id');
+        $newProduct->categorie_id = $request->input('category_id');
     
+        // Save the product
         $newProduct->save();
     
+        // Handle image upload if present
         if ($request->hasFile('image')) {
-            $imageName = $newProduct->getId().".".$request->file('image')->extension();
+            $imageName = $newProduct->id . "." . $request->file('image')->extension();
+    
             Storage::disk('public')->put(
                 $imageName,
                 file_get_contents($request->file('image')->getRealPath())
             );
-            $newProduct->setImage($imageName);
-            $newProduct->save();
+            $newProduct->image = $imageName; // Update the image field
+            $newProduct->save(); // Save the updated image field
         }
     
-        return back();
+        // Redirect or return response
+        return redirect()->route('admin.product.index')->with('success', 'Product created successfully!');
     }
+    
     
 
     public function delete($id)
@@ -86,9 +95,10 @@ class AdminProductController extends Controller
         Product::validate($request);
 
         $product = Product::findOrFail($id);
-        $product->setName($request->input('name'));
-        $product->setDescription($request->input('description'));
-        $product->setPrice($request->input('price'));
+        $product->name = $request->input('name');
+        $product->description = $request->input('description');
+        $product->price = $request->input('price');
+
         $product->category_id = $request->input('category_id');
 
         if ($request->hasFile('image')) {

@@ -1,55 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-8">
-    <h2 class="text-2xl font-bold mb-6">{{ __('Orders List') }}</h2>
+<div class="container mx-auto mt-12 px-6">
+    <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-10">{{ __('Orders List') }}</h2>
 
-    {{-- إذا لم يكن هناك أي طلبات --}}
+    {{-- No orders message --}}
     @if($orders->isEmpty())
-        <div class="bg-blue-100 text-blue-700 p-4 rounded text-center">
+        <div class="bg-indigo-50 text-indigo-700 p-6 rounded-lg shadow-md text-center">
             {{ __('There are no orders currently.') }}
         </div>
     @else
         @foreach($orders as $order)
-        <div class="bg-white shadow rounded-lg mb-6">
-            <div class="bg-blue-500 text-white px-4 py-3 rounded-t-lg">
-                <strong>{{ __('Order ID:') }}</strong> {{ $order->id }} | 
-                <strong>{{ __('User:') }}</strong> {{ $order->user->name }}
+        <div class="bg-white shadow-lg rounded-lg mb-10 p-8">
+            <div class="bg-gradient-to-r from-indigo-500 via-blue-500 to-teal-500 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+                <div>
+
+                    <p class="text-sm">{{ __('User:') }} {{ $order->user->name }}</p>
+                </div>
+                <div class="text-sm font-medium">
+                    <span class="bg-indigo-600 px-3 py-1 rounded-full">{{ __('Status:') }} {{ $order->status }}</span>
+                </div>
             </div>
 
-            <div class="p-4">
-              
-                <p><strong>{{ __('Status:') }}</strong> {{ $order->status }}</p>
-                <p><strong>{{ __('Payment Method:') }}</strong> {{ $order->payment_method }}</p>
-                <p><strong></p>
-                    <p><strong></p>
-                    <p><strong>{{ __('Total:') }}</strong> {{ number_format($order->total, 2) }} DH</p>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <p class="text-lg text-gray-800"><strong>{{ __('Payment Method:') }}</strong> {{ $order->payment_method }}</p>
+                    <p class="text-lg text-gray-800"><strong>{{ __('Total:') }}</strong> {{ number_format($order->total, 2) }} DH</p>
 
-                @if($order->payment_method === 'Cash on Delivery')
-                    <p><strong>{{ __('Name:') }}</strong> {{ $order->name }}</p>
-                    <p><strong>{{ __('Phone:') }}</strong> {{ $order->phone }}</p>
-                    <p><strong>{{ __('Address:') }}</strong> {{ $order->address }}</p>
-                @endif
+                    @if($order->payment_method === 'Cash on Delivery')
+                    <div>
+                        <p class="text-lg text-gray-800"><strong>{{ __('Name:') }}</strong> {{ $order->name }}</p>
+                        <p class="text-lg text-gray-800"><strong>{{ __('Phone:') }}</strong> {{ $order->phone }}</p>
+                        <p class="text-lg text-gray-800"><strong>{{ __('Address:') }}</strong> {{ $order->address }}</p>
+                    </div>
+                    @endif
 
-                <p><strong>{{ __('Created At:') }}</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
+                    <p class="text-lg text-gray-800"><strong>{{ __('Created At:') }}</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
+                </div>
 
-                <h5 class="text-lg font-bold mt-6">{{ __('Products:') }}</h5>
-                <table class="min-w-full bg-white border border-gray-200 mt-4">
+                <h5 class="text-xl font-semibold mt-6 text-gray-900">{{ __('Products:') }}</h5>
+                <table class="min-w-full bg-white border border-gray-200 mt-6 rounded-lg shadow-sm">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">{{ __('Product') }}</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">{{ __('Quantity') }}</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">{{ __('Unit Price') }}</th>
-                            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">{{ __('Total') }}</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">{{ __('Product') }}</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">{{ __('Quantity') }}</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">{{ __('Unit Price') }}</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">{{ __('Total') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @foreach($order->items as $item)
-                        <tr>
-                            <td class="px-4 py-2 text-sm text-gray-700">{{ $item->product->name }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-700">{{ $item->quantity }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-700">{{ number_format($item->price, 2) }} DH</td>
-                            <td class="px-4 py-2 text-sm text-gray-700">{{ number_format($item->quantity * $item->price, 2) }} DH</td>
+                        <tr class="hover:bg-gray-50 transition duration-200">
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $item->product->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $item->quantity }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ number_format($item->price, 2) }} DH</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ number_format($item->quantity * $item->price, 2) }} DH</td>
                         </tr>
                         @endforeach
                     </tbody>

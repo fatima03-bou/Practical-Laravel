@@ -45,9 +45,11 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
+        $categories = Category::all();
         $viewData["title"] = $product->getName()." - Online Store";
         $viewData["subtitle"] =  $product->getName()." - Product information";
         $viewData["product"] = $product;
+        $viewData["categories"] = $categories;
         // dd($viewData );
         return view('product.show')->with("viewData", $viewData);
     }

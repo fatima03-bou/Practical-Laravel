@@ -60,7 +60,7 @@ Route::middleware('admin')->group(function () {
     Route::POST('/admin/products/import/', [AdminProductController::class, 'import'])->name('admin.product.import');
 
     // Category Routes
-    Route::get('admin/categories', [AdminCategoryController::class, "index"])->name("admin.category.index");
+    Route::get('admin/categories', [AdminCategoryController::class, "index"])->name("admin.categories.index");
     Route::post('admin/categories/store', [AdminCategoryController::class, "store"])->name("admin.category.store");
     Route::delete('admin/categories/{id}', [AdminCategoryController::class, 'delete'])->name("admin.category.delete");
     Route::get('admin/categories/{id}/edit', [AdminCategoryController::class, 'edit'])->name("admin.category.edit");

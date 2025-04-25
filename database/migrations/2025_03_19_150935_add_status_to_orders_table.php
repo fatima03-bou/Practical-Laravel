@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['Packed', 'Shipped', 'In Transit', 'Received', 'Returned', 'Closed'])->default('Packed');
+            if (!Schema::hasColumn('orders', 'status')) {
+                $table->enum('status', ['Packed', 'Shipped', 'In Transit', 'Received', 'Returned', 'Closed'])->default('Packed');
+            }
         });
     }
+
 
     /**
      * Reverse the migrations.
