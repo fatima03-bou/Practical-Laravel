@@ -4,89 +4,87 @@
 @section('subtitle', $viewData["subtitle"])
 
 @section('content')
-<div class="bg-white shadow-xl rounded-2xl p-6 mb-10">
-  <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center gap-2">
-    🛒 <span>{{ __('products_in_cart') }}</span>
+<div class="bg-gray-50 shadow-md rounded-xl p-8 mb-12">
+  <h2 class="text-3xl font-bold mb-8 text-gray-800">
+    <i class="fas fa-shopping-cart text-gray-700"></i> {{ __('messages.products_in_cart') }}
   </h2>
-  {{-- {{ dd($viewData) }} --}}
 
   @if (count($viewData["products"]) > 0)
-  <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-    <table class="min-w-full bg-white divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr class="text-gray-700 text-left text-sm font-semibold uppercase tracking-wider">
-          <th class="px-6 py-3">{{ __('id') }}</th>
-          <th class="px-6 py-3">{{ __('name') }}</th>
-          <th class="px-6 py-3">{{ __('price') }}</th>
-          <th class="px-6 py-3">{{ __('quantity') }}</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100">
-        @foreach ($viewData["products"] as $product)
-        <tr class="hover:bg-gray-50 transition">
-          <td class="px-6 py-4">{{ $product->getId() }}</td>
-          <td class="px-6 py-4">{{ $product->getName() }}</td>
-          <td class="px-6 py-4 text-green-600 font-medium">{{ number_format($product->getPrice(), 2) }} DH</td>
-          <td class="px-6 py-4">{{ $viewData['productsInCookie'][$product->getId()] ?? 0 }}</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
-
-  <div class="mt-8 flex flex-col items-end gap-6">
-    <div class="text-xl font-bold text-gray-800">
-      💰 {{ __('total_to_pay') }}: <span class="text-green-600">${{ $viewData["total"] }}</span>
+    <div class="overflow-x-auto rounded-lg border border-gray-300 shadow-lg">
+      <table class="min-w-full bg-white divide-y divide-gray-300">
+        <thead class="bg-gray-100">
+          <tr class="text-gray-800 text-left text-sm font-semibold uppercase tracking-wider">
+            <th class="px-6 py-3">{{ __('messages.id') }}</th>
+            <th class="px-6 py-3">{{ __('messages.name') }}</th>
+            <th class="px-6 py-3">{{ __('messages.price') }}</th>
+            <th class="px-6 py-3">{{ __('messages.quantity') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @foreach ($viewData["products"] as $product)
+          <tr class="hover:bg-gray-50 transition">
+            <td class="px-6 py-4 text-gray-800">{{ $product->getId() }}</td>
+            <td class="px-6 py-4 text-gray-800">{{ $product->getName() }}</td>
+            <td class="px-6 py-4 text-green-600 font-medium">{{ number_format($product->getPrice(), 2) }} DH</td>
+            <td class="px-6 py-4 text-gray-800">{{ $viewData['productsInCookie'][$product->getId()] ?? 0 }}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
     </div>
-   
-    <form action="{{ route('payment.add') }}" method="POST" class="w-full max-w-md">
-      @csrf
-     <div class="mb-5">
-  <label for="payment_method" class="block text-sm font-semibold text-gray-700 mb-2">
-    {{ __('choose_payment_method') }}
-  
-  </label>
-  <div class="relative">
-    <select
-      name="payment_method"
-      id="payment_method"
-      class="appearance-none w-full px-4 py-3 pr-10 border border-gray-300 bg-white text-gray-800 text-base font-medium rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-      required>
-      <option value="Cash on Delivery">  {{ __('cash_on_delivery') }}</option>
-      <option value="Online">{{ __('online') }}</option>
-    </select>
-    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M19 9l-7 7-7-7"></path>
-      </svg>
-    </div>
-  </div>
-</div>
 
-
-      <div class="flex flex-col md:flex-row gap-4 justify-between">
-        <button type="submit"
-          class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition">
-          ✅ {{ __('confirm_order') }}
-        </button>
-        <a href="{{ route('cart.delete') }}"
-          class="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition text-center">
-          🗑️ {{ __('remove_all_products') }}
-        </a>
+    <div class="mt-8 flex flex-col items-end gap-6">
+      <div class="text-xl font-semibold text-gray-800">
+        <i class="fas fa-wallet text-green-600"></i> {{ __('messages.total_to_pay') }}: <span class="text-green-600">${{ $viewData["total"] }}</span>
       </div>
-    </form>
-  </div>
+
+      <form action="{{ route('payment.add') }}" method="POST" class="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+        @csrf
+        <div class="mb-5">
+          <label for="payment_method" class="block text-sm font-semibold text-gray-800 mb-2">
+            {{ __('messages.choose_payment_method') }}
+          </label>
+          <div class="flex flex-col gap-4">
+            <!-- Option Cash on Delivery -->
+            <label class="flex items-center space-x-3 bg-gray-100 p-4 rounded-xl shadow-sm hover:bg-gray-200 transition cursor-pointer">
+              <input type="radio" name="payment_method" value="Cash on Delivery" class="hidden" required>
+              <div class="flex items-center justify-center w-8 h-8 bg-green-600 text-white rounded-full">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <span class="text-gray-800 font-medium text-lg">{{ __('messages.cash_on_delivery') }}</span>
+            </label>
+            <!-- Option Online -->
+            <label class="flex items-center space-x-3 bg-gray-100 p-4 rounded-xl shadow-sm hover:bg-gray-200 transition cursor-pointer">
+              <input type="radio" name="payment_method" value="Online" class="hidden" required>
+              <div class="flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <span class="text-gray-800 font-medium text-lg">{{ __('messages.online') }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 justify-between">
+          <button type="submit"
+            class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition">
+            <i class="fas fa-check-circle"></i> {{ __('messages.confirm_order') }}
+          </button>
+          <a href="{{ route('cart.delete') }}"
+            class="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition text-center">
+            <i class="fas fa-trash-alt"></i> {{ __('messages.remove_all_products') }}
+          </a>
+        </div>
+      </form>
+    </div>
 
   @else
-  <div class="text-center py-10">
-    <p class="text-xl font-semibold text-gray-500">🛒 {{ __('empty_cart') }}</p>
-    <a href="{{ route('product.index') }}"
-      class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">
-      🛍️ {{ __('continue_shopping') }}
-    </a>
-  </div>
+    <div class="text-center py-10">
+      <p class="text-xl font-semibold text-gray-500">{{ __('messages.empty_cart') }}</p>
+      <a href="{{ route('product.index') }}"
+        class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">
+        <i class="fas fa-arrow-left"></i> {{ __('messages.continue_shopping') }}
+      </a>
+    </div>
   @endif
 </div>
 @endsection

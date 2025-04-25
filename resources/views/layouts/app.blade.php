@@ -52,98 +52,69 @@
         <span class="font-serif text-xl">Online Store</span>
       </a>
       
-      <!-- Desktop Navigation -->
-      <div class="hidden lg:flex items-center space-x-8 text-lg">
-        <a href="{{ route('home.index') }}" class="hover:text-accent transition duration-300">Home</a>
-        <a href="{{ route('product.index') }}" class="hover:text-accent transition duration-300">Products</a>
-        <a href="{{ route('cart.index') }}" class="relative flex items-center gap-1 hover:text-accent transition duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-          <span>Cart</span>
-          @if(session()->has('products') && count(session()->get('products')) > 0)
-            <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-              {{ count(session()->get('products')) }}
-            </span>
-          @endif
-        </a>
-        <a href="{{ route('home.about') }}" class="hover:text-accent transition duration-300">About</a>
-
-        @guest
-          <a href="{{ route('login') }}" class="hover:text-accent transition duration-300">Login</a>
-          <a href="{{ route('register') }}" class="bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-full transition duration-300">Register</a>
-        @else
-          <a href="{{ route('orders.index') }}" class="hover:text-accent transition duration-300">My Orders</a>
-          <form id="logout" action="{{ route('logout') }}" method="POST" class="inline">
-            @csrf
-            <button type="submit" class="hover:text-accent transition duration-300">Logout</button>
-          </form>
-        @endguest
-      </div>
-
-<<<<<<< HEAD
-      <!-- Mobile Menu Button -->
-      <button x-data @click="document.getElementById('mobile-menu').classList.toggle('hidden')" class="lg:hidden text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-=======
-      <!-- Mobile Navigation -->
-      <div id="mobile-menu" class="lg:hidden hidden mt-4 bg-primary-700 rounded-lg p-4 shadow-lg">
-        <div class="flex flex-col space-y-3">
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2 flex items-center gap-2" href="{{ route('cart.index') }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <!-- Navigation -->
+      <div class="flex items-center gap-6">
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex items-center gap-8 text-lg">
+          <a href="{{ route('home.index') }}" class="hover:text-accent transition duration-300">Home</a>
+          <a href="{{ route('product.index') }}" class="hover:text-accent transition duration-300">Products</a>
+          <a href="{{ route('cart.index') }}" class="relative flex items-center gap-1 hover:text-accent transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span>{{ __('cart') ?? 'Cart' }}</span>
+            <span>Cart</span>
             @if(session()->has('products') && count(session()->get('products')) > 0)
-              <span class="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {{ count(session()->get('products')) }}
               </span>
             @endif
           </a>
-          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
-          
-          <div class="border-t border-primary-500 my-2"></div>
-          
+          <a href="{{ route('home.about') }}" class="hover:text-accent transition duration-300">About</a>
+
           @guest
-            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
-            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium text-center" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
+            <a href="{{ route('login') }}" class="hover:text-accent transition duration-300">Login</a>
+            <a href="{{ route('register') }}" class="bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-full transition duration-300">Register</a>
           @else
-            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
-            <form action="{{ route('logout') }}" method="POST">
+            <a href="{{ route('orders.index') }}" class="hover:text-accent transition duration-300">My Orders</a>
+            <form id="logout" action="{{ route('logout') }}" method="POST" class="inline">
               @csrf
-              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium py-2 w-full text-left">{{ __('logout') ?? 'Logout' }}</button>
+              <button type="submit" class="hover:text-accent transition duration-300">Logout</button>
             </form>
           @endguest
+        </div>
+
+        <!-- Language Switcher -->
+        <div x-data="{ open: false }" class="relative inline-block text-left">
+          <button @click="open = !open" type="button" class="inline-flex justify-center w-full px-3 py-2 bg-black rounded-md text-sm font-medium text-white hover:bg-primary-800 focus:outline-none transition">
+           {{ strtoupper(app()->getLocale()) }}
+          </button>
           
-          <div class="border-t border-primary-500 my-2"></div>          
+          <div x-show="open" @click.away="open = false" 
+               class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+               x-transition:enter="transition ease-out duration-100"
+               x-transition:enter-start="transform opacity-0 scale-95"
+               x-transition:enter-end="transform opacity-100 scale-100"
+               x-transition:leave="transition ease-in duration-75"
+               x-transition:leave-start="transform opacity-100 scale-100"
+               x-transition:leave-end="transform opacity-0 scale-95"
+               x-cloak>
+            <div class="py-1 text-gray-700">
+              <a href="{{ route('lang.switch', 'en') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇺🇸 English</a>
+              <a href="{{ route('lang.switch', 'fr') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇫🇷 Français</a>
+              <a href="{{ route('lang.switch', 'ar') }}" class="block px-4 py-2 hover:bg-gray-100 transition">🇸🇦 العربية</a>
+            </div>
+          </div>
         </div>
       </div>
->>>>>>> origin
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-button" class="lg:hidden flex items-center text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
   </nav>
-
-  <!-- Mobile Menu -->
-  <div id="mobile-menu" class="lg:hidden hidden bg-gradient-to-r from-primary-500 to-primary-600 p-6 shadow-lg rounded-lg">
-    <a href="{{ route('home.index') }}" class="text-white py-3 block">Home</a>
-    <a href="{{ route('product.index') }}" class="text-white py-3 block">Products</a>
-    <a href="{{ route('cart.index') }}" class="text-white py-3 block">Cart</a>
-    <a href="{{ route('home.about') }}" class="text-white py-3 block">About</a>
-    @guest
-      <a href="{{ route('login') }}" class="text-white py-3 block">Login</a>
-      <a href="{{ route('register') }}" class="text-white py-3 block bg-primary-500 hover:bg-primary-600 rounded-full">Register</a>
-    @else
-      <a href="{{ route('orders.index') }}" class="text-white py-3 block">My Orders</a>
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="text-white py-3 block w-full">Logout</button>
-      </form>
-    @endguest
-  </div>
 
   <!-- Main Content -->
   <div class="container mx-auto px-4 py-8 flex-grow">
@@ -153,13 +124,10 @@
   <!-- Footer -->
   <footer class="bg-gradient-to-r from-primary-500 to-primary-600 text-white py-10 mt-auto">
     <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- About Us -->
       <div>
         <h4 class="text-lg font-semibold mb-4">About Us</h4>
         <p class="text-sm">We are dedicated to providing the best shopping experience with quality products at competitive prices.</p>
       </div>
-  
-      <!-- Quick Links -->
       <div>
         <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
         <ul class="space-y-2">
@@ -169,8 +137,6 @@
           <li><a href="#" class="hover:text-accent transition">Contact</a></li>
         </ul>
       </div>
-
-      <!-- Contact Us -->
       <div>
         <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
         <p class="text-sm">123 Shopping Street, Retail City, 10001</p>
@@ -179,6 +145,5 @@
       </div>
     </div>
   </footer>
-
 </body>
 </html>

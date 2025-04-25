@@ -148,7 +148,7 @@
         </div>
         <div class="order-card-body">
           <div class="order-info">
-            <p><strong>User:</strong> {{ $order->user->name }}</p>
+            <p><strong>User:</strong> {{ $order->user ? $order->user->name : 'No user' }}</p>
             <p><strong>Total:</strong> ${{ $order->total }}</p>
           </div>
           <div class="order-actions">

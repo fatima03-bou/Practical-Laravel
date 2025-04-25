@@ -67,13 +67,8 @@
             <td>{{ Str::limit($categorie['description'], 50) }}</td>
             <td class="table-action">
               <div class="btn-group" role="group">
-<<<<<<< HEAD
-                <a href="{{ route('admin.category.edit', ['id' => $category["id"]]) }}" class="btn btn-sm btn-warning rounded-3">
-                  <i class="bi bi-pencil"></i> Edit
-=======
                 <a href="{{ route('admin.categorie.edit', ['id' => $categorie["id"]]) }}" class="btn btn-sm btn-primary">
                   <i class="bi bi-pencil"></i>
->>>>>>> origin
                 </a>
                 <form action="{{ route('admin.categorie.delete', $categorie["id"]) }}" method="POST" class="d-inline">
                   @csrf

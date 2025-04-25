@@ -35,7 +35,6 @@
       </div>
 
       <div class="mb-3">
-<<<<<<< HEAD
         <label for="image" class="form-label"><i class="bi bi-image-fill me-1"></i> Product Image</label>
         <input class="form-control shadow-sm" type="file" name="image" id="image">
       </div>
@@ -54,23 +53,6 @@
               {{ $category->name }}
             </option>
           @endforeach
-=======
-        <label class="form-label">Description</label>
-        <textarea class="form-control" name="description"
-          rows="3">{{ $viewData['product']->getDescription() }}</textarea>
-      </div>
-      <div class="mb-5 row">
-        <label class="col-lg-2 col-md-6 col-sm-12 col-form-label">Category:</label>
-        <div class="col-lg-10 col-md-6 col-sm-12">
-          <select name="categorie_id" class="form-control">
-            <option value="-1" disabled selected>Choose a category</option>
-            @foreach($viewData['categories'] as $categorie)
-                <option value="{{ $categorie['id'] }}" 
-                    {{ old('categorie_id',  $viewData['product']->categorie_id ?? '') == $categorie->id ? 'selected' : '' }}>
-                    {{ $categorie->name }}
-                </option>
-            @endforeach
->>>>>>> origin
         </select>
       </div>
 

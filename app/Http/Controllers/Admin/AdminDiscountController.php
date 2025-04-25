@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Discount;
+use App\Models\Product;
+use Database\Seeders\ProductSeeder;
 use Illuminate\Http\Request;
 
 class AdminDiscountController extends Controller
@@ -12,8 +15,13 @@ class AdminDiscountController extends Controller
      */
     public function index()
     {
-        //
+        // Récupérer les produits avec les remises associées
+        $products = Product::with('discount')->get();
+
+        // Passer les produits à la vue
+        return view('admin.product.index', ['products' => $products]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -31,11 +39,12 @@ class AdminDiscountController extends Controller
         $request->validate([
             'type' => 'required|in:all,category,product',
             'percentage' => 'required|numeric|min:0|max:100',
+            'rate' => 'required|numeric|min:0|max:100', 
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
-    
-        \App\Models\Discount::create($request->all());
+      
+        Discount::create($request->all());
     
         return redirect()->route('discounts.create')->with('success', 'Remise ajoutée avec succès.');
     }

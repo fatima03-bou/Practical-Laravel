@@ -10,100 +10,96 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request, $productId)
+    public function index(Request $request)
     {
-        $product = Product::findOrFail($productId);
-        $quantity = $request->input('quantity', 1);
+        $total = 0;
+        $productsInCart = [];
 
-        // If there's no active order, create one
-        $order = Order::firstOrCreate(
-            ['user_id' => Auth::id(), 'status' => 'pending']
-        );
+        // Retrieve products stored in the cookie
+        $productsInCookie = json_decode($request->cookie("products"), true) ?? [];
 
-        // Check if the product is already in the cart
-        $item = Item::where('order_id', $order->id)
-                    ->where('product_id', $product->id)
-                    ->first();
+        // Fetch the products based on the IDs in the cookie
+        if ($productsInCookie) {
+            $productsInCart = Product::findMany(array_keys($productsInCookie));
 
-        if ($item) {
-            // If item exists, update the quantity
-            $item->quantity += $quantity;
-            $item->price = $product->getDiscountedPrice();
-            $item->save();
+            // Calculate total price based on quantities in the cookie
+            $total = Product::sumPricesByQuantities($productsInCart, $productsInCookie);
+        }
+
+        // Pass data to the view
+        $viewData = [];
+        $viewData["title"] = "Cart - Online Store";
+        $viewData["subtitle"] = "Shopping Cart";
+        $viewData["total"] = $total;
+        $viewData["products"] = $productsInCart;
+        $viewData["productsInCookie"] = $productsInCookie;
+
+        return view('cart.index')->with("viewData", $viewData);
+    }
+
+    public function add(Request $request, $id)
+    {
+        // Retrieve existing products from cookie
+        $products = json_decode($request->cookie("products"), true) ?? [];
+
+        // Check if the product already exists in the cart and update the quantity
+        if (isset($products[$id])) {
+            $products[$id] += $request->input('quantity');
         } else {
-            // If item does not exist, create a new one
-            Item::create([
-                'quantity' => $quantity,
-                'price' => $product->getDiscountedPrice(),
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-            ]);
+            $products[$id] = $request->input('quantity');
         }
+
+        // Store updated products in the cookie
+        cookie()->queue(cookie("products", json_encode($products), 60 * 24 * 7));
 
         return redirect()->route('cart.index');
     }
 
-    public function viewCart()
+    public function delete(Request $request)
     {
-        $order = Order::where('user_id', Auth::id())
-                      ->where('status', 'pending')
-                      ->first();
-
-        if (!$order) {
-            return view('cart.index', ['message' => 'Your cart is empty.']);
-        }
-
-        $items = $order->items;
-        $total = $order->getTotalPrice();
-
-        return view('cart.index', compact('items', 'total'));
+        // Clear the products cookie
+        cookie()->queue(cookie("products", "", -1));
+        return back();
     }
 
-    public function updateCart(Request $request)
-    {
-        $order = Order::where('user_id', Auth::id())
-                      ->where('status', 'pending')
-                      ->first();
+    public function purchase(Request $request)
+{
+    $productsInCookie = json_decode($request->cookie("products"), true) ?? [];
 
-        foreach ($request->input('items') as $itemId => $quantity) {
-            $item = Item::find($itemId);
-            if ($item && $item->order_id == $order->id) {
-                $item->quantity = $quantity;
-                $item->save();
-            }
+    if ($productsInCookie) {
+        $total = 0;  // تأكد من أن المتغير $total مبدئيًا يحتوي على 0
+
+        $userId = Auth::user()->id; // Get the logged-in user's ID
+
+        // قم بحفظ الطلب أولاً حتى نحصل على order_id
+        $order = new Order();
+        $order->user_id = $userId;
+        $order->total = $total; // إضافة total إلى الطلب
+        $order->save(); // حفظ الطلب أولًا
+
+        // حساب إجمالي السعر بناءً على المنتجات في السلة
+        $productsInCart = Product::findMany(array_keys($productsInCookie));
+
+        foreach ($productsInCart as $product) {
+            $quantity = $productsInCookie[$product->id];
+
+            $total += $product->price * $quantity; // إضافة السعر الإجمالي
+
+            $item = new Item();
+            $item->quantity = $quantity;
+            $item->price = $product->price;
+            $item->product_id = $product->id; // تعيين product_id
+            $item->order_id = $order->id; // تعيين order_id بعد حفظ الطلب
+            $item->save(); // حفظ العنصر في قاعدة البيانات
         }
 
-        return redirect()->route('cart.index');
+        // تحديث قيمة total بعد حساب الإجمالي
+        $order->total = $total;
+        $order->save(); // حفظ الطلب بعد التحديث
+
+        return back(); // أي إجراءات أخرى هنا (مثل التحويل إلى صفحة الدفع)
     }
+}
 
-    public function removeFromCart($itemId)
-    {
-        $order = Order::where('user_id', Auth::id())
-                      ->where('status', 'pending')
-                      ->first();
 
-        $item = Item::find($itemId);
-        if ($item && $item->order_id == $order->id) {
-            $item->delete();
-        }
-
-        return redirect()->route('cart.index');
-    }
-
-    public function checkout()
-    {
-        $order = Order::where('user_id', Auth::id())
-                      ->where('status', 'pending')
-                      ->first();
-
-        if (!$order || $order->items->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
-        }
-
-        // Update order status to 'completed' or proceed to payment...
-        $order->status = 'completed';
-        $order->save();
-
-        return redirect()->route('orders.index')->with('success', 'Your order has been placed!');
-    }
 }

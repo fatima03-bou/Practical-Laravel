@@ -20,64 +20,50 @@ class AdminProductController extends Controller
         $viewData["title"] = "Admin Page - Products - Online Store";
         $viewData["categories"] = Categorie::all();
         $viewData["fournisseurs"] = fournisseur::all();
-        
-        $categoryId = $request->query('categorie_id');
-        $fournisseurId = $request->query('fournisseur_id');
-        if ($categoryId) { 
-            $viewData["products"] = Product::where('categorie_id', $categoryId)->get();
-        }else if ($fournisseurId) { 
-            $viewData["products"] = Product::where('fournisseur_id', $fournisseurId)->get();
+        $products = Product::with('discount')->get();
+        $productsQuery = Product::query();
+
+        if ($request->filled('category_id')) {
+            $productsQuery->where('categorie_id', $request->category_id);
         }
-         else {
-            $viewData["products"] = Product::all();
+
+        if ($request->filled('fournisseur_id')) {
+            $productsQuery->where('fournisseur_id', $request->fournisseur_id);
         }
+
+        $viewData["products"] = $productsQuery->get();
+
         return view('admin.product.index')->with("viewData", $viewData);
     }
 
-
     public function store(Request $request)
     {
-        // Validate the request
-        Product::validate($request);
-    
-        // Create a new product instance
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'categorie_id' => 'required|exists:categories,id',
+        ]);
+
         $newProduct = new Product();
-    
-        // Assign values to the product attributes
-        $newProduct->name = $request->input('name');
-        $newProduct->description = $request->input('description');
-        $newProduct->price = $request->input('price');
-        $newProduct->image = "game.png"; // Default image
-        $newProduct->fournisseur_id = $request->input('fournisseur_id');
-
-        // Assign category_id
-        $newProduct->categorie_id = $request->input('category_id');
-    
-        // Save the product
+        $newProduct->name = $request->name;
+        $newProduct->description = $request->description;
+        $newProduct->price = $request->price;
+        $newProduct->fournisseur_id = $request->fournisseur_id;
+        $newProduct->categorie_id = $request->categorie_id;
+        $newProduct->image = "default.png";
         $newProduct->save();
-    
-        // Handle image upload if present
-        if ($request->hasFile('image')) {
-            $imageName = $newProduct->id . "." . $request->file('image')->extension();
-    
-            Storage::disk('public')->put(
-                $imageName,
-                file_get_contents($request->file('image')->getRealPath())
-            );
-            $newProduct->image = $imageName; // Update the image field
-            $newProduct->save(); // Save the updated image field
-        }
-    
-        // Redirect or return response
-        return redirect()->route('admin.product.index')->with('success', 'Product created successfully!');
-    }
-    
-    
 
-    public function delete($id)
-    {
-        Product::destroy($id);
-        return back();
+        if ($request->hasFile('image')) {
+            $imageName = $newProduct->id . '.' . $request->file('image')->extension();
+            Storage::disk('public')->put($imageName, file_get_contents($request->file('image')->getRealPath()));
+            $newProduct->image = $imageName;
+            $newProduct->save();
+        }
+
+        return redirect()->route('admin.product.index')->with('success', 'Product created successfully!');
     }
 
     public function edit($id)
@@ -86,39 +72,54 @@ class AdminProductController extends Controller
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
         $viewData["product"] = Product::findOrFail($id);
         $viewData["categories"] = Categorie::all();
+        $viewData["fournisseurs"] = fournisseur::all();
 
         return view('admin.product.edit')->with("viewData", $viewData);
     }
 
     public function update(Request $request, $id)
     {
-        Product::validate($request);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'categorie_id' => 'required|exists:categories,id',
+        ]);
 
         $product = Product::findOrFail($id);
-        $product->name = $request->input('name');
-        $product->description = $request->input('description');
-        $product->price = $request->input('price');
-
-        $product->category_id = $request->input('category_id');
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->fournisseur_id = $request->fournisseur_id;
+        $product->categorie_id = $request->categorie_id;
 
         if ($request->hasFile('image')) {
-            $imageName = $product->getId().".".$request->file('image')->extension();
-            Storage::disk('public')->put(
-                $imageName,
-                file_get_contents($request->file('image')->getRealPath())
-            );
-            $product->setImage($imageName);
+            $imageName = $product->id . "." . $request->file('image')->extension();
+            Storage::disk('public')->put($imageName, file_get_contents($request->file('image')->getRealPath()));
+            $product->image = $imageName;
         }
 
         $product->save();
-        return redirect()->route('admin.product.index');
+
+        return redirect()->route('admin.product.index')->with('success', 'Product updated successfully!');
     }
-    public function export()  {
-        return Excel::download(new ProductExport, 'product.xlsx');
+
+    public function delete($id)
+    {
+        Product::destroy($id);
+        return back()->with('success', 'Product deleted successfully!');
     }
-    public function import(Request $request){
-        Excel::import(new ProductImport,  $request->file('file'));
-        return redirect()->route('admin.product.index');
-    
+
+    public function export()
+    {
+        return Excel::download(new ProductExport, 'products.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new ProductImport, $request->file('file'));
+        return redirect()->route('admin.product.index')->with('success', 'Products imported successfully!');
     }
 }

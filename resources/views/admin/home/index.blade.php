@@ -2,7 +2,6 @@
 @section('title', $viewData["title"])
 
 @section('content')
-<<<<<<< HEAD
 <!-- Admin Dashboard Hero Section -->
 <div class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white p-10 rounded-2xl shadow-2xl mb-8">
   <h1 class="text-5xl font-semibold mb-4">Welcome Back, {{ Auth::user()->name }}</h1>
@@ -28,7 +27,7 @@
       <i class="fas fa-folder-open text-indigo-400 text-4xl"></i>
     </div>
     <p class="text-gray-400 text-base leading-relaxed mb-4">Organize your products into categories for better structure and easier navigation.</p>
-    <a href="{{ route('admin.category.index') }}" class="inline-block text-indigo-400 font-semibold hover:text-white hover:underline transition duration-300 ease-in-out">Manage Categories</a>
+    <a href="{{ route('admin.categorie.index') }}" class="inline-block text-indigo-400 font-semibold hover:text-white hover:underline transition duration-300 ease-in-out">Manage Categories</a>
   </div>
 
   <!-- Orders Card -->
@@ -39,27 +38,6 @@
     </div>
     <p class="text-gray-400 text-base leading-relaxed mb-4">Track and manage customer orders effortlessly. Ensure timely delivery and customer satisfaction.</p>
     <a href="{{ url('admin/orders') }}" class="inline-block text-yellow-500 font-semibold hover:text-white hover:underline transition duration-300 ease-in-out">View Orders</a>
-=======
-<div class="bg-white shadow-md rounded-xl p-8 mb-6">
-  <h1 class="text-2xl font-semibold text-gray-800 mb-4">Welcome, Admin</h1>
-  <p class="text-gray-600">
-    This is your admin dashboard. Use the sidebar to manage products, categories, orders, and view reports.
-  </p>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-    <h2 class="text-lg font-medium text-blue-800 mb-2">🛒 Products</h2>
-    <p class="text-sm text-blue-700">Add, edit, and manage your store’s products here.</p>
-  </div>
-  <div class="bg-green-100 p-4 rounded-lg shadow-sm">
-    <h2 class="text-lg font-medium text-green-800 mb-2">📂 Categories</h2>
-    <p class="text-sm text-green-700">Organize products into logical groups.</p>
-  </div>
-  <div class="bg-yellow-100 p-4 rounded-lg shadow-sm">
-    <h2 class="text-lg font-medium text-yellow-800 mb-2">📦 Orders</h2>
-    <p class="text-sm text-yellow-700">View and manage customer orders.</p>
->>>>>>> origin
   </div>
 </div>
 

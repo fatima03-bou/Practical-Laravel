@@ -12,18 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-<<<<<<< HEAD
         if (!Schema::hasColumn('products', 'fournisseur_id')) {
             Schema::table('products', function (Blueprint $table) {
                 $table->unsignedBigInteger('fournisseur_id');
                 $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('cascade');
             });
+            
         }
-=======
-        Schema::table('products', function (Blueprint $table) {
-            $table->foreignId("fournisseur_id")->constrained("fournisseurs")->cascadeOnDelete() ;
-        });
->>>>>>> origin
     }
     
     /**

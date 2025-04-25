@@ -7,7 +7,7 @@ use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Discount;
 use Carbon\Carbon;
-use PhpOffice\PhpSpreadsheet\Calculation\Category;
+
 
 class Product extends Model
 {
@@ -43,19 +43,17 @@ class Product extends Model
     }
     public function category()
     {
-        return $this->belongsTo(Category::class, 'categorie_id');
+        return $this->belongsTo(Categorie::class, 'categorie_id');
     }
 
     public static function sumPricesByQuantities($products, $productsInSession)
     {
         $total = 0;
         foreach ($products as $product) {
-            $total = $total + ($product->getPrice()*$productsInSession[$product->getId()]);
+            $total += $product->getDiscountedPrice() * $productsInSession[$product->getId()];
         }
-
         return $total;
     }
-
     public function getId()
     {
         return $this->attributes['id'];
@@ -167,4 +165,13 @@ public function isDiscountActive()
 
     return $discount && $now >= $discount->start_date && $now <= $discount->end_date;
 }
+
+    // app/Models/Product.php
+
+public function fournisseurs()
+{
+    return $this->belongsTo(Fournisseur::class, 'fournisseur_id');
+}
+
+
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SuperAdminUserController\UserController;
@@ -42,9 +43,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-account/orders', [MyAccountController::class, 'orders'])->name("myaccount.orders");
    
-    Route::post('/payment', [paymentController::class, 'processPaymentMethod'])->name("payment.add");
-
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/payment', [PaymentController::class, 'showForm'])->name('payment');
+
+// استقبال بيانات الفورم (POST)
+Route::post('/payment/success', [PaymentController::class, 'handleSuccess'])->name('payment.success');
 });
 
 Route::middleware('admin')->group(function () {
@@ -83,5 +86,12 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/superAdmin', [UserController::class, 'index'])->name("superAdmin.index");
 });
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr', 'ar'])) {
+        Session::put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 Auth::routes();
+
