@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 
+=======
+use App\Models\Order;
+>>>>>>> origin
 
 class PaymentController extends Controller
 {

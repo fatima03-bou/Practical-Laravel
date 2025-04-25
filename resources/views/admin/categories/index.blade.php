@@ -19,7 +19,7 @@
       </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.category.store') }}">
+    <form method="POST" action="{{ route('admin.categorie.store') }}">
       @csrf
       <div class="mb-4">
         <label class="form-label">Category Name:</label>
@@ -60,17 +60,22 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($viewData["categories"] as $category)
+          @foreach ($viewData["categories"] as $categorie)
           <tr>
-            <td>{{ $category["id"] }}</td>
-            <td><span class="fw-medium">{{ $category["name"] }}</span></td>
-            <td>{{ Str::limit($category['description'], 50) }}</td>
+            <td>{{ $categorie["id"] }}</td>
+            <td><span class="fw-medium">{{ $categorie["name"] }}</span></td>
+            <td>{{ Str::limit($categorie['description'], 50) }}</td>
             <td class="table-action">
               <div class="btn-group" role="group">
+<<<<<<< HEAD
                 <a href="{{ route('admin.category.edit', ['id' => $category["id"]]) }}" class="btn btn-sm btn-warning rounded-3">
                   <i class="bi bi-pencil"></i> Edit
+=======
+                <a href="{{ route('admin.categorie.edit', ['id' => $categorie["id"]]) }}" class="btn btn-sm btn-primary">
+                  <i class="bi bi-pencil"></i>
+>>>>>>> origin
                 </a>
-                <form action="{{ route('admin.category.delete', $category["id"]) }}" method="POST" class="d-inline">
+                <form action="{{ route('admin.categorie.delete', $categorie["id"]) }}" method="POST" class="d-inline">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn btn-sm btn-danger rounded-3" onclick="return confirm('Are you sure you want to delete this category?')">

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminCategorieController;
 use App\Http\Controllers\Admin\AdminFournisseurController as AdminAdminFournisseurController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\AdminOrderController;
@@ -60,11 +60,19 @@ Route::middleware('admin')->group(function () {
     Route::POST('/admin/products/import/', [AdminProductController::class, 'import'])->name('admin.product.import');
 
     // Category Routes
+<<<<<<< HEAD
     Route::get('admin/categories', [AdminCategoryController::class, "index"])->name("admin.categories.index");
     Route::post('admin/categories/store', [AdminCategoryController::class, "store"])->name("admin.category.store");
     Route::delete('admin/categories/{id}', [AdminCategoryController::class, 'delete'])->name("admin.category.delete");
     Route::get('admin/categories/{id}/edit', [AdminCategoryController::class, 'edit'])->name("admin.category.edit");
     Route::put('admin/categories/{id}/update', [AdminCategoryController::class, 'update'])->name("admin.category.update");
+=======
+    Route::get('admin/categories', [AdminCategorieController::class, "index"])->name("admin.categorie.index");
+    Route::post('admin/categories/store', [AdminCategorieController::class, "store"])->name("admin.categorie.store");
+    Route::delete('admin/categories/{id}', [AdminCategorieController::class, 'delete'])->name("admin.categorie.delete");
+    Route::get('admin/categories/{id}/edit', [AdminCategorieController::class, 'edit'])->name("admin.categorie.edit");
+    Route::put('admin/categories/{id}/update', [AdminCategorieController::class, 'update'])->name("admin.categorie.update");
+>>>>>>> origin
 
     Route::resource("admin/fournisseurs", AdminAdminFournisseurController::class);
 
@@ -74,7 +82,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.order.index');
     Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
-    Route::resource('/admin/discounts', \App\Http\Controllers\Admin\DiscountController::class);
+    Route::resource('/admin/discounts', \App\Http\Controllers\Admin\AdminDiscountController::class);
 });
 
 Route::middleware(['auth', 'super_admin'])->group(function () {
@@ -82,11 +90,6 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::post('/superAdmin/create', [UserController::class, 'createAdmin'])->name("superAdmin.createAdmin");
     Route::get('/superAdmin', [UserController::class, 'index'])->name("superAdmin.index");
 });
-Route::get('/lang/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'fr', 'ar'])) {
-        Session::put('locale', $locale);
-    }
-    return redirect()->back();
-})->name('lang.switch');
+
 
 Auth::routes();

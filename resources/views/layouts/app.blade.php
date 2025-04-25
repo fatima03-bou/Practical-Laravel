@@ -81,12 +81,49 @@
         @endguest
       </div>
 
+<<<<<<< HEAD
       <!-- Mobile Menu Button -->
       <button x-data @click="document.getElementById('mobile-menu').classList.toggle('hidden')" class="lg:hidden text-white">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
+=======
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="lg:hidden hidden mt-4 bg-primary-700 rounded-lg p-4 shadow-lg">
+        <div class="flex flex-col space-y-3">
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.index') }}">{{ __('home') ?? 'Home' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('product.index') }}">{{ __('products') ?? 'Products' }}</a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2 flex items-center gap-2" href="{{ route('cart.index') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>{{ __('cart') ?? 'Cart' }}</span>
+            @if(session()->has('products') && count(session()->get('products')) > 0)
+              <span class="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {{ count(session()->get('products')) }}
+              </span>
+            @endif
+          </a>
+          <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('home.about') }}">{{ __('about') ?? 'About' }}</a>
+          
+          <div class="border-t border-primary-500 my-2"></div>
+          
+          @guest
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('login') }}">{{ __('login') ?? 'Login' }}</a>
+            <a class="bg-white hover:bg-gray-100 text-primary-600 px-4 py-2 rounded-md transition-colors font-medium text-center" href="{{ route('register') }}">{{ __('register') ?? 'Register' }}</a>
+          @else
+            <a class="text-white hover:text-primary-200 transition-colors font-medium py-2" href="{{ route('orders.index') }}">{{ __('my_orders') ?? 'My Orders' }}</a>
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="text-white hover:text-primary-200 transition-colors font-medium py-2 w-full text-left">{{ __('logout') ?? 'Logout' }}</button>
+            </form>
+          @endguest
+          
+          <div class="border-t border-primary-500 my-2"></div>          
+        </div>
+      </div>
+>>>>>>> origin
     </div>
   </nav>
 

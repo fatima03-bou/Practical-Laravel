@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductExport;
-use App\Models\Category;
+use App\Models\Categorie;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class ProductController extends Controller
 {
@@ -27,15 +28,15 @@ class ProductController extends Controller
             });
         }
 
-        if ($request->has('category_id') && $request->get('category_id') != '') {
-            $query->where('category_id', $request->get('category_id'));
+        if ($request->has('categorie_id') && $request->get('categorie_id') != '') {
+            $query->where('categorie_id', $request->get('categorie_id'));
         }
 
         // Paginate the filtered products
         $viewData["products"] = $query->paginate(8);
 
         // Get all categories for the filter dropdown
-        $viewData["categories"] = Category::all();
+        $viewData["categories"] = Categorie::all();
 
         return view('product.index')->with("viewData", $viewData);
     }
@@ -45,7 +46,10 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
+<<<<<<< HEAD
         $categories = Category::all();
+=======
+>>>>>>> origin
         $viewData["title"] = $product->getName()." - Online Store";
         $viewData["subtitle"] =  $product->getName()." - Product information";
         $viewData["product"] = $product;

@@ -32,7 +32,7 @@
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-folder"></i></span>
               <select name="category_id" class="form-select">
-                @foreach(\App\Models\Category::all() as $category)
+                @foreach(\App\Models\Categorie::all() as $category)
                   <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
               </select>

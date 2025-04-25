@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         // Check if the column exists before adding it
-        if (!Schema::hasColumn('products', 'category_id')) {
+        if (!Schema::hasColumn('products', 'categorie_id')) {
             Schema::table('products', function (Blueprint $table) {
-                $table->unsignedBigInteger('category_id')->nullable();
+                $table->unsignedBigInteger('categorie_id')->nullable();
             });
         }
     }
@@ -30,8 +30,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['category_id']); // Drop the foreign key
-            $table->dropColumn('category_id');
+            $table->dropForeign(['categorie_id']); // Drop the foreign key
+            $table->dropColumn('categorie_id');
         });
     }
 };

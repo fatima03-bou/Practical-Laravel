@@ -4,9 +4,17 @@
 @section('content')
 <div class="row justify-content-center">
   <div class="col-lg-8">
+<<<<<<< HEAD
     <div class="card shadow-lg rounded-3">
       <div class="card-header bg-primary text-white d-flex align-items-center">
         <i class="bi bi-pencil-square me-3 text-white"></i>
+=======
+    <div class="card shadow">
+      <div class="card-header">
+        <div class="card-header-icon icon-warning">
+          <i class="bi bi-pencil-square"></i>
+        </div>
+>>>>>>> origin
         <h5 class="m-0 font-weight-bold">Edit Category</h5>
       </div>
       <div class="card-body">
@@ -20,9 +28,10 @@
         </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.category.update', ['id' => $viewData['category']->id]) }}">
+        <form method="POST" action="{{ route('admin.categorie.update', ['id' => $viewData['categorie']->id]) }}">
           @csrf
           @method('PUT')
+<<<<<<< HEAD
           <div class="mb-4">
             <label class="form-label text-muted">Name:</label>
             <div class="input-group rounded-3 shadow-sm">
@@ -35,13 +44,31 @@
             <div class="input-group rounded-3 shadow-sm">
               <span class="input-group-text bg-light border-end-0"><i class="bi bi-text-paragraph"></i></span>
               <textarea name="description" rows="3" class="form-control rounded-3 border-start-0" placeholder="Enter category description">{{ $viewData['category']->description }}</textarea>
+=======
+          <div class="mb-3">
+            <label class="form-label">Name:</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-tag"></i></span>
+              <input name="name" value="{{ $viewData['categorie']->name }}" type="text" class="form-control">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description:</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+              <textarea name="description" rows="3" class="form-control">{{ $viewData['categorie']->description }}</textarea>
+>>>>>>> origin
             </div>
           </div>
           <div class="d-flex justify-content-between mt-4">
             <button type="submit" class="btn btn-warning rounded-3 px-4 py-2">
               <i class="bi bi-check-circle me-2"></i>Update Category
             </button>
+<<<<<<< HEAD
             <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary rounded-3 px-4 py-2">
+=======
+            <a href="{{ route('admin.categorie.index') }}" class="btn btn-secondary">
+>>>>>>> origin
               <i class="bi bi-arrow-left me-2"></i>Back to Categories
             </a>
           </div>

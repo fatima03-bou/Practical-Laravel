@@ -6,7 +6,7 @@ use App\Exports\ProductExport;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Imports\ProductImport;
-use App\Models\Category;
+use App\Models\Categorie;
 use App\Models\fournisseur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,13 +18,13 @@ class AdminProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Admin Page - Products - Online Store";
-        $viewData["categories"] = Category::all();
+        $viewData["categories"] = Categorie::all();
         $viewData["fournisseurs"] = fournisseur::all();
         
-        $categoryId = $request->query('category_id');
+        $categoryId = $request->query('categorie_id');
         $fournisseurId = $request->query('fournisseur_id');
         if ($categoryId) { 
-            $viewData["products"] = Product::where('category_id', $categoryId)->get();
+            $viewData["products"] = Product::where('categorie_id', $categoryId)->get();
         }else if ($fournisseurId) { 
             $viewData["products"] = Product::where('fournisseur_id', $fournisseurId)->get();
         }
@@ -40,7 +40,10 @@ class AdminProductController extends Controller
         // Validate the request
         Product::validate($request);
     
+<<<<<<< HEAD
         // Create a new product instance
+=======
+>>>>>>> origin
         $newProduct = new Product();
     
         // Assign values to the product attributes
@@ -51,12 +54,19 @@ class AdminProductController extends Controller
         $newProduct->fournisseur_id = $request->input('fournisseur_id');
 
         // Assign category_id
+<<<<<<< HEAD
         $newProduct->categorie_id = $request->input('category_id');
+=======
+        $newProduct->categorie_id = $request->input('categorie_id');
+>>>>>>> origin
     
         // Save the product
         $newProduct->save();
     
+<<<<<<< HEAD
         // Handle image upload if present
+=======
+>>>>>>> origin
         if ($request->hasFile('image')) {
             $imageName = $newProduct->id . "." . $request->file('image')->extension();
     
@@ -68,8 +78,12 @@ class AdminProductController extends Controller
             $newProduct->save(); // Save the updated image field
         }
     
+<<<<<<< HEAD
         // Redirect or return response
         return redirect()->route('admin.product.index')->with('success', 'Product created successfully!');
+=======
+        return back();
+>>>>>>> origin
     }
     
     
@@ -85,7 +99,7 @@ class AdminProductController extends Controller
         $viewData = [];
         $viewData["title"] = "Admin Page - Edit Product - Online Store";
         $viewData["product"] = Product::findOrFail($id);
-        $viewData["categories"] = Category::all();
+        $viewData["categories"] = Categorie::all();
 
         return view('admin.product.edit')->with("viewData", $viewData);
     }
@@ -95,11 +109,18 @@ class AdminProductController extends Controller
         Product::validate($request);
 
         $product = Product::findOrFail($id);
+<<<<<<< HEAD
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
 
         $product->category_id = $request->input('category_id');
+=======
+        $product->setName($request->input('name'));
+        $product->setDescription($request->input('description'));
+        $product->setPrice($request->input('price'));
+        $product->categorie_id = $request->input('categorie_id');
+>>>>>>> origin
 
         if ($request->hasFile('image')) {
             $imageName = $product->getId().".".$request->file('image')->extension();
